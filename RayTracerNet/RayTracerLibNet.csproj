@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A296AF00-CB2A-453F-B234-900F7BE28684}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RayTracerNet</RootNamespace>
+    <AssemblyName>RayTracerNet</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TestForWindow|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\TestForWindow\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core\Camera\Camera.cs" />
+    <Compile Include="Core\Light\SunLight.cs" />
+    <Compile Include="Core\Log\Log.cs" />
+    <Compile Include="Core\Math\Color.cs" />
+    <Compile Include="Core\Math\MathUtils.cs" />
+    <Compile Include="Core\Math\Vector.cs" />
+    <Compile Include="Core\Message\MessageHandler.cs" />
+    <Compile Include="Core\Object\ResourceObject.cs" />
+    <Compile Include="Core\Object\SceneObject.cs" />
+    <Compile Include="Core\Primitive\CubePrimitive.cs" />
+    <Compile Include="Core\Primitive\MeshPrimitive.cs" />
+    <Compile Include="Core\Primitive\PlanePrimitive.cs" />
+    <Compile Include="Core\Primitive\PrimitiveBase.cs" />
+    <Compile Include="Core\Object\RayTracerObject.cs" />
+    <Compile Include="Core\Primitive\SpherePrimitive.cs" />
+    <Compile Include="Core\RenderSetting\RenderSettings.cs" />
+    <Compile Include="Core\Resource\Mesh.cs" />
+    <Compile Include="Core\Resource\Shader\MaterialShader.cs" />
+    <Compile Include="Core\Resource\Texture.cs" />
+    <Compile Include="Core\Light\SkyLight.cs" />
+    <Compile Include="Core\Scene\Scene.cs" />
+    <Compile Include="Core\Serialization\PrimitiveSerialization.cs" />
+    <Compile Include="Core\Serialization\SceneSerialization.cs" />
+    <Compile Include="Core\UIProperty\PropertyDisplayAttribute.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RayTracer.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

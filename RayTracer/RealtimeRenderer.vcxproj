@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="TestForWindow|Win32">
+      <Configuration>TestForWindow</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="TestForWindow|x64">
+      <Configuration>TestForWindow</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{2E9114DA-9388-42F5-B2A0-5FA1CB11DEAB}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>RayTracer</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>RayTracerLib</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TestForWindow|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TestForWindow|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='TestForWindow|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='TestForWindow|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include;../Includes;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86;../Libs;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TestForWindow|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include;../Includes;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86;../Libs;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TestForWindow|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;RAYTRACER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <BrowseInformation>true</BrowseInformation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>dxgi.lib;d3dx11.lib;d3d11.lib;d3dx11d.lib;d3dcompiler.lib;dxguid.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy  "$(TargetDir)$(TargetName).dll" "$(SolutionDir)RayTracerForm\bin\Debug"  /y
+xcopy  "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)RayTracerForm\bin\Debug"  /y
+xcopy "$(ProjectDir)Shaders" "$(SolutionDir)RayTracerForm\bin\Debug\Shaders\" /y
+xcopy "$(SolutionDir)Libs" "$(SolutionDir)RayTracerForm\bin\Debug\" /y</Command>
+    </PostBuildEvent>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='TestForWindow|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;RAYTRACER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>dxgi.lib;d3dx11.lib;d3d11.lib;d3dx11d.lib;d3dcompiler.lib;dxguid.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(ProjectDir)Shaders" "$(TargetDir)Shaders\" /y</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;RAYTRACER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='TestForWindow|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;RAYTRACER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;RAYTRACER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>dxgi.lib;d3dx11.lib;d3d11.lib;d3dx11d.lib;d3dcompiler.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;RAYTRACER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h" />
+    <ClInclude Include="Src\Camera\Camera.h" />
+    <ClInclude Include="Src\Common\GlobalResource.h" />
+    <ClInclude Include="Src\Core\Bounds.h" />
+    <ClInclude Include="Src\Core\Color.h" />
+    <ClInclude Include="Src\Core\Math.h" />
+    <ClInclude Include="Src\Core\Matrix.h" />
+    <ClInclude Include="Src\Core\ObjectPool.hpp" />
+    <ClInclude Include="Src\Core\Quaternion.h" />
+    <ClInclude Include="Src\Core\Ray.h" />
+    <ClInclude Include="Src\Core\ConcurrentQueue.hpp" />
+    <ClInclude Include="Src\Core\Vector.h" />
+    <ClInclude Include="Src\Gizmos\GizmosRenderer.h" />
+    <ClInclude Include="Src\Light\SkyLight.h" />
+    <ClInclude Include="Src\Light\SunLight.h" />
+    <ClInclude Include="Src\Primitive\Mesh.h" />
+    <ClInclude Include="Src\Primitive\Primitive.h" />
+    <ClInclude Include="Src\Random\Random.hpp" />
+    <ClInclude Include="Src\RayTracer\Integrator\IntegratorBase.h" />
+    <ClInclude Include="Src\RayTracer\Integrator\PathTracer\PathTracer.h" />
+    <ClInclude Include="Src\RayTracer\Light\RayTracerSkyLight.h" />
+    <ClInclude Include="Src\RayTracer\Light\RayTracerSunLight.h" />
+    <ClInclude Include="Src\RayTracer\Primitive\RayTracerPrimitive.h" />
+    <ClInclude Include="Src\RayTracer\RayTracerScene.h" />
+    <ClInclude Include="Src\RayTracer\RayTracerRenderer.h" />
+    <ClInclude Include="Src\RayTracer\RayTracingResult.h" />
+    <ClInclude Include="Src\RayTracer\Render\RayTracerRenderTarget.h" />
+    <ClInclude Include="Src\RayTracer\Render\RayTracerRenderTile.h" />
+    <ClInclude Include="Src\RayTracer\Sampler\Sampler.h" />
+    <ClInclude Include="Src\RayTracer\SceneData\BVH.h" />
+    <ClInclude Include="Src\RayTracer\SceneData\ListSceneData.h" />
+    <ClInclude Include="Src\RayTracer\SceneData\SceneDataBase.h" />
+    <ClInclude Include="Src\RayTracer\Shader\BRDF.h" />
+    <ClInclude Include="Src\RayTracer\Shader\RayTracerMaterialShader.h" />
+    <ClInclude Include="Src\RayTracer\Shader\RayTracerPBRShader.h" />
+    <ClInclude Include="Src\RayTracer\Shader\RayTracerShader.h" />
+    <ClInclude Include="Src\RayTracer\Shader\RayTracerSkyShader.h" />
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11Context.h" />
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11HLSLProgram.h" />
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11RenderBuffer.h" />
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11RenderStateMachine.h" />
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11TextureBuffer.h" />
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11VertexBuffer.h" />
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\GLContext.h" />
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\GLDefines.h" />
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\RenderBuffer.h" />
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\ShaderProgram.h" />
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\ShaderResource.h" />
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\TextureBuffer.h" />
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\VertexBuffer.h" />
+    <ClInclude Include="Src\RealtimeRender\RayTracingPreviewRenderer.h" />
+    <ClInclude Include="Src\RealtimeRender\RealtimeRenderer.h" />
+    <ClInclude Include="Src\Scene\Scene.h" />
+    <ClInclude Include="Src\Shader\EmissiveShader.h" />
+    <ClInclude Include="Src\Shader\ErrorShader.h" />
+    <ClInclude Include="Src\Shader\GizmosShader.h" />
+    <ClInclude Include="Src\Shader\IntegrateBRDFShader.h" />
+    <ClInclude Include="Src\Shader\LinearToGammaShader.h" />
+    <ClInclude Include="Src\Shader\MaterialShader.h" />
+    <ClInclude Include="Src\Shader\PBRShader.h" />
+    <ClInclude Include="Src\Shader\PostProcessShaderBase.h" />
+    <ClInclude Include="Src\Shader\ScreenQuadShader.h" />
+    <ClInclude Include="Src\Shader\ShaderBase.h" />
+    <ClInclude Include="Src\Shader\SkyShader.h" />
+    <ClInclude Include="Src\Shader\TransparencyShader.h" />
+    <ClInclude Include="Src\Texture\RenderTexture.h" />
+    <ClInclude Include="Src\Texture\Texture.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Src\Camera\Camera.cpp" />
+    <ClCompile Include="Src\Common\GlobalResource.cpp" />
+    <ClCompile Include="Src\Core\Bounds.cpp" />
+    <ClCompile Include="Src\Gizmos\GizmosRenderer.cpp" />
+    <ClCompile Include="Src\Light\SkyLight.cpp" />
+    <ClCompile Include="Src\Light\SunLight.cpp" />
+    <ClCompile Include="Src\Primitive\Mesh.cpp" />
+    <ClCompile Include="Src\Primitive\Primitive.cpp" />
+    <ClCompile Include="Src\RayTracer\Integrator\IntegratorBase.cpp" />
+    <ClCompile Include="Src\RayTracer\Integrator\PathTracer\PathTracer.cpp" />
+    <ClCompile Include="Src\RayTracer\Light\RayTracerSkyLight.cpp" />
+    <ClCompile Include="Src\RayTracer\Light\RayTracerSunLight.cpp" />
+    <ClCompile Include="Src\RayTracer\Primitive\RayTracerPrimitive.cpp" />
+    <ClCompile Include="Src\RayTracer\RayTracerScene.cpp" />
+    <ClCompile Include="Src\RayTracer\RayTracerRenderer.cpp" />
+    <ClCompile Include="Src\RayTracer\Render\RayTracerRenderTarget.cpp" />
+    <ClCompile Include="Src\RayTracer\Sampler\Sampler.cpp" />
+    <ClCompile Include="Src\RayTracer\SceneData\BVH.cpp" />
+    <ClCompile Include="Src\RayTracer\SceneData\ListSceneData.cpp" />
+    <ClCompile Include="Src\RayTracer\SceneData\SceneDataBase.cpp" />
+    <ClCompile Include="Src\RayTracer\Shader\BRDF.cpp" />
+    <ClCompile Include="Src\RayTracer\Shader\RayTracerMaterialShader.cpp" />
+    <ClCompile Include="Src\RayTracer\Shader\RayTracerPBRShader.cpp" />
+    <ClCompile Include="Src\RayTracer\Shader\RayTracerShader.cpp" />
+    <ClCompile Include="Src\RayTracer\Shader\RayTracerSkyShader.cpp" />
+    <ClCompile Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11Context.cpp" />
+    <ClCompile Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11HLSLProgram.cpp" />
+    <ClCompile Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11RenderBuffer.cpp" />
+    <ClCompile Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11RenderStateMachine.cpp" />
+    <ClCompile Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11TextureBuffer.cpp" />
+    <ClCompile Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11VertexBuffer.cpp" />
+    <ClCompile Include="Src\RealtimeRender\GraphicsLib\GLContext.cpp" />
+    <ClCompile Include="Src\RealtimeRender\RayTracingPreviewRenderer.cpp" />
+    <ClCompile Include="Src\RealtimeRender\RealtimeRenderer.cpp" />
+    <ClCompile Include="Src\Scene\Scene.cpp" />
+    <ClCompile Include="Src\Shader\EmissiveShader.cpp" />
+    <ClCompile Include="Src\Shader\ErrorShader.cpp" />
+    <ClCompile Include="Src\Shader\GizmosShader.cpp" />
+    <ClCompile Include="Src\Shader\IntegrateBRDFShader.cpp" />
+    <ClCompile Include="Src\Shader\LinearToGammaShader.cpp" />
+    <ClCompile Include="Src\Shader\MaterialShader.cpp" />
+    <ClCompile Include="Src\Shader\PBRShader.cpp" />
+    <ClCompile Include="Src\Shader\PostProcessShaderBase.cpp" />
+    <ClCompile Include="Src\Shader\ScreenQuadShader.cpp" />
+    <ClCompile Include="Src\Shader\ShaderBase.cpp" />
+    <ClCompile Include="Src\Shader\SkyShader.cpp" />
+    <ClCompile Include="Src\Shader\TransparencyShader.cpp" />
+    <ClCompile Include="Src\Texture\RenderTexture.cpp" />
+    <ClCompile Include="Src\Texture\Texture.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\LinearToGammaPS.hlsl" />
+    <None Include="Shaders\PBR_StandardPS.hlsl" />
+    <None Include="Shaders\PBR_StandardVS.hlsl" />
+    <None Include="Shaders\ScreenQuadPS.hlsl" />
+    <None Include="Shaders\ScreenQuadVS.hlsl" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

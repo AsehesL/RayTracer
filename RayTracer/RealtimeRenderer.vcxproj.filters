@@ -1,0 +1,464 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Src">
+      <UniqueIdentifier>{dbe672f6-5bac-4e03-8253-9eb86f7f6cbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\RealtimeRender">
+      <UniqueIdentifier>{32ff0981-2bda-4231-9477-4ae1da382c72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\RealtimeRender\GraphicsLib">
+      <UniqueIdentifier>{cdef10f1-1360-4f45-bb8a-1f035b17b84b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\RealtimeRender\GraphicsLib\D3D11">
+      <UniqueIdentifier>{b5eda1ca-57a9-4c73-afd3-61fbee64742b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Core">
+      <UniqueIdentifier>{9b754e4a-bc04-4811-8d90-c689b8ad925f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\RayTracer">
+      <UniqueIdentifier>{b258129b-d9d5-4cad-af5d-198eb583cecf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Shader">
+      <UniqueIdentifier>{a8379f6a-4d8c-48ef-bd98-32a28e21b7cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Camera">
+      <UniqueIdentifier>{061d0448-238e-48b9-85df-0ae86ee37e2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Texture">
+      <UniqueIdentifier>{d8b31e50-7c20-4d19-a288-12078a2c8ac9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\RayTracer\SceneData">
+      <UniqueIdentifier>{7e8cd5ad-f258-43dd-a1b2-b266dcc51e0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\RayTracer\Sampler">
+      <UniqueIdentifier>{c6bcd074-f30d-4577-a2a7-fc7af7d330c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\RayTracer\Primitive">
+      <UniqueIdentifier>{2e489608-1502-4299-960b-f21d5f4a5d2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\RayTracer\Integrator">
+      <UniqueIdentifier>{f9bc401f-e59f-4a3c-a255-c2decd5782a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\RayTracer\Integrator\PathTracer">
+      <UniqueIdentifier>{bb5b76fb-76d3-4866-a3cd-179db8b7814e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{a8aad6e6-a458-4d25-8e57-11e3ed08f557}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Random">
+      <UniqueIdentifier>{4d6be9cd-414f-44e6-9737-e313912e26c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Common">
+      <UniqueIdentifier>{f55ba71c-8a8d-4d43-8421-10637ca78302}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Scene">
+      <UniqueIdentifier>{b20cac47-0463-42a1-af9d-02996848fc17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Primitive">
+      <UniqueIdentifier>{6825dc58-c178-45b4-b898-4bd469d841e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\RayTracer\Render">
+      <UniqueIdentifier>{c630fd3d-3040-4b3d-a78c-dba23b483b74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Light">
+      <UniqueIdentifier>{c0850157-7112-47c9-a6df-0fa587e28260}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Gizmos">
+      <UniqueIdentifier>{fad7c3e5-4495-4d10-9869-7f604dc1c781}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\RayTracer\Shader">
+      <UniqueIdentifier>{07f7f936-0492-473c-a1ce-37b50419797e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\RayTracer\Light">
+      <UniqueIdentifier>{fe16f718-663f-402a-b658-84e0c3babd72}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\GLContext.h">
+      <Filter>Src\RealtimeRender\GraphicsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\GLDefines.h">
+      <Filter>Src\RealtimeRender\GraphicsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11Context.h">
+      <Filter>Src\RealtimeRender\GraphicsLib\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11RenderBuffer.h">
+      <Filter>Src\RealtimeRender\GraphicsLib\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11RenderStateMachine.h">
+      <Filter>Src\RealtimeRender\GraphicsLib\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Core\Color.h">
+      <Filter>Src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Core\Math.h">
+      <Filter>Src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Core\Matrix.h">
+      <Filter>Src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Core\Quaternion.h">
+      <Filter>Src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Core\Ray.h">
+      <Filter>Src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Core\Vector.h">
+      <Filter>Src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\VertexBuffer.h">
+      <Filter>Src\RealtimeRender\GraphicsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\ShaderProgram.h">
+      <Filter>Src\RealtimeRender\GraphicsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11HLSLProgram.h">
+      <Filter>Src\RealtimeRender\GraphicsLib\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RealtimeRender\RealtimeRenderer.h">
+      <Filter>Src\RealtimeRender</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Shader\ShaderBase.h">
+      <Filter>Src\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\RenderBuffer.h">
+      <Filter>Src\RealtimeRender\GraphicsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Camera\Camera.h">
+      <Filter>Src\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Shader\MaterialShader.h">
+      <Filter>Src\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11TextureBuffer.h">
+      <Filter>Src\RealtimeRender\GraphicsLib\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\TextureBuffer.h">
+      <Filter>Src\RealtimeRender\GraphicsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Texture\Texture.h">
+      <Filter>Src\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RayTracer\RayTracerScene.h">
+      <Filter>Src\RayTracer</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RayTracer\SceneData\BVH.h">
+      <Filter>Src\RayTracer\SceneData</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RayTracer\SceneData\ListSceneData.h">
+      <Filter>Src\RayTracer\SceneData</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RayTracer\SceneData\SceneDataBase.h">
+      <Filter>Src\RayTracer\SceneData</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RayTracer\Sampler\Sampler.h">
+      <Filter>Src\RayTracer\Sampler</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RayTracer\Integrator\PathTracer\PathTracer.h">
+      <Filter>Src\RayTracer\Integrator\PathTracer</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Shader\ScreenQuadShader.h">
+      <Filter>Src\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RayTracer\RayTracerRenderer.h">
+      <Filter>Src\RayTracer</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RayTracer\Integrator\IntegratorBase.h">
+      <Filter>Src\RayTracer\Integrator</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RayTracer\RayTracingResult.h">
+      <Filter>Src\RayTracer</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RayTracer\Primitive\RayTracerPrimitive.h">
+      <Filter>Src\RayTracer\Primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Common\GlobalResource.h">
+      <Filter>Src\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Scene\Scene.h">
+      <Filter>Src\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Primitive\Mesh.h">
+      <Filter>Src\Primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Primitive\Primitive.h">
+      <Filter>Src\Primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RayTracer\Render\RayTracerRenderTarget.h">
+      <Filter>Src\RayTracer\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RayTracer\Render\RayTracerRenderTile.h">
+      <Filter>Src\RayTracer\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Core\ObjectPool.hpp">
+      <Filter>Src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Core\ConcurrentQueue.hpp">
+      <Filter>Src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Texture\RenderTexture.h">
+      <Filter>Src\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Shader\LinearToGammaShader.h">
+      <Filter>Src\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Shader\PostProcessShaderBase.h">
+      <Filter>Src\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Shader\PBRShader.h">
+      <Filter>Src\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Shader\ErrorShader.h">
+      <Filter>Src\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Shader\SkyShader.h">
+      <Filter>Src\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11VertexBuffer.h">
+      <Filter>Src\RealtimeRender\GraphicsLib\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Light\SunLight.h">
+      <Filter>Src\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Light\SkyLight.h">
+      <Filter>Src\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Gizmos\GizmosRenderer.h">
+      <Filter>Src\Gizmos</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Shader\GizmosShader.h">
+      <Filter>Src\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Core\Bounds.h">
+      <Filter>Src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Shader\EmissiveShader.h">
+      <Filter>Src\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Shader\TransparencyShader.h">
+      <Filter>Src\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Shader\IntegrateBRDFShader.h">
+      <Filter>Src\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Random\Random.hpp">
+      <Filter>Src\Random</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RealtimeRender\RayTracingPreviewRenderer.h">
+      <Filter>Src\RealtimeRender</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\ShaderResource.h">
+      <Filter>Src\RealtimeRender\GraphicsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RayTracer\Shader\RayTracerShader.h">
+      <Filter>Src\RayTracer\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RayTracer\Light\RayTracerSkyLight.h">
+      <Filter>Src\RayTracer\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RayTracer\Light\RayTracerSunLight.h">
+      <Filter>Src\RayTracer\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RayTracer\Shader\BRDF.h">
+      <Filter>Src\RayTracer\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RayTracer\Shader\RayTracerPBRShader.h">
+      <Filter>Src\RayTracer\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RayTracer\Shader\RayTracerSkyShader.h">
+      <Filter>Src\RayTracer\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RayTracer\Shader\RayTracerMaterialShader.h">
+      <Filter>Src\RayTracer\Shader</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RealtimeRender\GraphicsLib\GLContext.cpp">
+      <Filter>Src\RealtimeRender\GraphicsLib</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11Context.cpp">
+      <Filter>Src\RealtimeRender\GraphicsLib\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11RenderBuffer.cpp">
+      <Filter>Src\RealtimeRender\GraphicsLib\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11RenderStateMachine.cpp">
+      <Filter>Src\RealtimeRender\GraphicsLib\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11HLSLProgram.cpp">
+      <Filter>Src\RealtimeRender\GraphicsLib\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RealtimeRender\RealtimeRenderer.cpp">
+      <Filter>Src\RealtimeRender</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Shader\ShaderBase.cpp">
+      <Filter>Src\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Camera\Camera.cpp">
+      <Filter>Src\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Shader\MaterialShader.cpp">
+      <Filter>Src\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11TextureBuffer.cpp">
+      <Filter>Src\RealtimeRender\GraphicsLib\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Texture\Texture.cpp">
+      <Filter>Src\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RayTracer\RayTracerScene.cpp">
+      <Filter>Src\RayTracer</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RayTracer\SceneData\BVH.cpp">
+      <Filter>Src\RayTracer\SceneData</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RayTracer\SceneData\ListSceneData.cpp">
+      <Filter>Src\RayTracer\SceneData</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RayTracer\Sampler\Sampler.cpp">
+      <Filter>Src\RayTracer\Sampler</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RayTracer\Integrator\PathTracer\PathTracer.cpp">
+      <Filter>Src\RayTracer\Integrator\PathTracer</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Shader\ScreenQuadShader.cpp">
+      <Filter>Src\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RayTracer\RayTracerRenderer.cpp">
+      <Filter>Src\RayTracer</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RayTracer\Primitive\RayTracerPrimitive.cpp">
+      <Filter>Src\RayTracer\Primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\GlobalResource.cpp">
+      <Filter>Src\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Scene\Scene.cpp">
+      <Filter>Src\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Primitive\Mesh.cpp">
+      <Filter>Src\Primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Primitive\Primitive.cpp">
+      <Filter>Src\Primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RayTracer\Render\RayTracerRenderTarget.cpp">
+      <Filter>Src\RayTracer\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RayTracer\Integrator\IntegratorBase.cpp">
+      <Filter>Src\RayTracer\Integrator</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Texture\RenderTexture.cpp">
+      <Filter>Src\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Shader\LinearToGammaShader.cpp">
+      <Filter>Src\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Shader\PostProcessShaderBase.cpp">
+      <Filter>Src\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Shader\PBRShader.cpp">
+      <Filter>Src\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Shader\ErrorShader.cpp">
+      <Filter>Src\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Shader\SkyShader.cpp">
+      <Filter>Src\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11VertexBuffer.cpp">
+      <Filter>Src\RealtimeRender\GraphicsLib\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Light\SunLight.cpp">
+      <Filter>Src\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Light\SkyLight.cpp">
+      <Filter>Src\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Gizmos\GizmosRenderer.cpp">
+      <Filter>Src\Gizmos</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Shader\GizmosShader.cpp">
+      <Filter>Src\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Core\Bounds.cpp">
+      <Filter>Src\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Shader\EmissiveShader.cpp">
+      <Filter>Src\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Shader\TransparencyShader.cpp">
+      <Filter>Src\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Shader\IntegrateBRDFShader.cpp">
+      <Filter>Src\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RealtimeRender\RayTracingPreviewRenderer.cpp">
+      <Filter>Src\RealtimeRender</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RayTracer\SceneData\SceneDataBase.cpp">
+      <Filter>Src\RayTracer\SceneData</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RayTracer\Shader\RayTracerShader.cpp">
+      <Filter>Src\RayTracer\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RayTracer\Light\RayTracerSkyLight.cpp">
+      <Filter>Src\RayTracer\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RayTracer\Shader\BRDF.cpp">
+      <Filter>Src\RayTracer\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RayTracer\Shader\RayTracerPBRShader.cpp">
+      <Filter>Src\RayTracer\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RayTracer\Shader\RayTracerSkyShader.cpp">
+      <Filter>Src\RayTracer\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RayTracer\Shader\RayTracerMaterialShader.cpp">
+      <Filter>Src\RayTracer\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RayTracer\Light\RayTracerSunLight.cpp">
+      <Filter>Src\RayTracer\Light</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\PBR_StandardVS.hlsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\PBR_StandardPS.hlsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\LinearToGammaPS.hlsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\ScreenQuadPS.hlsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\ScreenQuadVS.hlsl">
+      <Filter>Shaders</Filter>
+    </None>
+  </ItemGroup>
+</Project>
