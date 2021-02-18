@@ -4,13 +4,35 @@
 
 namespace RayTracer
 {
+	class PathTracerScene;
+	class PhotonMapper;
+
+	enum class MaterialType
+	{
+		Diffuse,
+		Reflect,
+		Refract,
+	};
+
+	struct PhotonMappingResult 
+	{
+	public:
+		MaterialType materialType;
+		Color flux;
+		bool specular;
+		Ray ray;
+	};
+
 	class RTMaterialShader : public RTShaderBase
 	{
 	public:
 		RTMaterialShader();
 		virtual ~RTMaterialShader() override;
 
-		virtual Color PathTracing(PathTracer* pathTracer, SamplerBase* sampler, RayTracerScene* scene, const Ray& ray, RayTracingResult& result) = 0;
+		virtual Color PathTracing(PathTracer* pathTracer, SamplerBase* sampler, PathTracerScene* scene, const Ray& ray, RayTracingResult& result) = 0;
+		virtual void PhotonMapperInteract(SamplerBase* sampler, const Vector3& direction, RayTracingResult& hitResult, PhotonMappingResult& photonMappingResult) = 0;
+		virtual bool IsEmissive() const = 0;
+		virtual Color GetEmissions() const = 0;
 
 	protected:
 		static void RecalucateNormal(const Vector3& worldNormal, const Vector4& worldTangent, const Color& tangentSpaceNormal, Vector3& outNormal);
@@ -25,8 +47,11 @@ namespace RayTracer
 		RTEmissiveShader();
 		virtual ~RTEmissiveShader() override;
 
-		virtual Color PathTracing(PathTracer* pathTracer, SamplerBase* sampler, RayTracerScene* scene, const Ray& ray, RayTracingResult& result) override;
-	
+		virtual Color PathTracing(PathTracer* pathTracer, SamplerBase* sampler, PathTracerScene* scene, const Ray& ray, RayTracingResult& result) override;
+		virtual void PhotonMapperInteract(SamplerBase* sampler, const Vector3& direction, RayTracingResult& hitResult, PhotonMappingResult& photonMappingResult) override;
+		virtual bool IsEmissive() const { return true; }
+		virtual Color GetEmissions() const override;
+
 	public:
 		Color color;
 	};
@@ -37,6 +62,6 @@ namespace RayTracer
 		RTTransparencyShader();
 		virtual ~RTTransparencyShader() override;
 
-		virtual Color PathTracing(PathTracer* pathTracer, SamplerBase* sampler, RayTracerScene* scene, const Ray& ray, RayTracingResult& result) override;
+		virtual Color PathTracing(PathTracer* pathTracer, SamplerBase* sampler, PathTracerScene* scene, const Ray& ray, RayTracingResult& result) override;
 	};
 }

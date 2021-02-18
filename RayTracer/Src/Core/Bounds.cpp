@@ -78,6 +78,19 @@ Vector3 Bounds::GetClosestPoint(const Vector3& point) const
 	return out;
 }
 
+double Bounds::GetDistance(const Vector3& point) const
+{
+	double dis2 = GetDistance2(point);
+	return sqrt(dis2);
+}
+
+double Bounds::GetDistance2(const Vector3& point) const
+{	
+	Vector3 closePos;
+	GetClosestPoint(point, closePos);
+	return (point - closePos).SqrMagnitude();
+}
+
 bool Bounds::Contains(const Vector3& point) const
 {
 	if (point.x<center.x - halfSize.x || point.x>center.x + halfSize.x)

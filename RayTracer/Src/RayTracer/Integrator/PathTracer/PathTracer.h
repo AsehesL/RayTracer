@@ -12,7 +12,7 @@ class RayTracingPreviewRenderer;
 namespace RayTracer
 { 
 	class RenderTarget;
-	class RayTracerScene;
+	class PathTracerScene;
 	class SamplerBase;
 
 	class PathTracer : public IntegratorBase
@@ -22,15 +22,14 @@ namespace RayTracer
 		virtual ~PathTracer() override;
 
 		virtual void Render(RayTracerScene* scene, RenderTarget* renderTarget) override;
+		virtual RayTracerScene* BuildScene(class Scene* scene) override;
 
-		void Tracing(const Ray& ray, SamplerBase* sampler, RayTracerScene* scene, int depth, Color& outColor);
+		void Tracing(const Ray& ray, SamplerBase* sampler, PathTracerScene* scene, int depth, Color& outColor);
 
 	private:
-		void ProcessPathTracing(ConcurrentQueue<RenderTile>& tiles, RenderTarget* renderTarget, Camera* camera, SamplerBase* sampler, RayTracerScene* scene);
+		void ProcessPathTracing(ConcurrentQueue<RenderTile>& tiles, RenderTarget* renderTarget, Camera* camera, SamplerBase* sampler, PathTracerScene* scene);
 	
 		void UpdateRenderTarget(ConcurrentQueue<RenderTile>& tiles, RenderTarget* renderTarget);
-
-		
 
 	public:
 		int sampleNums;

@@ -85,6 +85,15 @@
     <Filter Include="Src\RayTracer\Light">
       <UniqueIdentifier>{fe16f718-663f-402a-b658-84e0c3babd72}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\RayTracer\Integrator\PhotonMapper">
+      <UniqueIdentifier>{3200844d-8047-4890-90d7-421c261bf178}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\RayTracer\Integrator\DebugRender">
+      <UniqueIdentifier>{93b4c492-9a1b-42ec-bda6-729a7cfe37f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\RayTracer\Scene">
+      <UniqueIdentifier>{158c25e2-006b-4d56-a8fc-1cad88d1563d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -155,9 +164,6 @@
     </ClInclude>
     <ClInclude Include="Src\Texture\Texture.h">
       <Filter>Src\Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\RayTracer\RayTracerScene.h">
-      <Filter>Src\RayTracer</Filter>
     </ClInclude>
     <ClInclude Include="Src\RayTracer\SceneData\BVH.h">
       <Filter>Src\RayTracer\SceneData</Filter>
@@ -288,6 +294,27 @@
     <ClInclude Include="Src\RayTracer\Shader\RayTracerMaterialShader.h">
       <Filter>Src\RayTracer\Shader</Filter>
     </ClInclude>
+    <ClInclude Include="Src\RayTracer\Integrator\PhotonMapper\PhotonMapper.h">
+      <Filter>Src\RayTracer\Integrator\PhotonMapper</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RayTracer\Integrator\DebugRender\DebugRenderer.h">
+      <Filter>Src\RayTracer\Integrator\DebugRender</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RayTracer\Integrator\PhotonMapper\Photon.h">
+      <Filter>Src\RayTracer\Integrator\PhotonMapper</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RayTracer\Scene\PathTracerScene.h">
+      <Filter>Src\RayTracer\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RayTracer\Scene\PhotonMapperScene.h">
+      <Filter>Src\RayTracer\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RayTracer\Scene\RayTracerScene.h">
+      <Filter>Src\RayTracer\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RayTracer\Integrator\PhotonMapper\OcTree.hpp">
+      <Filter>Src\RayTracer\Integrator\PhotonMapper</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -328,9 +355,6 @@
     </ClCompile>
     <ClCompile Include="Src\Texture\Texture.cpp">
       <Filter>Src\Texture</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\RayTracer\RayTracerScene.cpp">
-      <Filter>Src\RayTracer</Filter>
     </ClCompile>
     <ClCompile Include="Src\RayTracer\SceneData\BVH.cpp">
       <Filter>Src\RayTracer\SceneData</Filter>
@@ -442,6 +466,24 @@
     </ClCompile>
     <ClCompile Include="Src\RayTracer\Light\RayTracerSunLight.cpp">
       <Filter>Src\RayTracer\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RayTracer\Integrator\PhotonMapper\PhotonMapper.cpp">
+      <Filter>Src\RayTracer\Integrator\PhotonMapper</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RayTracer\Integrator\DebugRender\DebugRenderer.cpp">
+      <Filter>Src\RayTracer\Integrator\DebugRender</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RayTracer\Scene\PathTracerScene.cpp">
+      <Filter>Src\RayTracer\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RayTracer\Scene\PhotonMapperScene.cpp">
+      <Filter>Src\RayTracer\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RayTracer\Scene\RayTracerScene.cpp">
+      <Filter>Src\RayTracer\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RayTracer\Integrator\PhotonMapper\OcTree.cpp">
+      <Filter>Src\RayTracer\Integrator\PhotonMapper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

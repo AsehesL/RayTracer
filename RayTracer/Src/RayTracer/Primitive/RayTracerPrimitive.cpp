@@ -2,10 +2,12 @@
 #include "RayTracerPrimitive.h"
 #include "../SceneData/SceneDataBase.h"
 #include "../../Primitive/Mesh.h"
+#include "../Sampler/Sampler.h"
 
 RayTracer::PrimitiveBase::PrimitiveBase()
 {
 	material = nullptr;
+	m_area = 0;
 }
 
 RayTracer::PrimitiveBase::~PrimitiveBase()
@@ -75,11 +77,12 @@ bool RayTracer::CubePrimitive::Tracing(const Ray& ray, RayTracingResult& result)
 
 	//if (tmin > -double.Epsilon && tmin < double.Epsilon)
 	//    return false;
-	result.distance = tmin - DBL_EPSILON * 2;
+	result.distance = tmin;
 	result.material = material;
 	result.hit = ray.origin + ray.direction * result.distance;
 	result.texcoord = Vector2(0, 0); //Cube射线检测uv，懒得实现 o(*￣3￣)o 
 	result.normal = normal;
+	result.hit += normal * DBL_EPSILON;
 	return true;
 }
 
@@ -87,6 +90,58 @@ void RayTracer::CubePrimitive::GetBounds(Bounds& bounds)
 {
 	bounds.center = position;
 	bounds.halfSize = size * 0.5;
+}
+
+void RayTracer::CubePrimitive::RefreshArea()
+{
+	float a = size.x * size.y;
+	float b = size.x * size.z;
+	float c = size.y * size.z;
+	m_area = (a + b + c) * 2.0f;
+}
+
+Vector3 RayTracer::CubePrimitive::GetSurfacePosition(SamplerBase* sampler, Vector2 pos)
+{
+	int face = (int)round(5.0f*sampler->GetRandom());
+	if (face == 0)
+		return Vector3(position.x + size.x * 0.5f, position.y + size.y * (pos.x-0.5f), position.z + size.z * (pos.y-0.5f));
+	if (face == 1)
+		return Vector3(position.x - size.x * 0.5f, position.y + size.y * (pos.x - 0.5f), position.z + size.z * (pos.y - 0.5f));
+	if (face == 2)
+		return Vector3(position.x + size.x * (pos.x - 0.5f), position.y + size.y * 0.5f, position.z + size.z * (pos.y - 0.5f));
+	if (face == 3)
+		return Vector3(position.x + size.x * (pos.x - 0.5f), position.y - size.y * 0.5f, position.z + size.z * (pos.y - 0.5f));
+	if (face == 4)
+		return Vector3(position.x + size.x * (pos.x - 0.5f), position.y + size.y * (pos.y - 0.5f), position.z + size.z * 0.5f);
+	if (face == 5)
+		return Vector3(position.x + size.x * (pos.x - 0.5f), position.y + size.y * (pos.y - 0.5f), position.z - size.z * 0.5f);
+	return Vector3();
+}
+
+Vector3 RayTracer::CubePrimitive::GetSurfaceNormal(Vector3 pos)
+{
+	if (pos.x - position.x <= size.x * 0.5f && pos.x - position.x >= -size.x * 0.5f && pos.z - position.z <= size.z * 0.5f && pos.z - position.z >= -size.z * 0.5f)
+	{
+		if (pos.y > position.y)
+			return Vector3(0,1,0);
+		else
+			return Vector3(0,-1,0);
+	}
+	if (pos.x - position.x <= size.x * 0.5f && pos.x - position.x >= -size.x * 0.5f && pos.y - position.y <= size.y * 0.5f && pos.y - position.y >= -size.y * 0.5f)
+	{
+		if (pos.z > position.z)
+			return Vector3(0, 0, 1);
+		else
+			return Vector3(0, 0, -1);
+	}
+	if (pos.z - position.z <= size.z * 0.5f && pos.z - position.z >= -size.z * 0.5f && pos.y - position.y <= size.y * 0.5f && pos.y - position.y >= -size.y * 0.5f)
+	{
+		if (pos.x > position.x)
+			return Vector3(1, 0, 0);
+		else
+			return Vector3(-1, 0, 0);
+	}
+	return Vector3();
 }
 
 RayTracer::SpherePrimitive::SpherePrimitive() : PrimitiveBase()
@@ -101,7 +156,9 @@ RayTracer::SpherePrimitive::~SpherePrimitive()
 void RayTracer::SpherePrimitive::AddToScene(SceneDataBase* sceneData)
 {
 	if (sceneData != nullptr)
+	{
 		sceneData->AddPrimitive(this);
+	}
 }
 
 bool RayTracer::SpherePrimitive::Tracing(const Ray& ray, RayTracingResult& result)
@@ -156,6 +213,27 @@ void RayTracer::SpherePrimitive::GetBounds(Bounds& bounds)
 {
 	bounds.center = position;
 	bounds.halfSize = Vector3(radius, radius, radius);
+}
+
+void RayTracer::SpherePrimitive::RefreshArea()
+{
+	m_area = 2.0f * Math::PI * 2.0f * radius * radius;
+}
+
+Vector3 RayTracer::SpherePrimitive::GetSurfacePosition(SamplerBase* sampler, Vector2 pos)
+{
+
+	float r = 2.0f * sqrt(pos.y * (1 - pos.y));
+	float x = cos(2.0f * Math::PI * pos.x) * r;
+	float y = sin(2.0f * Math::PI * pos.x) * r;
+	float z = 1.0f - 2.0f * pos.y;
+
+	return position + radius * Vector3(x, y, z);
+}
+
+Vector3 RayTracer::SpherePrimitive::GetSurfaceNormal(Vector3 pos)
+{
+	return (pos - position) / radius;
 }
 
 RayTracer::MeshPrimitive::MeshPrimitive() : PrimitiveBase()
@@ -227,13 +305,15 @@ void RayTracer::MeshPrimitive::AddToScene(SceneDataBase* sceneData)
 			tangent2.z = worldTangent2.z;
 
 			TrianglePrimitive* triangle = new TrianglePrimitive();
-			triangle->SetVertex(0, pos0, normal0, uv0, tangent0);
-			triangle->SetVertex(1, pos1, normal1, uv1, tangent1);
-			triangle->SetVertex(2, pos2, normal2, uv2, tangent2);
+			triangle->SetVertex(pos0,pos1,pos2);
+			triangle->SetNormal(normal0,normal1,normal2);
+			triangle->SetUV(uv0,uv1,uv2);
+			triangle->SetTangent(tangent0,tangent1,tangent2);
 			triangle->material = material;
 
 			m_triangles.push_back(triangle);
 
+			triangle->RefreshArea();
 			triangle->AddToScene(sceneData);
 		}
 	}
@@ -249,6 +329,16 @@ void RayTracer::MeshPrimitive::GetBounds(Bounds& bounds)
 
 }
 
+Vector3 RayTracer::MeshPrimitive::GetSurfacePosition(SamplerBase* sampler, Vector2 pos)
+{
+	return Vector3();
+}
+
+Vector3 RayTracer::MeshPrimitive::GetSurfaceNormal(Vector3 pos)
+{
+	return Vector3();
+}
+
 RayTracer::TrianglePrimitive::TrianglePrimitive() : PrimitiveBase()
 {
 }
@@ -257,35 +347,42 @@ RayTracer::TrianglePrimitive::~TrianglePrimitive()
 {
 }
 
-void RayTracer::TrianglePrimitive::SetVertex(int index, Vector3 position, Vector3 normal, Vector2 uv, Vector4 tangent)
+void RayTracer::TrianglePrimitive::SetVertex(const Vector3& position0, const Vector3& position1, const Vector3& position2)
 {
-	if (index == 0)
-	{
-		vertex0.position = position;
-		vertex0.normal = normal;
-		vertex0.uv = uv;
-		vertex0.tangent = tangent;
-	}
-	else if (index == 1)
-	{
-		vertex1.position = position;
-		vertex1.normal = normal;
-		vertex1.uv = uv;
-		vertex1.tangent = tangent;
-	}
-	else if (index == 2)
-	{
-		vertex2.position = position;
-		vertex2.normal = normal;
-		vertex2.uv = uv;
-		vertex2.tangent = tangent;
-	}
+	vertex0.position = position0;
+	vertex1.position = position1;
+	vertex2.position = position2;
+
+	m_area = Vector3::Cross(position2 - position1, position2 - position0).Magnitude() / 2.0;
+}
+
+void RayTracer::TrianglePrimitive::SetNormal(const Vector3& normal0, const Vector3& normal1, const Vector3& normal2)
+{
+	vertex0.normal = normal0;
+	vertex1.normal = normal1;
+	vertex2.normal = normal2;
+}
+
+void RayTracer::TrianglePrimitive::SetUV(const Vector2& uv0, const Vector2& uv1, const Vector2& uv2)
+{
+	vertex0.uv = uv0;
+	vertex1.uv = uv1;
+	vertex2.uv = uv2;
+}
+
+void RayTracer::TrianglePrimitive::SetTangent(const Vector4& tangent0, const Vector4& tangent1, const Vector4& tangent2)
+{
+	vertex0.tangent = tangent0;
+	vertex1.tangent = tangent1;
+	vertex2.tangent = tangent2;
 }
 
 void RayTracer::TrianglePrimitive::AddToScene(SceneDataBase* sceneData)
 {
 	if (sceneData)
+	{
 		sceneData->AddPrimitive(this);
+	}
 }
 
 bool RayTracer::TrianglePrimitive::Tracing(const Ray& ray, RayTracingResult& result)
@@ -381,4 +478,21 @@ void RayTracer::TrianglePrimitive::GetBounds(Bounds& bounds)
 		si.z = 0.1;
 
 	bounds = Bounds(ct, si);
+}
+
+void RayTracer::TrianglePrimitive::RefreshArea()
+{
+	m_area = Vector3::Cross(vertex2.position - vertex1.position, vertex2.position - vertex0.position).Magnitude() / 2.0;
+}
+
+Vector3 RayTracer::TrianglePrimitive::GetSurfacePosition(SamplerBase* sampler, Vector2 pos)
+{
+	double u = pos.x;
+	double v = pos.y;
+	return (1.0 - u - v) * vertex0.position + u * vertex1.position + v * vertex2.position;
+}
+
+Vector3 RayTracer::TrianglePrimitive::GetSurfaceNormal(Vector3 pos)
+{
+	return 1.0f / 3.0f * (vertex0.normal + vertex1.normal + vertex2.normal);
 }

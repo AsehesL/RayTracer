@@ -39,8 +39,11 @@ public:
 	{
 		return m_sunLight;
 	}
+	class PrimitiveBase* GetPrimitiveByScreenPos(int screenPosX, int screenPosY);
 
-	RayTracer::RayTracerScene* BuildRayTracerScene();
+	//RayTracer::RayTracerScene* BuildRayTracerScene();
+	RayTracer::RayTracerScene* BuildPathTracingScene();
+	RayTracer::RayTracerScene* BuildPhotonMapperScene();
 	void PrepareForColorPass(int& opaqueCount, int& transparencyCount);
 	void RenderOpaqueScene();
 	void RenderTransparencyScene(class RenderTexture* opaqueSceneTexture);

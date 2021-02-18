@@ -1,5 +1,5 @@
 #include "RayTracerShader.h"
-#include "../RayTracerScene.h"
+#include "../Scene/RayTracerScene.h"
 #include "../Sampler/Sampler.h"
 
 RayTracer::RTShaderBase::RTShaderBase()

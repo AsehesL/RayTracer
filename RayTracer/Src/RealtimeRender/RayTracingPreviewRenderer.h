@@ -28,6 +28,6 @@ private:
 
 	class GLContext* m_glContext;
 	class Mesh* m_screenQuadMesh;
-	class ScreenQuadShader* m_screenQuadShader;
+	class LinearToGammaShader* m_screenQuadShader;
 	class ITextureBuffer* m_textureBuffer;
 };

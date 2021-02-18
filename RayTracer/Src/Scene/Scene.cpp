@@ -4,7 +4,8 @@
 #include "../Light/SunLight.h"
 #include "../Primitive/Primitive.h"
 #include "../Shader/MaterialShader.h"
-#include "../RayTracer/RayTracerScene.h"
+#include "../RayTracer/Scene/PathTracerScene.h"
+#include "../RayTracer/Scene/PhotonMapperScene.h"
 #include "../RayTracer/Light/RayTracerSkyLight.h"
 #include "../RayTracer/Light/RayTracerSunLight.h"
 #include "../Texture/RenderTexture.h"
@@ -55,9 +56,72 @@ bool Scene::RemovePrimitive(PrimitiveBase* primitive)
 	return false;
 }
 
-RayTracer::RayTracerScene* Scene::BuildRayTracerScene()
+PrimitiveBase* Scene::GetPrimitiveByScreenPos(int screenPosX, int screenPosY)
 {
-	RayTracer::RayTracerScene* RTScene = new RayTracer::RayTracerScene();
+	if (m_camera == nullptr)
+		return nullptr;
+	if (m_primitives.size() == 0)
+		return nullptr;
+	Ray ray;
+	m_camera->GetRayFromPixel(screenPosX, screenPosY, ray);
+	double distance = DBL_MAX;
+	PrimitiveBase* hitprimitive = nullptr;
+	for (int i = 0; i < m_primitives.size(); i++)
+	{
+		PrimitiveBase* primitive = m_primitives[i];
+		Bounds bounds;
+		primitive->GetBounds(bounds);
+		double dis;
+		if (bounds.Raycast(ray, dis))
+		{
+			if (dis < distance)
+			{
+				distance = dis;
+				hitprimitive = primitive;
+			}
+		}
+	}
+	return hitprimitive;
+}
+
+//RayTracer::RayTracerScene* Scene::BuildRayTracerScene()
+//{
+//	RayTracer::RayTracerScene* RTScene = new RayTracer::RayTracerScene();
+//	RTScene->camera = m_camera;
+//	RayTracer::RTSkyShader* rtSkyShader = m_skyLight ? m_skyLight->GetRayTracerSkyLightShader() : nullptr;
+//	if (m_sunLight != nullptr)
+//	{
+//		RayTracer::RayTracerSunLight* rtSunLight = RTScene->GetSunLight();
+//		rtSunLight->isActive = true;
+//		rtSunLight->SetDirection(m_sunLight->GetForward());
+//		rtSunLight->SetColor(m_sunLight->sunColor * m_sunLight->sunIntensity);
+//	}
+//	else
+//	{
+//		RayTracer::RayTracerSunLight* rtSunLight = RTScene->GetSunLight();
+//		rtSunLight->isActive = false;
+//	}
+//	RayTracer::RayTracerSkyLight* rtSkyLight = RTScene->GetSkyLight();
+//	rtSkyLight->skyShader = rtSkyShader;
+//	//RTScene->sunLight = m_sunLight ? m_sunLight->GetRayTracerSunLight();
+//	
+//	int primitiveCount = m_primitives.size();
+//	for (int i = 0; i < primitiveCount; ++i)
+//	{
+//		PrimitiveBase* primitive = m_primitives[i];
+//		if (primitive)
+//		{
+//			RayTracer::PrimitiveBase* RTPrimitive = primitive->GetRayTracerPrimitive();
+//			RTScene->AddPrimitive(RTPrimitive);
+//		}
+//	}
+//	RTScene->Build();
+//	return RTScene;
+//}
+
+RayTracer::RayTracerScene* Scene::BuildPathTracingScene()
+{
+	RayTracer::PathTracerScene* RTScene = new RayTracer::PathTracerScene();
 	RTScene->camera = m_camera;
 	RayTracer::RTSkyShader* rtSkyShader = m_skyLight ? m_skyLight->GetRayTracerSkyLightShader() : nullptr;
 	if (m_sunLight != nullptr)
@@ -75,7 +139,25 @@ RayTracer::RayTracerScene* Scene::BuildRayTracerScene()
 	RayTracer::RayTracerSkyLight* rtSkyLight = RTScene->GetSkyLight();
 	rtSkyLight->skyShader = rtSkyShader;
 	//RTScene->sunLight = m_sunLight ? m_sunLight->GetRayTracerSunLight();
-	
+
+	int primitiveCount = m_primitives.size();
+	for (int i = 0; i < primitiveCount; ++i)
+	{
+		PrimitiveBase* primitive = m_primitives[i];
+		if (primitive)
+		{
+			RayTracer::PrimitiveBase* RTPrimitive = primitive->GetRayTracerPrimitive();
+			RTScene->AddPrimitive(RTPrimitive);
+		}
+	}
+	RTScene->Build();
+	return RTScene;
+}
+
+RayTracer::RayTracerScene* Scene::BuildPhotonMapperScene()
+{
+	RayTracer::PhotonMapperScene* RTScene = new RayTracer::PhotonMapperScene();
+	RTScene->camera = m_camera;
 	int primitiveCount = m_primitives.size();
 	for (int i = 0; i < primitiveCount; ++i)
 	{

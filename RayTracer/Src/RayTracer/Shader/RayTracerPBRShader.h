@@ -50,11 +50,15 @@ namespace RayTracer
 	public:
 		RTPBRShaderBase();
 		virtual ~RTPBRShaderBase() override;
-		virtual Color PathTracing(PathTracer* pathTracer, SamplerBase* sampler, RayTracerScene* scene, const Ray& ray, RayTracingResult& result) override;
-	
+		virtual Color PathTracing(PathTracer* pathTracer, SamplerBase* sampler, PathTracerScene* scene, const Ray& ray, RayTracingResult& result) override;
+		virtual void PhotonMapperInteract(SamplerBase* sampler, const Vector3& direction, RayTracingResult& hitResult, PhotonMappingResult& photonMappingResult) override;
+
+		virtual bool IsEmissive() const override { return false; }
+		virtual Color GetEmissions() const override { return Color(0,0,0); }
+
 	protected:
-		virtual Color PathTracingDirectionalLight(PathTracer* pathTracer, SamplerBase* sampler, RayTracerScene* scene, const Ray& ray, const RayTracingResult& result, RTPBRShaderProperty& shaderProperty) = 0;
-		virtual Color PathTracingAmbientLighting(PathTracer* pathTracer, SamplerBase* sampler, RayTracerScene* scene, const Ray& ray, const RayTracingResult& result, RTPBRShaderProperty& shaderProperty, int depth) = 0;
+		virtual Color PathTracingDirectionalLight(PathTracer* pathTracer, SamplerBase* sampler, PathTracerScene* scene, const Ray& ray, const RayTracingResult& result, RTPBRShaderProperty& shaderProperty) = 0;
+		virtual Color PathTracingAmbientLighting(PathTracer* pathTracer, SamplerBase* sampler, PathTracerScene* scene, const Ray& ray, const RayTracingResult& result, RTPBRShaderProperty& shaderProperty, int depth) = 0;
 
 		virtual void GetProperty(RTPBRShaderProperty& shaderProperty) = 0;
 
@@ -70,8 +74,8 @@ namespace RayTracer
 		virtual ~RTPBRStandardShader() override;
 
 	protected:
-		virtual Color PathTracingDirectionalLight(PathTracer* pathTracer, SamplerBase* sampler, RayTracerScene* scene, const Ray& ray, const RayTracingResult& result, RTPBRShaderProperty& shaderProperty) override;
-		virtual Color PathTracingAmbientLighting(PathTracer* pathTracer, SamplerBase* sampler, RayTracerScene* scene, const Ray& ray, const RayTracingResult& result, RTPBRShaderProperty& shaderProperty, int depth) override;
+		virtual Color PathTracingDirectionalLight(PathTracer* pathTracer, SamplerBase* sampler, PathTracerScene* scene, const Ray& ray, const RayTracingResult& result, RTPBRShaderProperty& shaderProperty) override;
+		virtual Color PathTracingAmbientLighting(PathTracer* pathTracer, SamplerBase* sampler, PathTracerScene* scene, const Ray& ray, const RayTracingResult& result, RTPBRShaderProperty& shaderProperty, int depth) override;
 
 		virtual void GetProperty(RTPBRShaderProperty& shaderProperty) override;
 

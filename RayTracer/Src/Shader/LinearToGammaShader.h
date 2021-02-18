@@ -12,5 +12,5 @@ protected:
 	virtual bool OnApplyParameters() override;
 
 public:
-	class RenderTexture* renderTexture;
+	class IShaderResource* renderTexture;
 };

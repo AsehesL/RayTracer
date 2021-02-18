@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,6 +14,10 @@ namespace RayTracerNet
 
         private List<RayTracerObject> m_sceneObjects;
 
+
+        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private extern static int GetPrimitiveByScreenPos(int screenPosX, int screenPosY);
+
         public Scene()
         {
             m_activeCamera = Camera.Create();
@@ -20,6 +25,19 @@ namespace RayTracerNet
             m_activeCamera.euler = new Vector3(0, 0, 0);
 
             m_sceneObjects = new List<RayTracerObject>();
+        }
+
+        public PrimitiveBase GetPrimitiveRaycasted(int screenPosX, int screenPosY)
+        {
+            int objId = GetPrimitiveByScreenPos(screenPosX, screenPosY);
+            if (objId < 0)
+                return null;
+            foreach(var obj in m_sceneObjects)
+            {
+                if (obj is PrimitiveBase && obj.objectID == objId)
+                    return obj as PrimitiveBase;
+            }
+            return null;
         }
 
         public T CreateSceneObject<T>() where T : RayTracerObject

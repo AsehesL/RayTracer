@@ -116,6 +116,25 @@ void Camera::GetRayFromPixel(int pixelX, int pixelY, RayTracer::SamplerBase* sam
 	}
 }
 
+void Camera::GetRayFromPixel(int pixelX, int pixelY, Ray& outRay)
+{
+	double x = pixelX;
+	double y = pixelY;
+
+	x = (x / m_width) * 2.0 - 1.0;
+	y = (1.0 - y / m_height) * 2.0 - 1.0;
+
+	x = x * m_halfScreenWidth;
+	y = y * m_halfScreenHeight;
+
+	{
+		Vector3 dir = m_right * x + m_up * y + m_forward * m_nearClipPlane;
+		Vector3 ori = m_position + dir;
+		dir.Normalize();
+		outRay = Ray(ori, dir);
+	}
+}
+
 //void Camera::GetRayFromPixel(double x, double y, Ray& outRay)
 //{
 //	x = (x / m_width) * 2.0 - 1.0;

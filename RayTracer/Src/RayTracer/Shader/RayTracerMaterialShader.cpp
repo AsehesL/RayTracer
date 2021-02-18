@@ -51,7 +51,16 @@ RayTracer::RTEmissiveShader::~RTEmissiveShader()
 {
 }
 
-Color RayTracer::RTEmissiveShader::PathTracing(PathTracer* pathTracer, SamplerBase* sampler, RayTracerScene* scene, const Ray& ray, RayTracingResult& result)
+Color RayTracer::RTEmissiveShader::PathTracing(PathTracer* pathTracer, SamplerBase* sampler, PathTracerScene* scene, const Ray& ray, RayTracingResult& result)
+{
+	return color;
+}
+
+void RayTracer::RTEmissiveShader::PhotonMapperInteract(SamplerBase* sampler, const Vector3& direction, RayTracingResult& hitResult, PhotonMappingResult& photonMappingResult)
+{
+}
+
+Color RayTracer::RTEmissiveShader::GetEmissions() const
 {
 	return color;
 }
@@ -64,7 +73,7 @@ RayTracer::RTTransparencyShader::~RTTransparencyShader()
 {
 }
 
-Color RayTracer::RTTransparencyShader::PathTracing(PathTracer* pathTracer, SamplerBase* sampler, RayTracerScene* scene, const Ray& ray, RayTracingResult& result)
+Color RayTracer::RTTransparencyShader::PathTracing(PathTracer* pathTracer, SamplerBase* sampler, PathTracerScene* scene, const Ray& ray, RayTracingResult& result)
 {
 	return Color();
 }

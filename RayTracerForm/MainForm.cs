@@ -31,6 +31,8 @@ namespace RayTracerForm
 
             RayTracerNet.MessageHandler.AddListener<RayTracerObject>(MessageName.RemoveSceneObject, this.OnRemoveNewSceneObject);
 
+            RayTracerNet.MessageHandler.AddListener<RayTracerObject>(MessageName.SelectSceneObject, this.OnSelectSceneObject);
+
             this.m_raytracerComponent = new RayTracerComponent();
             this.m_raytracerComponent.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.m_raytracerComponent.Location = new System.Drawing.Point(202, 28);
@@ -62,6 +64,11 @@ namespace RayTracerForm
                     i++;
                 }
             }
+        }
+
+        private void OnSelectSceneObject(RayTracerNet.RayTracerObject selectedObject)
+        {
+            ActivePropertyPanel(selectedObject);
         }
 
         private void OnAddNewResource(RayTracerNet.ResourceObject resourceObject)
@@ -228,20 +235,6 @@ namespace RayTracerForm
             RayTracerNet.RayTracer.GetInstance().GetScene().CreateSceneObject<RayTracerNet.SunLight>();
         }
 
-        private void RenderButton_Click(object sender, EventArgs e)
-        {
-            if (RayTracerNet.RayTracer.GetInstance().StartRayTracingRender())
-            {
-                if (m_resultForm == null)
-                    m_resultForm = new RenderResultForm();
-                if (m_resultForm.IsDisposed)
-                    m_resultForm = new RenderResultForm();
-                m_resultForm.Show();
-                m_resultForm.Focus();
-                m_resultForm.UpdateResult();
-            }
-        }
-
         private void NewToolStripMenuItem_Click(object sender, EventArgs e)
         {
             RayTracer.GetInstance().GetScene().Create();
@@ -255,6 +248,50 @@ namespace RayTracerForm
             {
                 RayTracer.GetInstance().GetScene().CreateFromFile(openFileDialog.FileName);
             }
+        }
+
+        private void BeginRenderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (RayTracerNet.RayTracer.GetInstance().StartRayTracingRender())
+            {
+                if (m_resultForm == null)
+                    m_resultForm = new RenderResultForm();
+                if (m_resultForm.IsDisposed)
+                    m_resultForm = new RenderResultForm();
+                m_resultForm.Show();
+                m_resultForm.Focus();
+                m_resultForm.UpdateResult();
+            }
+        }
+
+        private void SaveRenderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (RayTracerNet.RayTracer.GetInstance().HasRayTracingResult())
+            {
+                saveFileDialog.Filter = "JPEG文件|*.jpg|BMP文件|*.bmp|PNG文件|*.png|HDR文件|*.hdr";
+                DialogResult result = saveFileDialog.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    System.IO.FileInfo fileInfo = new System.IO.FileInfo(saveFileDialog.FileName);
+                    bool isHDR = false;
+                    if (fileInfo.Extension.ToLower().Contains(".hdr"))
+                    {
+                        isHDR = true;
+                    }
+                    RayTracerNet.RayTracer.GetInstance().SaveRayTracingResult(saveFileDialog.FileName, isHDR);
+                }
+            }
+        }
+
+        private void PreviewToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (m_resultForm == null)
+                m_resultForm = new RenderResultForm();
+            if (m_resultForm.IsDisposed)
+                m_resultForm = new RenderResultForm();
+            m_resultForm.Show();
+            m_resultForm.Focus();
+            m_resultForm.UpdateResult();
         }
     }
 }

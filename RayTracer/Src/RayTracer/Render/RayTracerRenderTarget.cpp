@@ -1,5 +1,6 @@
 #include "RayTracerRenderTarget.h"
 #include "../../RealtimeRender/GraphicsLib/TextureBuffer.h"
+#include "FreeImage.h"
 
 RayTracer::RenderTarget::RenderTarget(unsigned int width, unsigned int height) : m_lock()
 {
@@ -85,4 +86,65 @@ unsigned int RayTracer::RenderTarget::GetWidth()
 unsigned int RayTracer::RenderTarget::GetHeight()
 {
 	return m_height;
+}
+
+void RayTracer::RenderTarget::Save(const char* path, bool isHDR)
+{
+	FIBITMAP* dib(0);
+
+	if (isHDR)
+	{ 
+		dib = FreeImage_AllocateExT(FREE_IMAGE_TYPE::FIT_RGBF, m_width, m_height, 96, 0);
+		for (unsigned int j = 0; j < m_height; j++)
+		{
+			auto bytes = FreeImage_GetScanLine(dib, j);
+			for (unsigned int i = 0; i < m_width; ++i)
+			{
+				float linearR = m_colors[((m_height - 1 - j) * m_width + i) * 4];
+				float linearG = m_colors[((m_height - 1 - j) * m_width + i) * 4 + 1];
+				float linearB = m_colors[((m_height - 1 - j) * m_width + i) * 4 + 2];
+
+				tagFIRGBF* data = (tagFIRGBF*)bytes;
+				data->red = linearR;
+				data->green = linearG;
+				data->blue = linearB;
+			}
+		}
+		FreeImage_Save(FREE_IMAGE_FORMAT::FIF_HDR, dib, path);
+		FreeImage_Unload(dib);
+	}
+	else
+	{
+		FREE_IMAGE_FORMAT fif = FreeImage_GetFIFFromFilename(path);
+		dib = FreeImage_AllocateExT(FREE_IMAGE_TYPE::FIT_BITMAP, m_width, m_height, 24, 0);
+		for (unsigned int j = 0; j < m_height; j++)
+		{
+			auto bytes = FreeImage_GetScanLine(dib, j);
+			for (unsigned int i = 0; i < m_width; ++i)
+			{
+				float linearR = m_colors[((m_height - 1 - j) * m_width + i) * 4];
+				float linearG = m_colors[((m_height - 1 - j) * m_width + i) * 4 + 1];
+				float linearB = m_colors[((m_height - 1 - j) * m_width + i) * 4 + 2];
+
+				linearR = pow(linearR, 0.45f) * 255.0f;
+				linearG = pow(linearG, 0.45f) * 255.0f;
+				linearB = pow(linearB, 0.45f) * 255.0f;
+
+				BYTE r = linearR;
+				BYTE g = linearG;
+				BYTE b = linearB;
+				if (r < 0) r = 0;
+				if (r > 255) r = 255;
+				if (g < 0) g = 0;
+				if (g > 255) g = 255;
+				if (b < 0) b = 0;
+				if (b > 255) b = 255;
+				bytes[i * 3 + 2] = r;
+				bytes[i * 3 + 1] = g;
+				bytes[i * 3] = b;
+			}
+		}
+		FreeImage_Save(fif, dib, path);
+		FreeImage_Unload(dib);
+	}
 }

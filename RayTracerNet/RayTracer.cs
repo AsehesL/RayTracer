@@ -75,6 +75,12 @@ namespace RayTracerNet
         [DllImport("RayTracerLib.dll")]
         private extern static bool StartRayTracing();
 
+        [DllImport("RayTracerLib.dll")]
+        private extern static bool HasResult();
+
+        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private extern static void SaveResult(string path, bool isHDR);
+
         public bool InitRayTracer(IntPtr hwnd, int width, int height)
         {
             if (m_isInitialized)
@@ -108,7 +114,24 @@ namespace RayTracerNet
 
         public bool StartRayTracingRender()
         {
-            return StartRayTracing();
+            if (IsInitialized())
+                return StartRayTracing();
+            return false;
+        }
+
+        public bool HasRayTracingResult()
+        {
+            if (IsInitialized())
+                return HasResult();
+            return false;
+        }
+
+        public void SaveRayTracingResult(string path, bool hdr)
+        {
+            if (IsInitialized())
+            {
+                SaveResult(path, hdr);
+            }
         }
 
         public Scene GetScene()

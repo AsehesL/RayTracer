@@ -30,6 +30,8 @@ namespace RayTracerForm
         {
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.primitiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cubeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,8 +49,12 @@ namespace RayTracerForm
             this.transparencyMaterialToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.textureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.meshToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.renderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.beginRenderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveRenderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.previewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.mainTabControl = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.worldListView = new System.Windows.Forms.ListView();
@@ -62,17 +68,11 @@ namespace RayTracerForm
             this.settingTabControl = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.renderSettingPanel = new RayTracerForm.PropertyPanel();
-            this.renderButton = new System.Windows.Forms.Button();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.primitivePropertyPanel = new RayTracerForm.PropertyPanel();
             this.logListView = new System.Windows.Forms.ListView();
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.renderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.beginRenderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveRenderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.mainTabControl.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -104,6 +104,20 @@ namespace RayTracerForm
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
             this.fileToolStripMenuItem.Text = "文件";
             // 
+            // newToolStripMenuItem
+            // 
+            this.newToolStripMenuItem.Name = "newToolStripMenuItem";
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
+            this.newToolStripMenuItem.Text = "新建";
+            this.newToolStripMenuItem.Click += new System.EventHandler(this.NewToolStripMenuItem_Click);
+            // 
+            // openToolStripMenuItem
+            // 
+            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
+            this.openToolStripMenuItem.Text = "打开...";
+            this.openToolStripMenuItem.Click += new System.EventHandler(this.OpenToolStripMenuItem_Click);
+            // 
             // createToolStripMenuItem
             // 
             this.createToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -121,7 +135,7 @@ namespace RayTracerForm
             this.planeToolStripMenuItem,
             this.meshToolStripMenuItem});
             this.primitiveToolStripMenuItem.Name = "primitiveToolStripMenuItem";
-            this.primitiveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.primitiveToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
             this.primitiveToolStripMenuItem.Text = "几何体";
             // 
             // cubeToolStripMenuItem
@@ -159,25 +173,25 @@ namespace RayTracerForm
             this.toolStripSeparator1,
             this.sunLightToolStripMenuItem});
             this.lightToolStripMenuItem.Name = "lightToolStripMenuItem";
-            this.lightToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.lightToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
             this.lightToolStripMenuItem.Text = "光照";
             // 
             // environmentSkyLightToolStripMenuItem
             // 
             this.environmentSkyLightToolStripMenuItem.Name = "environmentSkyLightToolStripMenuItem";
-            this.environmentSkyLightToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.environmentSkyLightToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.environmentSkyLightToolStripMenuItem.Text = "环境反射";
             this.environmentSkyLightToolStripMenuItem.Click += new System.EventHandler(this.EnvironmentSkyLightToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(121, 6);
             // 
             // sunLightToolStripMenuItem
             // 
             this.sunLightToolStripMenuItem.Name = "sunLightToolStripMenuItem";
-            this.sunLightToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.sunLightToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.sunLightToolStripMenuItem.Text = "太阳光";
             this.sunLightToolStripMenuItem.Click += new System.EventHandler(this.SunLightToolStripMenuItem_Click);
             // 
@@ -198,7 +212,7 @@ namespace RayTracerForm
             this.emissiveMaterialToolStripMenuItem,
             this.transparencyMaterialToolStripMenuItem});
             this.materialToolStripMenuItem.Name = "materialToolStripMenuItem";
-            this.materialToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.materialToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
             this.materialToolStripMenuItem.Text = "材质";
             // 
             // pbrStandardMaterialToolStripMenuItem
@@ -225,16 +239,47 @@ namespace RayTracerForm
             // textureToolStripMenuItem
             // 
             this.textureToolStripMenuItem.Name = "textureToolStripMenuItem";
-            this.textureToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.textureToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
             this.textureToolStripMenuItem.Text = "纹理...";
             this.textureToolStripMenuItem.Click += new System.EventHandler(this.TextureToolStripMenuItem_Click);
             // 
             // meshToolStripMenuItem1
             // 
             this.meshToolStripMenuItem1.Name = "meshToolStripMenuItem1";
-            this.meshToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.meshToolStripMenuItem1.Size = new System.Drawing.Size(109, 22);
             this.meshToolStripMenuItem1.Text = "网格...";
             this.meshToolStripMenuItem1.Click += new System.EventHandler(this.MeshToolStripMenuItem_Click);
+            // 
+            // renderToolStripMenuItem
+            // 
+            this.renderToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.beginRenderToolStripMenuItem,
+            this.saveRenderToolStripMenuItem,
+            this.previewToolStripMenuItem});
+            this.renderToolStripMenuItem.Name = "renderToolStripMenuItem";
+            this.renderToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
+            this.renderToolStripMenuItem.Text = "渲染";
+            // 
+            // beginRenderToolStripMenuItem
+            // 
+            this.beginRenderToolStripMenuItem.Name = "beginRenderToolStripMenuItem";
+            this.beginRenderToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.beginRenderToolStripMenuItem.Text = "开始渲染";
+            this.beginRenderToolStripMenuItem.Click += new System.EventHandler(this.BeginRenderToolStripMenuItem_Click);
+            // 
+            // saveRenderToolStripMenuItem
+            // 
+            this.saveRenderToolStripMenuItem.Name = "saveRenderToolStripMenuItem";
+            this.saveRenderToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.saveRenderToolStripMenuItem.Text = "保存渲染结果...";
+            this.saveRenderToolStripMenuItem.Click += new System.EventHandler(this.SaveRenderToolStripMenuItem_Click);
+            // 
+            // previewToolStripMenuItem
+            // 
+            this.previewToolStripMenuItem.Name = "previewToolStripMenuItem";
+            this.previewToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.previewToolStripMenuItem.Text = "查看渲染结果";
+            this.previewToolStripMenuItem.Click += new System.EventHandler(this.PreviewToolStripMenuItem_Click);
             // 
             // openFileDialog
             // 
@@ -267,6 +312,9 @@ namespace RayTracerForm
             // 
             // worldListView
             // 
+            this.worldListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.worldListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
@@ -304,6 +352,9 @@ namespace RayTracerForm
             // 
             // resourceListView
             // 
+            this.resourceListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.resourceListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader3,
             this.columnHeader4,
@@ -345,7 +396,6 @@ namespace RayTracerForm
             // tabPage3
             // 
             this.tabPage3.Controls.Add(this.renderSettingPanel);
-            this.tabPage3.Controls.Add(this.renderButton);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
@@ -361,16 +411,6 @@ namespace RayTracerForm
             this.renderSettingPanel.Name = "renderSettingPanel";
             this.renderSettingPanel.Size = new System.Drawing.Size(239, 339);
             this.renderSettingPanel.TabIndex = 0;
-            // 
-            // renderButton
-            // 
-            this.renderButton.Location = new System.Drawing.Point(83, 351);
-            this.renderButton.Name = "renderButton";
-            this.renderButton.Size = new System.Drawing.Size(75, 23);
-            this.renderButton.TabIndex = 7;
-            this.renderButton.Text = "渲染";
-            this.renderButton.UseVisualStyleBackColor = true;
-            this.renderButton.Click += new System.EventHandler(this.RenderButton_Click);
             // 
             // tabPage4
             // 
@@ -420,41 +460,6 @@ namespace RayTracerForm
             this.columnHeader7.Text = "说明";
             this.columnHeader7.Width = 535;
             // 
-            // newToolStripMenuItem
-            // 
-            this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.newToolStripMenuItem.Text = "新建";
-            this.newToolStripMenuItem.Click += new System.EventHandler(this.NewToolStripMenuItem_Click);
-            // 
-            // openToolStripMenuItem
-            // 
-            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.openToolStripMenuItem.Text = "打开...";
-            this.openToolStripMenuItem.Click += new System.EventHandler(this.OpenToolStripMenuItem_Click);
-            // 
-            // renderToolStripMenuItem
-            // 
-            this.renderToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.beginRenderToolStripMenuItem,
-            this.saveRenderToolStripMenuItem});
-            this.renderToolStripMenuItem.Name = "renderToolStripMenuItem";
-            this.renderToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
-            this.renderToolStripMenuItem.Text = "渲染";
-            // 
-            // beginRenderToolStripMenuItem
-            // 
-            this.beginRenderToolStripMenuItem.Name = "beginRenderToolStripMenuItem";
-            this.beginRenderToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.beginRenderToolStripMenuItem.Text = "开始渲染";
-            // 
-            // saveRenderToolStripMenuItem
-            // 
-            this.saveRenderToolStripMenuItem.Name = "saveRenderToolStripMenuItem";
-            this.saveRenderToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.saveRenderToolStripMenuItem.Text = "保存渲染结果...";
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -466,7 +471,7 @@ namespace RayTracerForm
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
-            this.Text = "Form1";
+            this.Text = "A$hesL渲染器";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -483,7 +488,7 @@ namespace RayTracerForm
 
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
-        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.TabControl mainTabControl;
         private System.Windows.Forms.TabPage tabPage1;
@@ -523,12 +528,12 @@ namespace RayTracerForm
         private System.Windows.Forms.ToolStripMenuItem sunLightToolStripMenuItem;
         private System.Windows.Forms.ColumnHeader columnHeader6;
         private System.Windows.Forms.ColumnHeader columnHeader7;
-        private System.Windows.Forms.Button renderButton;
         private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem renderToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem beginRenderToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveRenderToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem previewToolStripMenuItem;
     }
 }
 

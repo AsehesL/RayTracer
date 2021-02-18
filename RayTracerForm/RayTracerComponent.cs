@@ -180,6 +180,12 @@ namespace RayTracerForm
                 int x = e.X;
                 int y = e.Y;
                 RayTracerNet.RayTracer instance = RayTracerNet.RayTracer.GetInstance();
+                var hitObj = instance.GetScene().GetPrimitiveRaycasted(x, y);
+                if (hitObj != null)
+                {
+                    hitObj.Select();
+                    MessageHandler.Broadcast<RayTracerNet.RayTracerObject>(MessageName.SelectSceneObject, hitObj);
+                }
             }
         }
 

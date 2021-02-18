@@ -2,8 +2,9 @@
 #include "Src/RealtimeRender/RealtimeRenderer.h"
 #include "Src/RealtimeRender/GraphicsLib/GLContext.h"
 #include "Src/RayTracer/RayTracerRenderer.h"
-#include "Src/RayTracer/RayTracerScene.h"
+#include "Src/RayTracer/Scene/RayTracerScene.h"
 #include "Src/RayTracer/Integrator/PathTracer/PathTracer.h"
+#include "Src/RayTracer/Integrator/PhotonMapper/PhotonMapper.h"
 #include "Src/Core/ObjectPool.hpp"
 #include "Src/Primitive/Primitive.h"
 #include "Src/Primitive/Mesh.h"
@@ -33,6 +34,7 @@ RayTracer::RayTracerRenderer* rayTracerRenderer = nullptr;
 
 int integrateType = 0;
 RayTracer::PathTracer* pathTracer = nullptr;
+RayTracer::PhotonMapper* photonMapper = nullptr;
 
 ObjectPool<Camera>* cameraPool = nullptr;
 ObjectPool<PrimitiveBase>* primitiveObjectPool = nullptr;
@@ -66,7 +68,42 @@ extern "C" __declspec(dllexport) bool StartRayTracing()
 			return rayTracerRenderer->StartRayTracing(pathTracer);
 		}
 	}
+	if (integrateType == 1)
+	{
+		if (photonMapper != nullptr)
+			return rayTracerRenderer->StartRayTracing(photonMapper);
+	}
 	return false;
+}
+
+extern "C" __declspec(dllexport) bool HasResult()
+{
+	if (!isInitialized)
+		return false;
+	if (rayTracerRenderer == nullptr)
+		return false;
+	if (rayTracerRenderer->GetRenderTarget() == nullptr)
+		return false;
+	return true;
+}
+
+extern "C" __declspec(dllexport) void SaveResult(const char* path, bool isHDR)
+{
+	if (!isInitialized)
+		return;
+	if (rayTracerRenderer == nullptr)
+		return;
+	if (rayTracerRenderer->GetRenderTarget() == nullptr)
+		return;
+	rayTracerRenderer->GetRenderTarget()->Save(path, isHDR);
+}
+
+extern "C" __declspec(dllexport) int GetPrimitiveByScreenPos(int screenPosX, int screenPosY)
+{
+	if (!isInitialized)
+		return -1;
+	PrimitiveBase* hitPrimitive = scene->GetPrimitiveByScreenPos(screenPosX, screenPosY);
+	return primitiveObjectPool->GetID(hitPrimitive);
 }
 
 extern "C" __declspec(dllexport) unsigned int GetRayTracingResultWidth()
@@ -161,6 +198,97 @@ extern "C" __declspec(dllexport) void SetIntegrateType(int type)
 extern "C" __declspec(dllexport) int GetIntegrateType()
 {
 	return integrateType;
+}
+
+extern "C" __declspec(dllexport) void SetPhotonMapperBounce(int bounce)
+{
+	if (photonMapper != nullptr)
+		photonMapper->maxBounce = bounce;
+}
+
+extern "C" __declspec(dllexport) int GetPhotonMapperBounce()
+{
+	if (photonMapper != nullptr)
+		return photonMapper->maxBounce;
+	return 0;
+}
+
+extern "C" __declspec(dllexport) void SetPhotonMapperSampler(int sampler)
+{
+	if (photonMapper != nullptr)
+		photonMapper->samplerType = (RayTracer::SamplerType)sampler;
+}
+
+extern "C" __declspec(dllexport) int GetPhotonMapperSampler()
+{
+	if (photonMapper != nullptr)
+		return (int)photonMapper->samplerType;
+	return 0;
+}
+
+extern "C" __declspec(dllexport) void SetPhotonMapperEmissions(float emissions)
+{
+	if (photonMapper != nullptr)
+		photonMapper->photonEmissions = emissions;
+}
+
+extern "C" __declspec(dllexport) float GetPhotonMapperEmissions()
+{
+	if (photonMapper != nullptr)
+		return photonMapper->photonEmissions;
+	return 0;
+}
+
+extern "C" __declspec(dllexport) void SetPhotonMapperCausticFactor(float causticFactor)
+{
+	if (photonMapper != nullptr)
+		photonMapper->causticFactor = causticFactor;
+}
+
+extern "C" __declspec(dllexport) float GetPhotonMapperCausticFactor()
+{
+	if (photonMapper != nullptr)
+		return photonMapper->causticFactor;
+	return 0;
+}
+
+extern "C" __declspec(dllexport) void SetPhotonMapperMaxRadius(float maxRadius)
+{
+	if (photonMapper != nullptr)
+		photonMapper->maxRadius = maxRadius;
+}
+
+extern "C" __declspec(dllexport) float GetPhotonMapperMaxRadius()
+{
+	if (photonMapper != nullptr)
+		return photonMapper->maxRadius;
+	return 0;
+}
+
+extern "C" __declspec(dllexport) void SetPhotonMapperMaxCausticRadius(float maxCausticRadius)
+{
+	if (photonMapper != nullptr)
+		photonMapper->maxCausticRadius = maxCausticRadius;
+}
+
+extern "C" __declspec(dllexport) float GetPhotonMapperMaxCausticRadius()
+{
+	if (photonMapper != nullptr)
+		return photonMapper->maxCausticRadius;
+	return 0;
+}
+
+extern "C" __declspec(dllexport) void SetPhotonMapperNearestPhotons(int nearestPhotons)
+{
+	if (photonMapper != nullptr)
+		photonMapper->nearestPhotons = nearestPhotons;
+}
+
+extern "C" __declspec(dllexport) int GetPhotonMapperNearestPhotons()
+{
+	if (photonMapper != nullptr)
+		return photonMapper->nearestPhotons;
+	return 0;
 }
 
 extern "C" __declspec(dllexport) void SetPathTracerBounce(int bounce)
@@ -1199,6 +1327,7 @@ extern "C" __declspec(dllexport)bool Init(HWND hwnd, int width, int height)
 	rayTracerRenderer = new RayTracer::RayTracerRenderer(scene);
 	
 	pathTracer = new RayTracer::PathTracer(rayTracingPreviewRenderer);
+	photonMapper = new RayTracer::PhotonMapper(rayTracingPreviewRenderer);
 
 	return isInitialized;
 }
@@ -1228,6 +1357,9 @@ extern "C" __declspec(dllexport)void Destroy()
 	if (pathTracer)
 		delete pathTracer;
 	pathTracer = nullptr;
+	if (photonMapper)
+		delete photonMapper;
+	photonMapper = nullptr;
 	if (rayTracingPreviewRenderer)
 		delete rayTracingPreviewRenderer;
 	rayTracingPreviewRenderer = nullptr;

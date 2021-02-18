@@ -1,6 +1,6 @@
 #include "RayTracerPBRShader.h"
 #include "../../Texture/Texture.h"
-#include "../RayTracerScene.h"
+#include "../Scene/PathTracerScene.h"
 #include "../Light/RayTracerSkyLight.h"
 #include "../Light/RayTracerSunLight.h"
 #include "../Sampler/Sampler.h"
@@ -23,7 +23,7 @@ RayTracer::RTPBRShaderBase::~RTPBRShaderBase()
 	m_specularBRDF = nullptr;
 }
 
-Color RayTracer::RTPBRShaderBase::PathTracing(PathTracer* pathTracer, SamplerBase* sampler, RayTracerScene* scene, const Ray& ray, RayTracingResult& result)
+Color RayTracer::RTPBRShaderBase::PathTracing(PathTracer* pathTracer, SamplerBase* sampler, PathTracerScene* scene, const Ray& ray, RayTracingResult& result)
 {
 	RTPBRShaderProperty shaderProperty;
 	GetProperty(shaderProperty);
@@ -48,9 +48,78 @@ Color RayTracer::RTPBRShaderBase::PathTracing(PathTracer* pathTracer, SamplerBas
 	//计算环境光照
 	resultColor += shaderProperty.GetOcclusion(result) * PathTracingAmbientLighting(pathTracer, sampler, scene, ray, result, shaderProperty, result.depth);
 
-
-
 	return resultColor + shaderProperty.GetEmissive(result);
+}
+
+void RayTracer::RTPBRShaderBase::PhotonMapperInteract(SamplerBase* sampler, const Vector3& direction, RayTracingResult& hitResult, PhotonMappingResult& photonMappingResult)
+{
+	RTPBRShaderProperty shaderProperty;
+	GetProperty(shaderProperty);
+
+	Color tangentSpaceNormalColor;
+	if (shaderProperty.GetTangentSpaceNormal(hitResult, tangentSpaceNormalColor))
+	{
+		Vector3 worldNormal = hitResult.normal;
+		RecalucateNormal(hitResult.normal, hitResult.tangent, tangentSpaceNormalColor, worldNormal);
+		hitResult.normal = worldNormal;
+	}
+
+	float ndv = (float)Math::Max(0.0, Vector3::Dot(hitResult.normal, -1.0 * direction));
+	Color albedo = shaderProperty.GetAlbedo(hitResult);
+	float roughness = shaderProperty.GetRoughness(hitResult);
+	if (sampler->GetRandom() < shaderProperty.GetMetallic(hitResult))
+	{
+		//Metallic
+		Color F = FresnelSchlickRoughness(ndv, albedo, roughness);
+		
+		Vector3 N = ImportanceGGXDirection(hitResult.normal, sampler, roughness);
+		Vector3 L = Vector3::Reflect(direction * -1, N);
+		float ndl = (float)Math::Max(Vector3::Dot(hitResult.normal, L), 0.0);
+		photonMappingResult.ray = Ray(hitResult.hit, L);
+		photonMappingResult.specular = true;
+		photonMappingResult.materialType = MaterialType::Reflect;
+		photonMappingResult.flux = F * m_specularBRDF->GetBRDF(-1.0 * direction, L, hitResult.normal, roughness) * ndl;
+		return;
+	}
+	else
+	{
+		//Dielectric
+		float F = FresnelSchlickRoughness(ndv, 0.04f, roughness);
+		if (sampler->GetRandom() < F)
+		{
+			//Specular
+			Vector3 N = ImportanceGGXDirection(hitResult.normal, sampler, roughness);
+			Vector3 L = Vector3::Reflect(direction * -1, N);
+			float ndl = (float)Math::Max(Vector3::Dot(hitResult.normal, L), 0.0);
+			photonMappingResult.ray = Ray(hitResult.hit, L);
+			photonMappingResult.specular = true;
+			photonMappingResult.materialType = MaterialType::Reflect;
+			float brdf = m_specularBRDF->GetBRDF(-1.0 * direction, L, hitResult.normal, roughness) * ndl;
+			photonMappingResult.flux = Color(brdf,brdf,brdf);
+			return;
+		}
+		else
+		{
+			//Diffuse
+			Vector3 w = hitResult.normal;
+			Vector3 u = Vector3::Cross(Vector3(0.00424, 1, 0.00764), w);
+			u.Normalize();
+			Vector3 v = Vector3::Cross(u, w);
+			Vector3 sp;
+			sampler->SampleHemiSphere(0, sp);
+
+			Vector3 wi = sp.x * u + sp.y * v + sp.z * w;
+			wi.Normalize();
+			float ndl = (float)Math::Max(0.0, Vector3::Dot(hitResult.normal, wi));
+
+			photonMappingResult.ray = Ray(hitResult.hit, wi);
+			photonMappingResult.specular = false;
+			photonMappingResult.materialType = MaterialType::Diffuse;
+			photonMappingResult.flux = ndl * albedo * m_diffuseBRDF->GetBRDF(-1.0 * direction, wi, hitResult.normal, roughness);
+		}
+
+		return;
+	}
 }
 
 RayTracer::RTPBRShaderProperty::RTPBRShaderProperty()
@@ -181,7 +250,7 @@ RayTracer::RTPBRStandardShader::~RTPBRStandardShader()
 {
 }
 
-Color RayTracer::RTPBRStandardShader::PathTracingDirectionalLight(PathTracer* pathTracer, SamplerBase* sampler, RayTracerScene* scene, const Ray& ray, const RayTracingResult& result, RTPBRShaderProperty& shaderProperty)
+Color RayTracer::RTPBRStandardShader::PathTracingDirectionalLight(PathTracer* pathTracer, SamplerBase* sampler, PathTracerScene* scene, const Ray& ray, const RayTracingResult& result, RTPBRShaderProperty& shaderProperty)
 {
 	float ndv = (float)Math::Max(0.0, Vector3::Dot(result.normal, -1.0 * ray.direction));
 	Vector3 L = -1.0 * scene->GetSunLight()->GetDirection(sampler);
@@ -209,42 +278,24 @@ Color RayTracer::RTPBRStandardShader::PathTracingDirectionalLight(PathTracer* pa
 		//Dielectric
 		float F = FresnelSchlickRoughness(ndv, 0.04f, roughness);
 
-		{
-			//if (sampler.GetRandom() < F)
-			//{
-				//Specular
-			double ndl = Vector3::Dot(result.normal, L);
-			if (ndl < 0.0)
-				return COLOR_BLACK;
-			Ray lray = Ray(result.hit, L);
-			bool shadow = TracingOnce(lray, scene);
-			if (shadow)
-				return COLOR_BLACK;
-			ndl = Math::Max(ndl, 0.0);
+		double ndl = Vector3::Dot(result.normal, L);
+		if (ndl < 0.0)
+			return COLOR_BLACK;
+		Ray lray = Ray(result.hit, L);
+		bool shadow = TracingOnce(lray, scene);
+		if (shadow)
+			return COLOR_BLACK;
+		ndl = Math::Max(ndl, 0.0);
 
 
-			resultColor += F * scene->GetSunLight()->GetColor() * m_specularBRDF->GetDirectionalBRDF(-1.0 * ray.direction, L, result.normal, roughness) * (float)ndl;
-			//}
-			//else
-			//{
-				//Diffuse
-				//double ndl = Vector3.Dot(worldNormal, L);
-				//if (ndl < 0.0)
-				//    return Color.black;
-				//Ray lray = new Ray(worldPoint, L);
-				//bool shadow = tracer.TracingOnce(lray);
-				//if (shadow)
-				//    return Color.black;
-				//ndl = Math.Max(ndl, 0.0);
-			resultColor += (1.0f - F) * albedo * scene->GetSunLight()->GetColor() * m_diffuseBRDF->GetDirectionalBRDF(-1.0 * ray.direction, L, result.normal, roughness) * (float)ndl;
-			//}
-		}
+		resultColor += F * scene->GetSunLight()->GetColor() * m_specularBRDF->GetDirectionalBRDF(-1.0 * ray.direction, L, result.normal, roughness) * (float)ndl;
+		resultColor += (1.0f - F) * albedo * scene->GetSunLight()->GetColor() * m_diffuseBRDF->GetDirectionalBRDF(-1.0 * ray.direction, L, result.normal, roughness) * (float)ndl;
 
 		return resultColor;
 	}
 }
 
-Color RayTracer::RTPBRStandardShader::PathTracingAmbientLighting(PathTracer* pathTracer, SamplerBase* sampler, RayTracerScene* scene, const Ray& ray, const RayTracingResult& result, RTPBRShaderProperty& shaderProperty, int depth)
+Color RayTracer::RTPBRStandardShader::PathTracingAmbientLighting(PathTracer* pathTracer, SamplerBase* sampler, PathTracerScene* scene, const Ray& ray, const RayTracingResult& result, RTPBRShaderProperty& shaderProperty, int depth)
 {
 	float ndv = (float)Math::Max(0.0, Vector3::Dot(result.normal, -1.0 * ray.direction));
 	Color albedo = shaderProperty.GetAlbedo(result);

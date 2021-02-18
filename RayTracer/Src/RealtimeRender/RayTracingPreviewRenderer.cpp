@@ -7,7 +7,7 @@
 RayTracingPreviewRenderer::RayTracingPreviewRenderer(GLContext* glContext)
 {
 	m_glContext = glContext;
-	m_screenQuadShader = GlobalResource::GetScreenQuadShader();
+	m_screenQuadShader = GlobalResource::GetLinearToGammaShader();
 	m_screenQuadMesh = GlobalResource::GetScreenQuadMesh();
 	m_textureBuffer = glContext->CreateTextureBuffer();
 }
@@ -32,7 +32,7 @@ void RayTracingPreviewRenderer::UpdateRenderTarget(ConcurrentQueue<RayTracer::Re
 			//Texture* texture = renderTarget->GetTexture();
 			renderTarget->ApplyData(m_textureBuffer);
 			//m_screenQuadShader->texture = texture;
-			m_screenQuadShader->texture = m_textureBuffer;
+			m_screenQuadShader->renderTexture = m_textureBuffer;
 			m_screenQuadShader->SetRenderSize(m_windowWidth, m_windowHeight, m_renderWidth, m_renderHeight);
 			if (m_screenQuadShader->Execute())
 			{

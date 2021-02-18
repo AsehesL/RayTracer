@@ -18,6 +18,7 @@ namespace RayTracer
 		void ApplyData(ITextureBuffer* textureBuffer);
 		unsigned int GetWidth();
 		unsigned int GetHeight();
+		void Save(const char* path, bool isHDR);
 
 	private:
 		float* m_colors;

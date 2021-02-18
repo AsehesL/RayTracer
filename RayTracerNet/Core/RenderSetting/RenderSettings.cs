@@ -157,6 +157,139 @@ namespace RayTracerNet
         {
             m_IntegratorType = IntegratorType.PhotonMapper;
         }
+
+        [NumberPropertyDisplay("反弹次数", min = 0)]
+        public int bounce
+        {
+            get
+            {
+                return GetPhotonMapperBounce();
+            }
+            set
+            {
+                SetPhotonMapperBounce(value);
+            }
+        }
+
+        [NumberPropertyDisplay("Emissions", min = 0)]
+        public float emissions
+        {
+            get
+            {
+                return GetPhotonMapperEmissions();
+            }
+            set
+            {
+                SetPhotonMapperEmissions(value);
+            }
+        }
+
+        [NumberPropertyDisplay("CausticFactor", min = 0)]
+        public float causticFactor
+        {
+            get
+            {
+                return GetPhotonMapperCausticFactor();
+            }
+            set
+            {
+                SetPhotonMapperCausticFactor(value);
+            }
+        }
+
+        [NumberPropertyDisplay("MaxRadius", min = 0)]
+        public float maxRadius
+        {
+            get
+            {
+                return GetPhotonMapperMaxRadius();
+            }
+            set
+            {
+                SetPhotonMapperMaxRadius(value);
+            }
+        }
+
+        [NumberPropertyDisplay("MaxCausticRadius", min = 0)]
+        public float maxCausticRadius
+        {
+            get
+            {
+                return GetPhotonMapperMaxCausticRadius();
+            }
+            set
+            {
+                SetPhotonMapperMaxCausticRadius(value);
+            }
+        }
+
+        [NumberPropertyDisplay("NearestPhotons", min = 0)]
+        public int nearestPhotons
+        {
+            get
+            {
+                return GetPhotonMapperNearestPhotons();
+            }
+            set
+            {
+                SetPhotonMapperNearestPhotons(value);
+            }
+        }
+
+        [EnumPropertyDisplay("采样器")]
+        public SamplerType sampler
+        {
+            get
+            {
+                return (SamplerType)GetPhotonMapperSampler();
+            }
+            set
+            {
+                SetPhotonMapperSampler((int)value);
+            }
+        }
+
+        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private extern static void SetPhotonMapperBounce(int bounce);
+
+        [DllImport("RayTracerLib.dll")]
+        private extern static int GetPhotonMapperBounce();
+
+        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private extern static void SetPhotonMapperSampler(int sampler);
+
+        [DllImport("RayTracerLib.dll")]
+        private extern static int GetPhotonMapperSampler();
+
+        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private extern static void SetPhotonMapperEmissions(float emissions);
+
+        [DllImport("RayTracerLib.dll")]
+        private extern static float GetPhotonMapperEmissions();
+
+        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private extern static void SetPhotonMapperCausticFactor(float causticFactor);
+
+        [DllImport("RayTracerLib.dll")]
+        private extern static float GetPhotonMapperCausticFactor();
+
+        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private extern static void SetPhotonMapperMaxRadius(float maxRadius);
+
+        [DllImport("RayTracerLib.dll")]
+        private extern static float GetPhotonMapperMaxRadius();
+
+        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private extern static void SetPhotonMapperMaxCausticRadius(float maxCausticRadius);
+
+        [DllImport("RayTracerLib.dll")]
+        private extern static float GetPhotonMapperMaxCausticRadius();
+
+        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private extern static void SetPhotonMapperNearestPhotons(int nearestPhotons);
+
+        [DllImport("RayTracerLib.dll")]
+        private extern static int GetPhotonMapperNearestPhotons();
     }
 
     public class DebugRendererRenderSettings : RenderSettings

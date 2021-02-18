@@ -33,6 +33,8 @@ public:
 
 	void GetRayFromPixel(int pixelX, int pixelY, RayTracer::SamplerBase* sampler, Ray& outRay);
 
+	void GetRayFromPixel(int pixelX, int pixelY, Ray& outRay);
+
 	Vector3 GetForward()
 	{
 		RefreshDirection();

@@ -1,22 +1,28 @@
 #include "PathTracer.h"
-#include "../../RayTracerScene.h"
+#include "../../Scene/PathTracerScene.h"
 #include "../../../Camera/Camera.h"
 #include "../../Render/RayTracerRenderTile.h"
 #include "../../Render/RayTracerRenderTarget.h"
-#include "../../../Random/Random.hpp"
 #include "../../../Core/ConcurrentQueue.hpp"
 #include "../../Sampler/Sampler.h"
 #include "../../../RealtimeRender/RayTracingPreviewRenderer.h"
 #include "../../Shader/RayTracerMaterialShader.h"
 #include "../../Light/RayTracerSkyLight.h"
+#include "../../../Scene/Scene.h"
 #include <vector>
 #include <thread>
 #include <functional>
+#include <random>
+
+namespace Random
+{
+	thread_local std::mt19937_64 pathTracerRandomDevice(std::random_device{}());
+}
 
 RayTracer::PathTracer::PathTracer(RayTracingPreviewRenderer* previewRenderer) : RayTracer::IntegratorBase(previewRenderer)
 {
-	bounce = 0;
-	sampleNums = 0;
+	bounce = 2;
+	sampleNums = 256;
 }
 
 RayTracer::PathTracer::~PathTracer()
@@ -80,18 +86,20 @@ void RayTracer::PathTracer::Render(RayTracerScene* scene, RayTracer::RenderTarge
 				break;
 		}
 	}
-	std::shuffle(tiles.begin(), tiles.end(), Random::randomDevice);
+	std::shuffle(tiles.begin(), tiles.end(), Random::pathTracerRandomDevice);
 
 	ConcurrentQueue<RenderTile> renderTiles(tiles);
 	tiles.clear();
 
-	std::function<void(PathTracer*, ConcurrentQueue<RenderTile>&, RenderTarget*, Camera*, SamplerBase*, RayTracerScene*)> pathTracingTask = &PathTracer::ProcessPathTracing;
+	std::function<void(PathTracer*, ConcurrentQueue<RenderTile>&, RenderTarget*, Camera*, SamplerBase*, PathTracerScene*)> pathTracingTask = &PathTracer::ProcessPathTracing;
 
 	std::vector<std::unique_ptr<std::thread>> threads(m_threadCount);
+
+	PathTracerScene* ptScene = (PathTracerScene*)scene;
 	//for (auto& thread : threads)
 	for (int i=0;i<m_threadCount;i++)
 	{
-		threads[i] = std::make_unique<std::thread>(pathTracingTask, this, std::ref(renderTiles), renderTarget, camera, m_samplers[i], scene);
+		threads[i] = std::make_unique<std::thread>(pathTracingTask, this, std::ref(renderTiles), renderTarget, camera, m_samplers[i], ptScene);
 		//thread = std::make_unique<std::thread>(pathTracingTask, this, std::ref(renderTiles), nullptr, nullptr, nullptr);
 	}
 
@@ -109,7 +117,12 @@ void RayTracer::PathTracer::Render(RayTracerScene* scene, RayTracer::RenderTarge
 	}
 }
 
-void RayTracer::PathTracer::ProcessPathTracing(ConcurrentQueue<RenderTile>& tiles, RayTracer::RenderTarget* renderTarget, Camera* camera, SamplerBase* sampler, RayTracerScene* scene)
+RayTracer::RayTracerScene* RayTracer::PathTracer::BuildScene(Scene* scene)
+{
+	return scene->BuildPathTracingScene();
+}
+
+void RayTracer::PathTracer::ProcessPathTracing(ConcurrentQueue<RenderTile>& tiles, RayTracer::RenderTarget* renderTarget, Camera* camera, SamplerBase* sampler, PathTracerScene* scene)
 {
 	RenderTile tile;
 	while (tiles.Pop(tile))
@@ -163,7 +176,7 @@ void RayTracer::PathTracer::UpdateRenderTarget(ConcurrentQueue<RenderTile>& tile
 	m_previewRenderer->UpdateRenderTarget(tiles, renderTarget);
 }
 
-void RayTracer::PathTracer::Tracing(const Ray& ray, SamplerBase* sampler, RayTracerScene* scene, int depth, Color& outColor)
+void RayTracer::PathTracer::Tracing(const Ray& ray, SamplerBase* sampler, PathTracerScene* scene, int depth, Color& outColor)
 {
 	if (depth > bounce)
 	{

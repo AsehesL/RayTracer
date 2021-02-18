@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SceneRoot xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Textures />
+  <Shaders>
+    <Shader Name="Shader_light_11572" ShaderType="Emissive">
+      <Params>
+        <Param Key="color" Value="1,1,1,1" Type="Color" />
+        <Param Key="intensity" Value="11.7" Type="Number" />
+      </Params>
+    </Shader>
+    <Shader Name="Shader_ball 3_10408" ShaderType="PBR">
+      <Params>
+        <Param Key="color" Value="0,1,0.5821352,1" Type="Color" />
+        <Param Key="transparent" Value="False" Type="Boolean" />
+        <Param Key="transparentCutOut" Value="False" Type="Boolean" />
+        <Param Key="tile" Value="1,1" Type="Vector2" />
+        <Param Key="roughness" Value="0.714" Type="Number" />
+        <Param Key="metallic" Value="0" Type="Number" />
+        <Param Key="refractive" Value="1.5" Type="Number" />
+        <Param Key="emissive" Value="0,0,0,0" Type="Color" />
+      </Params>
+    </Shader>
+    <Shader Name="Shader_pbr_0_10776" ShaderType="PBR">
+      <Params>
+        <Param Key="color" Value="1,1,1,1" Type="Color" />
+        <Param Key="transparent" Value="False" Type="Boolean" />
+        <Param Key="transparentCutOut" Value="False" Type="Boolean" />
+        <Param Key="tile" Value="1,1" Type="Vector2" />
+        <Param Key="roughness" Value="1" Type="Number" />
+        <Param Key="metallic" Value="0" Type="Number" />
+        <Param Key="refractive" Value="1.5" Type="Number" />
+        <Param Key="emissive" Value="0,0,0,0" Type="Color" />
+      </Params>
+    </Shader>
+    <Shader Name="Shader_pbr_1_10766" ShaderType="PBR">
+      <Params>
+        <Param Key="color" Value="1,0,0,1" Type="Color" />
+        <Param Key="transparent" Value="False" Type="Boolean" />
+        <Param Key="transparentCutOut" Value="False" Type="Boolean" />
+        <Param Key="tile" Value="1,1" Type="Vector2" />
+        <Param Key="roughness" Value="1" Type="Number" />
+        <Param Key="metallic" Value="0" Type="Number" />
+        <Param Key="refractive" Value="1.5" Type="Number" />
+        <Param Key="emissive" Value="0,0,0,0" Type="Color" />
+      </Params>
+    </Shader>
+    <Shader Name="Shader_pbr_2_11202" ShaderType="PBR">
+      <Params>
+        <Param Key="color" Value="0,0,1,1" Type="Color" />
+        <Param Key="transparent" Value="False" Type="Boolean" />
+        <Param Key="transparentCutOut" Value="False" Type="Boolean" />
+        <Param Key="tile" Value="1,1" Type="Vector2" />
+        <Param Key="roughness" Value="1" Type="Number" />
+        <Param Key="metallic" Value="0" Type="Number" />
+        <Param Key="refractive" Value="1.5" Type="Number" />
+        <Param Key="emissive" Value="0,0,0,0" Type="Color" />
+      </Params>
+    </Shader>
+  </Shaders>
+  <Camera Position="0,1.59,-2.3" Euler="0,0,0" Near="0.30000001192092896" FieldOfView="60" UseThinLens="false" Focal="0" Radius="0" Width="0" Height="0" />
+  <Geometries>
+    <Geometry Type="Sphere">
+      <Params>
+        <Param Key="Position" Value="-0.74,2.08,1.502718" />
+        <Param Key="Radius" Value="0.25" />
+      </Params>
+      <Shaders>
+        <Shader Name="Shader_light_11572" />
+      </Shaders>
+    </Geometry>
+    <Geometry Type="Sphere">
+      <Params>
+        <Param Key="Position" Value="1.042,0.585,1.502718" />
+        <Param Key="Radius" Value="0.5" />
+      </Params>
+      <Shaders>
+        <Shader Name="Shader_ball 3_10408" />
+      </Shaders>
+    </Geometry>
+    <Geometry Type="Mesh">
+      <Params>
+        <Param Key="Position" Value="0,3.78,0" />
+        <Param Key="Euler" Value="0,0,180" />
+        <Param Key="Scale" Value="1,1,1" />
+        <Param Key="Path" Value="Plane001_11480.obj" />
+      </Params>
+      <Shaders>
+        <Shader Name="Shader_pbr_0_10776" />
+      </Shaders>
+    </Geometry>
+    <Geometry Type="Mesh">
+      <Params>
+        <Param Key="Position" Value="0,0,4.27" />
+        <Param Key="Euler" Value="270,0,0" />
+        <Param Key="Scale" Value="1,1,1" />
+        <Param Key="Path" Value="Plane001_11480.obj" />
+      </Params>
+      <Shaders>
+        <Shader Name="Shader_pbr_0_10776" />
+      </Shaders>
+    </Geometry>
+    <Geometry Type="Mesh">
+      <Params>
+        <Param Key="Position" Value="0,0,-3.9" />
+        <Param Key="Euler" Value="90,0,0" />
+        <Param Key="Scale" Value="1,1,1" />
+        <Param Key="Path" Value="Plane001_11480.obj" />
+      </Params>
+      <Shaders>
+        <Shader Name="Shader_pbr_0_10776" />
+      </Shaders>
+    </Geometry>
+    <Geometry Type="Mesh">
+      <Params>
+        <Param Key="Position" Value="-2.92,0,0" />
+        <Param Key="Euler" Value="0,0,270" />
+        <Param Key="Scale" Value="1,1,1" />
+        <Param Key="Path" Value="Plane001_11480.obj" />
+      </Params>
+      <Shaders>
+        <Shader Name="Shader_pbr_1_10766" />
+      </Shaders>
+    </Geometry>
+    <Geometry Type="Mesh">
+      <Params>
+        <Param Key="Position" Value="2.73,0,0" />
+        <Param Key="Euler" Value="0,0,90" />
+        <Param Key="Scale" Value="1,1,1" />
+        <Param Key="Path" Value="Plane001_11480.obj" />
+      </Params>
+      <Shaders>
+        <Shader Name="Shader_pbr_2_11202" />
+      </Shaders>
+    </Geometry>
+    <Geometry Type="Mesh">
+      <Params>
+        <Param Key="Position" Value="0,0,0" />
+        <Param Key="Euler" Value="0,0,0" />
+        <Param Key="Scale" Value="1,1,1" />
+        <Param Key="Path" Value="Plane001_11480.obj" />
+      </Params>
+      <Shaders>
+        <Shader Name="Shader_pbr_0_10776" />
+      </Shaders>
+    </Geometry>
+  </Geometries>
+</SceneRoot>

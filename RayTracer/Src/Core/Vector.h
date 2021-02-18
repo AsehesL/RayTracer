@@ -238,6 +238,11 @@ public:
 		return (lhs - rhs).Magnitude();
 	}
 
+	static double Distance2(const Vector2& lhs, const Vector2& rhs)
+	{
+		return (lhs - rhs).SqrMagnitude();
+	}
+
 	static Vector2 Max(const Vector2& lhs, const Vector2& rhs)
 	{
 		return Vector2(Math::Max(lhs.x, rhs.x), Math::Max(lhs.y, rhs.y));
@@ -515,6 +520,12 @@ public:
 	{
 		Vector3 v = lhs - rhs;
 		return v.Magnitude();
+	}
+
+	static double Distance2(const Vector3& lhs, const Vector3& rhs)
+	{
+		Vector3 v = lhs - rhs;
+		return v.SqrMagnitude();
 	}
 
 	static Vector3 Max(const Vector3& lhs, const Vector3& rhs)
@@ -813,6 +824,11 @@ public:
 	static double Distance(const Vector4& lhs, const Vector4& rhs)
 	{
 		return (lhs - rhs).Magnitude();
+	}
+
+	static double Distance2(const Vector4& lhs, const Vector4& rhs)
+	{
+		return (lhs - rhs).SqrMagnitude();
 	}
 
 	static Vector4 Max(const Vector4& lhs, const Vector4& rhs)

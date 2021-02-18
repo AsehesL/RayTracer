@@ -1,7 +1,7 @@
 #include "LinearToGammaShader.h"
 #include "../RealtimeRender/GraphicsLib/GLContext.h"
 #include "../RealtimeRender/GraphicsLib/ShaderProgram.h"
-#include "../Texture/RenderTexture.h"
+#include "../RealtimeRender/GraphicsLib/ShaderResource.h"
 
 LinearToGammaShader::LinearToGammaShader(GLContext* glContext) : PostProcessShaderBase(glContext)
 {

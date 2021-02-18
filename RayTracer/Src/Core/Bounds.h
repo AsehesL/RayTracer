@@ -19,6 +19,8 @@ public:
 	Vector3 GetSize() const;
 	void GetClosestPoint(const Vector3& point, Vector3& out) const;
 	Vector3 GetClosestPoint(const Vector3& point) const;
+	double GetDistance(const Vector3& point) const;
+	double GetDistance2(const Vector3& point) const;
 	bool Contains(const Vector3& point) const;
 	bool Contains(const Bounds& bounds) const;
 	void Encapsulate(const Vector3& point);

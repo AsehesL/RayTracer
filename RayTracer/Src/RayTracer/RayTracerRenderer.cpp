@@ -55,7 +55,7 @@ bool RayTracer::RayTracerRenderer::StartRayTracing(IntegratorBase* integrator)
 
 	if (m_rayTracerScene)
 		delete m_rayTracerScene;
-	m_rayTracerScene = m_scene->BuildRayTracerScene();
+	m_rayTracerScene = integrator->BuildScene(m_scene);//m_scene->BuildRayTracerScene();
 
 	m_integrator = integrator;
 
@@ -71,60 +71,5 @@ bool RayTracer::RayTracerRenderer::StartRayTracing(IntegratorBase* integrator)
 	integrator->Render(m_rayTracerScene, m_renderTarget);
 
 
-	/*std::function<void(RayTracerRenderer*, RenderTarget*)> renderTargetUpdateFunc = &RayTracerRenderer::UpdateRenderTarget;
-	std::thread renderTargetUpdateThread(renderTargetUpdateFunc, this, m_renderTarget);
-
-	renderTargetUpdateThread.join();*/
-
-
-	//m_isRayTracing = true;
 	return true;
 }
-
-//bool RayTracer::RayTracerRenderer::IsRayTracingFinish()
-//{
-//	return !m_isRayTracing;
-//}
-//
-//void RayTracer::RayTracerRenderer::UpdateFrame(int windowWidth, int windowHeight, int renderWidth, int renderHeight)
-//{
-//	if (!m_glContext)
-//		return;
-//	m_glContext->ClearColor(0, 0, 0, 0);
-//	m_glContext->Clear((int)ClearFlags::Color | (int)ClearFlags::Depth);
-//
-//	if (m_screenQuadMesh && m_screenQuadShader && m_renderTarget)
-//	{
-//		Texture* texture = m_renderTarget->GetTexture();
-//		m_screenQuadShader->texture = texture;
-//		m_screenQuadShader->SetRenderSize(windowWidth, windowHeight, renderWidth, renderHeight);
-//		if (m_screenQuadShader->Execute())
-//		{
-//			m_screenQuadMesh->Commit();
-//		}
-//	}
-//
-//	m_glContext->Present();
-//}
-
-//void RayTracer::RayTracerRenderer::UpdateRenderTarget(RenderTarget* renderTarget)
-//{
-//	if (!m_glContext)
-//		return;
-//	m_glContext->ClearColor(0, 0, 0, 0);
-//	m_glContext->Clear((int)ClearFlags::Color | (int)ClearFlags::Depth);
-//
-//	if (m_screenQuadMesh && m_screenQuadShader && m_renderTarget)
-//	{
-//		Texture* texture = m_renderTarget->GetTexture();
-//		m_screenQuadShader->texture = texture;
-//		if (m_screenQuadShader->Execute())
-//		{
-//			m_screenQuadMesh->Commit();
-//		}
-//	}
-//
-//	m_glContext->Present();
-//
-//	Sleep(1000);
-//}

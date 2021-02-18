@@ -23,6 +23,8 @@ namespace RayTracerNet
         AddLog,
 
         ChangeIntegratorType,
+
+        SelectSceneObject,
     }
 
     public class MessageHandler
