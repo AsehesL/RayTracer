@@ -83,3 +83,4 @@ bld/
 
 !/DLLs/*.dll
 !/Libs/*.lib
+!/Assets/*.*
