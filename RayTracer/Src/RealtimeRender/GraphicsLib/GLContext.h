@@ -18,23 +18,29 @@ public:
 
 	virtual void SetViewport(float x, float y, float width, float height) = 0;
 
-	virtual class IVertexBuffer* CreateVertexBuffer(bool isDynamic) = 0;
+	virtual class VertexBuffer* CreateVertexBuffer(bool isDynamic) = 0;
 
-	virtual class IShaderProgram* CreateShaderProgram() = 0;
+	virtual class ShaderProgram* CreateShaderProgram() = 0;
 
-	virtual class IShaderUniformBuffer* CreateShaderUniformBuffer(unsigned int bufferSize) = 0;
+	virtual class ComputeShaderProgram* CreateComputeShaderProgram() = 0;
 
-	virtual class ITextureBuffer* CreateTextureBuffer() = 0;
+	virtual class UniformBuffer* CreateUniformBuffer(unsigned int bufferSize) = 0;
 
-	virtual void CreateRenderBuffer(unsigned int width, unsigned int height, bool isShadowMap, class IColorBuffer** outColorBuffer, class IDepthBuffer** outDepthBuffer, class ITextureBuffer** outTextureBuffer) = 0;
+	virtual class ComputeBuffer* CreateComputeBuffer(unsigned int elementSize, unsigned int count, void* data) = 0;
+
+	virtual class TextureBuffer* CreateTextureBuffer() = 0;
+
+	virtual class SamplerState* GetSamplerState(FilterMode filterMode, WrapMode wrapMode) = 0;
+
+	virtual void CreateRenderBuffer(unsigned int width, unsigned int height, bool isShadowMap, class ColorBuffer** outColorBuffer, class DepthBuffer** outDepthBuffer, class TextureBuffer** outTextureBuffer) = 0;
 	
-	virtual void CreateCubeRenderBuffer(unsigned int size, class ICubeMapColorBuffer** outCubeMapColorBuffer, class IDepthBuffer** outDepthBuffer, class ITextureBuffer** outTextureBuffer) = 0;
+	virtual void CreateCubeRenderBuffer(unsigned int size, class CubeMapColorBuffer** outCubeMapColorBuffer, class DepthBuffer** outDepthBuffer, class TextureBuffer** outTextureBuffer) = 0;
 
-	virtual void SetRenderBuffer(class IColorBuffer* colorBuffer, class IDepthBuffer* depthBuffer) = 0;
+	virtual void SetRenderBuffer(class ColorBuffer* colorBuffer, class DepthBuffer* depthBuffer) = 0;
 
-	virtual void SetCubeRenderBuffer(class ICubeMapColorBuffer* cubeMapColorBuffer, class IDepthBuffer* depthBuffer, int face) = 0;
+	virtual void SetCubeRenderBuffer(class CubeMapColorBuffer* cubeMapColorBuffer, class DepthBuffer* depthBuffer, int face) = 0;
 
-	virtual void GenerateMipmap(class ITextureBuffer* textureBuffer) = 0;
+	virtual void GenerateMipmap(class TextureBuffer* textureBuffer) = 0;
 
 	void ApplyRenderStates();
 

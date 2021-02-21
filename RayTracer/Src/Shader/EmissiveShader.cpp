@@ -1,6 +1,7 @@
 #include "EmissiveShader.h"
 #include "../RealtimeRender/GraphicsLib/GLContext.h"
 #include "../RealtimeRender/GraphicsLib/ShaderProgram.h"
+#include "../RealtimeRender/GraphicsLib/UniformBuffer.h"
 #include "../RayTracer/Shader/RayTracerMaterialShader.h"
 
 struct EmissiveMaterialPSBufferData
@@ -11,26 +12,24 @@ public:
 
 EmissiveShader::EmissiveShader(GLContext* glContext) : MaterialShader(glContext)
 {
-	m_emissiveMaterialPSUniformBuffer = glContext->CreateShaderUniformBuffer(sizeof(EmissiveMaterialPSBufferData));
-
 	m_shaderProgram->Compile(L"Shaders/EmissiveVS.hlsl", L"Shaders/EmissivePS.hlsl");
-
-	m_isEmissiveMaterialPSUniformBufferDirty = true;
 
 	m_rtShader = new RayTracer::RTEmissiveShader();
 
-	m_intensity = 1.0f;
+	SetColor("color", Color(1,1,1,1));
+	SetFloat("intensity", 1);
 }
 
 EmissiveShader::~EmissiveShader()
 {
-	delete m_emissiveMaterialPSUniformBuffer;
 	delete m_rtShader;
 }
 
 RayTracer::RTShaderBase* EmissiveShader::GetRTShader()
 {
-	m_rtShader->color = m_color * m_intensity;
+	Color color = GetColor("color");
+	float intensity = GetFloat("intensity");
+	m_rtShader->color = color * intensity;
 	return m_rtShader;
 }
 
@@ -38,16 +37,24 @@ bool EmissiveShader::OnApplyParameters()
 {
 	if (!MaterialShader::OnApplyParameters())
 		return false;
-	if (m_isEmissiveMaterialPSUniformBufferDirty)
+	UniformBuffer* emissiveMaterialPSUniformBuffer = m_shaderProgram->GetUniformBuffer("EmissiveBuffer");
+	if (IsUniformBufferDirty("color") || IsUniformBufferDirty("intensity"))
 	{
-		EmissiveMaterialPSBufferData* emissiveMaterialPSUniformBuffer = (EmissiveMaterialPSBufferData*)m_emissiveMaterialPSUniformBuffer->Map();
 		if (emissiveMaterialPSUniformBuffer)
 		{
-			emissiveMaterialPSUniformBuffer->color = m_color * m_intensity;
-			m_emissiveMaterialPSUniformBuffer->Unmap();
+			EmissiveMaterialPSBufferData* emissiveMaterialPSUniformBufferData = (EmissiveMaterialPSBufferData*)emissiveMaterialPSUniformBuffer->Map();
+			if (emissiveMaterialPSUniformBufferData)
+			{
+				Color color = GetColor("color");
+				float intensity = GetFloat("intensity");
+				emissiveMaterialPSUniformBufferData->color = color * intensity;
+				emissiveMaterialPSUniformBuffer->Unmap();
+			}
 		}
-		m_isEmissiveMaterialPSUniformBufferDirty = false;
+		ClearDirtyFlag("color");
+		ClearDirtyFlag("intensity");
 	}
-	m_emissiveMaterialPSUniformBuffer->ApplyPSUniformBuffer(0);
+	if (emissiveMaterialPSUniformBuffer)
+		emissiveMaterialPSUniformBuffer->PSSetUniformBuffer(0);
 	return true;
 }

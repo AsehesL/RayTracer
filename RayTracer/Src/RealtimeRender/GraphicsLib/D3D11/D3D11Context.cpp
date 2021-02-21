@@ -4,6 +4,8 @@
 #include "D3D11HLSLProgram.h"
 #include "D3D11RenderBuffer.h"
 #include "D3D11TextureBuffer.h"
+#include "D3D11UniformBuffer.h"
+#include "D3D11ComputeBuffer.h"
 
 D3D11Context::D3D11Context()
 {
@@ -91,30 +93,47 @@ void D3D11Context::SetViewport(float x, float y, float width, float height)
 	m_deviceContext->RSSetViewports(1, &m_viewPort);
 }
 
-IVertexBuffer* D3D11Context::CreateVertexBuffer(bool isDynamic)
+VertexBuffer* D3D11Context::CreateVertexBuffer(bool isDynamic)
 {
 	return new D3D11VertexBuffer(m_device, m_deviceContext, isDynamic);
 }
 
-IShaderProgram* D3D11Context::CreateShaderProgram()
+ShaderProgram* D3D11Context::CreateShaderProgram()
 {
 	return new D3D11HLSLProgram(m_device, m_deviceContext);
 }
 
-IShaderUniformBuffer* D3D11Context::CreateShaderUniformBuffer(unsigned int bufferSize)
+ComputeShaderProgram* D3D11Context::CreateComputeShaderProgram()
 {
-	return new D3D11ShaderUniformBuffer(m_device, m_deviceContext, bufferSize);
+	return new D3D11ComputeShaderProgram(m_device, m_deviceContext);
 }
 
-ITextureBuffer* D3D11Context::CreateTextureBuffer()
+UniformBuffer* D3D11Context::CreateUniformBuffer(unsigned int bufferSize)
+{
+	return new D3D11UniformBuffer(m_device, m_deviceContext, bufferSize);
+}
+
+ComputeBuffer* D3D11Context::CreateComputeBuffer(unsigned int elementSize, unsigned int count, void* data)
+{
+	return new D3D11ComputeBuffer(m_device, m_deviceContext, elementSize, count, data);
+}
+
+TextureBuffer* D3D11Context::CreateTextureBuffer()
 {
 	return new D3D11TextureBuffer(m_device, m_deviceContext, m_stateMachine);
 }
 
-void D3D11Context::CreateRenderBuffer(unsigned int width, unsigned int height, bool isShadowMap, IColorBuffer** outColorBuffer, IDepthBuffer** outDepthBuffer, ITextureBuffer** outTextureBuffer)
+SamplerState* D3D11Context::GetSamplerState(FilterMode filterMode, WrapMode wrapMode)
+{
+	if (m_stateMachine)
+		return m_stateMachine->GetSamplerState(filterMode, wrapMode);
+	return nullptr;
+}
+
+void D3D11Context::CreateRenderBuffer(unsigned int width, unsigned int height, bool isShadowMap, ColorBuffer** outColorBuffer, DepthBuffer** outDepthBuffer, TextureBuffer** outTextureBuffer)
 {
 	D3D11ColorBuffer* colorBuffer = new D3D11ColorBuffer(m_device, width, height, isShadowMap);
-	IDepthBuffer* depthBuffer = new D3D11DepthBuffer(m_device, width, height);
+	D3D11DepthBuffer* depthBuffer = new D3D11DepthBuffer(m_device, width, height);
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
 	shaderResourceViewDesc.Format = colorBuffer->m_format;
@@ -132,17 +151,17 @@ void D3D11Context::CreateRenderBuffer(unsigned int width, unsigned int height, b
 		return;
 	}
 
-	ITextureBuffer* textureBuffer = new D3D11TextureBuffer(m_device, m_deviceContext, texture, m_stateMachine);
+	TextureBuffer* textureBuffer = new D3D11TextureBuffer(m_device, m_deviceContext, texture, m_stateMachine);
 
 	*outColorBuffer = colorBuffer;
 	*outDepthBuffer = depthBuffer;
 	*outTextureBuffer = textureBuffer;
 }
 
-void D3D11Context::CreateCubeRenderBuffer(unsigned int size, ICubeMapColorBuffer** outCubeMapColorBuffer, IDepthBuffer** outDepthBuffer, ITextureBuffer** outTextureBuffer)
+void D3D11Context::CreateCubeRenderBuffer(unsigned int size, CubeMapColorBuffer** outCubeMapColorBuffer, DepthBuffer** outDepthBuffer, TextureBuffer** outTextureBuffer)
 {
 	D3D11CubeMapBuffer* cubeMapBuffer = new D3D11CubeMapBuffer(m_device, size);
-	IDepthBuffer* depthBuffer = new D3D11DepthBuffer(m_device, size, size);
+	D3D11DepthBuffer* depthBuffer = new D3D11DepthBuffer(m_device, size, size);
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
 	shaderResourceViewDesc.Format = cubeMapBuffer->m_format;
@@ -160,14 +179,14 @@ void D3D11Context::CreateCubeRenderBuffer(unsigned int size, ICubeMapColorBuffer
 		return;
 	}
 
-	ITextureBuffer* textureBuffer = new D3D11TextureBuffer(m_device, m_deviceContext, texture, m_stateMachine);
+	TextureBuffer* textureBuffer = new D3D11TextureBuffer(m_device, m_deviceContext, texture, m_stateMachine);
 
 	*outCubeMapColorBuffer = cubeMapBuffer;
 	*outDepthBuffer = depthBuffer;
 	*outTextureBuffer = textureBuffer;
 }
 
-void D3D11Context::SetRenderBuffer(IColorBuffer* colorBuffer, IDepthBuffer* depthBuffer)
+void D3D11Context::SetRenderBuffer(ColorBuffer* colorBuffer, DepthBuffer* depthBuffer)
 {
 	if (colorBuffer == nullptr)
 	{
@@ -201,7 +220,7 @@ void D3D11Context::SetRenderBuffer(IColorBuffer* colorBuffer, IDepthBuffer* dept
 	m_deviceContext->OMSetRenderTargets(1, &m_currentColorRenderTargetView, m_currentDepthStencilView);
 }
 
-void D3D11Context::SetCubeRenderBuffer(ICubeMapColorBuffer* cubeMapColorBuffer, IDepthBuffer* depthBuffer, int face)
+void D3D11Context::SetCubeRenderBuffer(CubeMapColorBuffer* cubeMapColorBuffer, DepthBuffer* depthBuffer, int face)
 {
 	if (cubeMapColorBuffer == nullptr || depthBuffer == nullptr)
 	{
@@ -220,7 +239,7 @@ void D3D11Context::SetCubeRenderBuffer(ICubeMapColorBuffer* cubeMapColorBuffer, 
 	m_deviceContext->OMSetRenderTargets(1, &m_currentColorRenderTargetView, m_currentDepthStencilView);
 }
 
-void D3D11Context::GenerateMipmap(ITextureBuffer* textureBuffer)
+void D3D11Context::GenerateMipmap(TextureBuffer* textureBuffer)
 {
 	if (!textureBuffer)
 		return;

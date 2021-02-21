@@ -34,7 +34,7 @@ private:
 	//Matrix4x4 m_worldToViewMatrix;
 	//Matrix4x4 m_projectionMatrix;
 	class GLContext* m_glContext;
-	class IVertexBuffer* m_vertexBuffer;
+	class VertexBuffer* m_vertexBuffer;
 	bool m_isBufferDirty;
 	class GizmosShader* m_gizmosShader;
 };

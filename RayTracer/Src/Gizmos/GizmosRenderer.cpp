@@ -3,6 +3,7 @@
 #include "../RealtimeRender/GraphicsLib/VertexBuffer.h"
 #include "../Shader/GizmosShader.h"
 #include "../Common/GlobalResource.h"
+#include "../Shader/ShaderConstants.h"
 
 GizmosRenderer::GizmosRenderer(GLContext* glContext)
 {
@@ -31,14 +32,14 @@ GizmosRenderer::~GizmosRenderer()
 void GizmosRenderer::SetWorldToViewMatrix(const Matrix4x4& worldToViewMatrix)
 {
 	if (m_gizmosShader)
-		m_gizmosShader->SetWorldToViewMatrix(worldToViewMatrix);
+		m_gizmosShader->SetMatrix(SHADER_CONSTANT_WORLD_TO_VIEW, worldToViewMatrix);
 	//m_worldToViewMatrix = worldToViewMatrix;
 }
 
 void GizmosRenderer::SetProjectionMatrix(const Matrix4x4& projectionMatrix)
 {
 	if (m_gizmosShader)
-		m_gizmosShader->SetProjectionMatrix(projectionMatrix);
+		m_gizmosShader->SetMatrix(SHADER_CONSTANT_PROJECTION, projectionMatrix);
 	//m_projectionMatrix = projectionMatrix;
 }
 
@@ -140,13 +141,13 @@ void GizmosRenderer::Render()
 	{ 
 		Matrix4x4 identity;
 		Matrix4x4::Identity(&identity);
-		m_gizmosShader->SetLocalToWorldMatrix(identity);
+		m_gizmosShader->SetMatrix(SHADER_CONSTANT_LOCAL_TO_WORLD, identity);
 		if (m_isBufferDirty)
 		{
 			m_vertexBuffer->SetVertices(m_vertices, m_indices, m_vertexBufferLength, m_indexBufferLength);
 			m_isBufferDirty = false;
 		}
 		if (m_vertexBuffer && m_vertexBuffer->IsValid())
-			m_vertexBuffer->Bind(Topology::LineList, m_indexCount);
+			m_vertexBuffer->Draw(Topology::LineList, m_indexCount);
 	}
 }

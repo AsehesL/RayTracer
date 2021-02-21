@@ -46,15 +46,6 @@ class D3D11RenderStateMachine
 		BlendFactor srcfactor;
 		BlendFactor dstfactor;
 	};
-
-	struct D3D11SamplerState
-	{
-	public:
-		unsigned int GetKey();
-	public:
-		FilterMode filterMode;
-		WrapMode wrapMode;
-	};
 public:
 	D3D11RenderStateMachine(ID3D11Device*, ID3D11DeviceContext*);
 	~D3D11RenderStateMachine();
@@ -65,18 +56,16 @@ public:
 
 	void SetBlendEnable(bool enable, BlendOp blendOp, BlendFactor srcFactor, BlendFactor dstFactor, bool forceApply);
 
-	void SetSamplerState(UINT startSlot, FilterMode filterMode, WrapMode wrapMode);
+	class SamplerState* GetSamplerState(FilterMode filterMode, WrapMode wrapMode);
 
 private:
 	void RefreshRasterizerState();
 	void RefreshDepthStencilState();
 	void RefreshBlendState();
-	void RefreshSamplerState(UINT startSlot);
 	HRESULT CreateRasterizerState(D3D11RasterizerState, ID3D11RasterizerState**);
 	HRESULT CreateDepthStencilState(D3D11DepthStencilState, ID3D11DepthStencilState**);
 	HRESULT CreateBlendState(D3D11BlendState, ID3D11BlendState**);
 	HRESULT CreateDisableBlendState(ID3D11BlendState**);
-	HRESULT CreateSamplerState(D3D11SamplerState, ID3D11SamplerState**);
 
 private:
 	ID3D11Device* m_device;
@@ -84,12 +73,10 @@ private:
 	std::map<unsigned long, ID3D11DepthStencilState*> m_depthStencilStates;
 	std::map<unsigned long, ID3D11BlendState*> m_blendStates;
 	std::map<unsigned int, ID3D11RasterizerState*> m_rasterizerStates;
-	std::map<unsigned int, ID3D11SamplerState*> m_samplerStates;
+	std::map<unsigned int, class SamplerState*> m_samplerStates;
 	ID3D11BlendState* m_disableBlendState;
 
 	D3D11RasterizerState m_currentRasterizerState;
 	D3D11DepthStencilState m_currentDepthStencilState;
 	D3D11BlendState m_currentBlendState;
-	D3D11SamplerState m_currentSamplerState;
-	bool m_hasSampler;
 };

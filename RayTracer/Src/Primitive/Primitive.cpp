@@ -1,6 +1,7 @@
 #include "Primitive.h"
 #include "Mesh.h"
 #include "../Shader/MaterialShader.h"
+#include "../Shader/ShaderConstants.h"
 #include "../RayTracer/Primitive/RayTracerPrimitive.h"
 #include "../Common/GlobalResource.h"
 #include "../Gizmos/GizmosRenderer.h"
@@ -46,9 +47,9 @@ void PrimitiveBase::Render(const Matrix4x4& worldToViewMatrix, const Matrix4x4& 
 		Matrix4x4 localToWorld;
 		GetRenderMatrix(localToWorld);
 
-		renderMat->SetLocalToWorldMatrix(localToWorld);
-		renderMat->SetWorldToViewMatrix(worldToViewMatrix);
-		renderMat->SetProjectionMatrix(projectionMatrix);
+		renderMat->SetMatrix(SHADER_CONSTANT_LOCAL_TO_WORLD, localToWorld);
+		renderMat->SetMatrix(SHADER_CONSTANT_WORLD_TO_VIEW, worldToViewMatrix);
+		renderMat->SetMatrix(SHADER_CONSTANT_PROJECTION, projectionMatrix);
 		if (renderMat->Execute())
 		{
 			m_realTimeRenderMesh->Commit();
@@ -108,9 +109,9 @@ void PrimitiveBase::RenderShadow(const Matrix4x4& lightSpaceMatrix, const Matrix
 		Matrix4x4 localToWorld;
 		GetRenderMatrix(localToWorld);
 
-		renderMat->SetLocalToWorldMatrix(localToWorld);
-		renderMat->SetWorldToViewMatrix(lightSpaceMatrix);
-		renderMat->SetProjectionMatrix(shadowProjectionMatrix);
+		renderMat->SetMatrix(SHADER_CONSTANT_LOCAL_TO_WORLD, localToWorld);
+		renderMat->SetMatrix(SHADER_CONSTANT_WORLD_TO_VIEW, lightSpaceMatrix);
+		renderMat->SetMatrix(SHADER_CONSTANT_PROJECTION, shadowProjectionMatrix);
 		if (renderMat->ExecuteForShadow())
 		{
 			m_realTimeRenderMesh->Commit();

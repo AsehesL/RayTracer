@@ -94,6 +94,9 @@
     <Filter Include="Src\RayTracer\Scene">
       <UniqueIdentifier>{158c25e2-006b-4d56-a8fc-1cad88d1563d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Test">
+      <UniqueIdentifier>{e4b0bfbc-a610-412a-8c99-b18e92de62ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -270,9 +273,6 @@
     <ClInclude Include="Src\RealtimeRender\RayTracingPreviewRenderer.h">
       <Filter>Src\RealtimeRender</Filter>
     </ClInclude>
-    <ClInclude Include="Src\RealtimeRender\GraphicsLib\ShaderResource.h">
-      <Filter>Src\RealtimeRender\GraphicsLib</Filter>
-    </ClInclude>
     <ClInclude Include="Src\RayTracer\Shader\RayTracerShader.h">
       <Filter>Src\RayTracer\Shader</Filter>
     </ClInclude>
@@ -314,6 +314,36 @@
     </ClInclude>
     <ClInclude Include="Src\RayTracer\Integrator\PhotonMapper\OcTree.hpp">
       <Filter>Src\RayTracer\Integrator\PhotonMapper</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Shader\ShaderConstants.h">
+      <Filter>Src\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\ComputeShaderTest.h">
+      <Filter>Test</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\ComputeShaderProgram.h">
+      <Filter>Src\RealtimeRender\GraphicsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\UniformBuffer.h">
+      <Filter>Src\RealtimeRender\GraphicsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\ComputeBuffer.h">
+      <Filter>Src\RealtimeRender\GraphicsLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11ComputeBuffer.h">
+      <Filter>Src\RealtimeRender\GraphicsLib\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11UniformBuffer.h">
+      <Filter>Src\RealtimeRender\GraphicsLib\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Texture\TextureBase.h">
+      <Filter>Src\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Shader\ComputeShaderBase.h">
+      <Filter>Src\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Shader\SkyLightToSHComputeShader.h">
+      <Filter>Src\Shader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -484,6 +514,24 @@
     </ClCompile>
     <ClCompile Include="Src\RayTracer\Integrator\PhotonMapper\OcTree.cpp">
       <Filter>Src\RayTracer\Integrator\PhotonMapper</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\ComputeShaderTest.cpp">
+      <Filter>Test</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11ComputeBuffer.cpp">
+      <Filter>Src\RealtimeRender\GraphicsLib\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11UniformBuffer.cpp">
+      <Filter>Src\RealtimeRender\GraphicsLib\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Texture\TextureBase.cpp">
+      <Filter>Src\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Shader\ComputeShaderBase.cpp">
+      <Filter>Src\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Shader\SkyLightToSHComputeShader.cpp">
+      <Filter>Src\Shader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

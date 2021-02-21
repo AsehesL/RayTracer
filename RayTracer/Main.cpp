@@ -750,79 +750,14 @@ extern "C" __declspec(dllexport) int CreateTransparencyShader()
 	return shaderID;
 }
 
-extern "C" __declspec(dllexport) void GetPBRShaderAlbedoColor(int shaderID, float& r, float& g, float& b, float&a)
+extern "C" __declspec(dllexport) bool DestroyShader(int shaderID)
 {
 	if (!isInitialized)
-		return;
-	PBRShaderBase* shader = GlobalResource::GetShader<PBRShaderBase>(shaderID);
-	if (shader)
-	{
-		Color albedoColor = shader->GetAlbedoColor();
-		r = albedoColor.r;
-		g = albedoColor.g;
-		b = albedoColor.b;
-		a = albedoColor.a;
-	}
+		return false;
+	return GlobalResource::RemoveShader(shaderID);
 }
 
-extern "C" __declspec(dllexport) void SetPBRShaderAlbedoColor(int shaderID, float r, float g, float b, float a)
-{
-	if (!isInitialized)
-		return;
-	PBRShaderBase* shader = GlobalResource::GetShader<PBRShaderBase>(shaderID);
-	if (shader)
-	{
-		shader->SetAlbedoColor(Color(r, g, b, a));
-	}
-}
-
-extern "C" __declspec(dllexport) float GetPBRShaderRoughness(int shaderID)
-{
-	if (!isInitialized)
-		return 0;
-	PBRShaderBase* shader = GlobalResource::GetShader<PBRShaderBase>(shaderID);
-	if (shader)
-	{
-		return shader->GetRoughness();
-	}
-	return 0;
-}
-
-extern "C" __declspec(dllexport) void SetPBRShaderRoughness(int shaderID, float roughness)
-{
-	if (!isInitialized)
-		return;
-	PBRShaderBase* shader = GlobalResource::GetShader<PBRShaderBase>(shaderID);
-	if (shader)
-	{
-		shader->SetRoughness(roughness);
-	}
-}
-
-extern "C" __declspec(dllexport) float GetPBRShaderMetallic(int shaderID)
-{
-	if (!isInitialized)
-		return 0;
-	PBRShaderBase* shader = GlobalResource::GetShader<PBRShaderBase>(shaderID);
-	if (shader)
-	{
-		return shader->GetMetallic();
-	}
-	return 0;
-}
-
-extern "C" __declspec(dllexport) void SetPBRShaderMetallic(int shaderID, float metallic)
-{
-	if (!isInitialized)
-		return;
-	PBRShaderBase* shader = GlobalResource::GetShader<PBRShaderBase>(shaderID);
-	if (shader)
-	{
-		shader->SetMetallic(metallic);
-	}
-}
-
-extern "C" __declspec(dllexport) void SetPBRShaderAlbedoTexture(int shaderID, int textureID)
+extern "C" __declspec(dllexport) void SetShaderTexture(int shaderID, const char* key, int textureID)
 {
 	if (!isInitialized)
 		return;
@@ -830,18 +765,93 @@ extern "C" __declspec(dllexport) void SetPBRShaderAlbedoTexture(int shaderID, in
 	if (shader)
 	{
 		Texture* texture = GlobalResource::GetTexture(textureID);
-		shader->albedoTexture = texture;
+		shader->SetTexture(key, texture);
 	}
 }
 
-extern "C" __declspec(dllexport) void GetEmissiveShaderColor(int shaderID, float& r, float& g, float& b, float& a)
+extern "C" __declspec(dllexport) void GetShaderVector2(int shaderID, const char* key, double& x, double& y)
 {
 	if (!isInitialized)
 		return;
-	EmissiveShader* shader = GlobalResource::GetShader<EmissiveShader>(shaderID);
+	ShaderBase* shader = GlobalResource::GetShader<ShaderBase>(shaderID);
 	if (shader)
 	{
-		Color color = shader->GetColor();
+		Vector2 vector = shader->GetVector2(key);
+		x = vector.x;
+		y = vector.y;
+	}
+}
+
+extern "C" __declspec(dllexport) void SetShaderVector2(int shaderID, const char* key, double x, double y)
+{
+	if (!isInitialized)
+		return;
+	ShaderBase* shader = GlobalResource::GetShader<ShaderBase>(shaderID);
+	if (shader)
+	{
+		shader->SetVector2(key, Vector2(x, y));
+	}
+}
+
+extern "C" __declspec(dllexport) void GetShaderVector3(int shaderID, const char* key, double& x, double& y, double& z)
+{
+	if (!isInitialized)
+		return;
+	ShaderBase* shader = GlobalResource::GetShader<ShaderBase>(shaderID);
+	if (shader)
+	{
+		Vector3 vector = shader->GetVector3(key);
+		x = vector.x;
+		y = vector.y;
+		z = vector.z;
+	}
+}
+
+extern "C" __declspec(dllexport) void SetShaderVector3(int shaderID, const char* key, double x, double y, double z)
+{
+	if (!isInitialized)
+		return;
+	ShaderBase* shader = GlobalResource::GetShader<ShaderBase>(shaderID);
+	if (shader)
+	{
+		shader->SetVector3(key, Vector3(x, y, z));
+	}
+}
+
+extern "C" __declspec(dllexport) void GetShaderVector4(int shaderID, const char* key, double& x, double& y, double& z, double& w)
+{
+	if (!isInitialized)
+		return;
+	ShaderBase* shader = GlobalResource::GetShader<ShaderBase>(shaderID);
+	if (shader)
+	{
+		Vector4 vector = shader->GetVector4(key);
+		x = vector.x;
+		y = vector.y;
+		z = vector.z;
+		w = vector.w;
+	}
+}
+
+extern "C" __declspec(dllexport) void SetShaderVector4(int shaderID, const char* key, double x, double y, double z, double w)
+{
+	if (!isInitialized)
+		return;
+	ShaderBase* shader = GlobalResource::GetShader<ShaderBase>(shaderID);
+	if (shader)
+	{
+		shader->SetVector4(key, Vector4(x, y, z, w));
+	}
+}
+
+extern "C" __declspec(dllexport) void GetShaderColor(int shaderID, const char* key, float& r, float& g, float& b, float& a)
+{
+	if (!isInitialized)
+		return;
+	ShaderBase* shader = GlobalResource::GetShader<ShaderBase>(shaderID);
+	if (shader)
+	{
+		Color color = shader->GetColor(key);
 		r = color.r;
 		g = color.g;
 		b = color.b;
@@ -849,63 +859,37 @@ extern "C" __declspec(dllexport) void GetEmissiveShaderColor(int shaderID, float
 	}
 }
 
-extern "C" __declspec(dllexport) void SetEmissiveShaderColor(int shaderID, float r, float g, float b, float a)
+extern "C" __declspec(dllexport) void SetShaderColor(int shaderID, const char* key, float r, float g, float b, float a)
 {
 	if (!isInitialized)
 		return;
-	EmissiveShader* shader = GlobalResource::GetShader<EmissiveShader>(shaderID);
+	ShaderBase* shader = GlobalResource::GetShader<ShaderBase>(shaderID);
 	if (shader)
 	{
-		shader->SetColor(Color(r, g, b, a));
+		shader->SetColor(key, Color(r,g,b,a));
 	}
 }
 
-extern "C" __declspec(dllexport) float GetEmissiveShaderIntensity(int shaderID)
+extern "C" __declspec(dllexport) float GetShaderFloat(int shaderID, const char* key)
 {
 	if (!isInitialized)
-		return 0;
-	EmissiveShader* shader = GlobalResource::GetShader<EmissiveShader>(shaderID);
+		return 0.0f;
+	ShaderBase* shader = GlobalResource::GetShader<ShaderBase>(shaderID);
 	if (shader)
 	{
-		return shader->GetIntensity();
+		return shader->GetFloat(key);
 	}
-	return 0;
+	return 0.0f;
 }
 
-extern "C" __declspec(dllexport) void SetEmissiveShaderIntensity(int shaderID, float intensity)
-{
-	if (!isInitialized)
-		return;
-	EmissiveShader* shader = GlobalResource::GetShader<EmissiveShader>(shaderID);
-	if (shader)
-	{
-		shader->SetIntensity(intensity);
-	}
-}
-
-extern "C" __declspec(dllexport) void GetTransparencyShaderColor(int shaderID, float& r, float& g, float& b, float& a)
+extern "C" __declspec(dllexport) void SetShaderFloat(int shaderID, const char* key, float v)
 {
 	if (!isInitialized)
 		return;
-	TransparencyShader* shader = GlobalResource::GetShader<TransparencyShader>(shaderID);
+	ShaderBase* shader = GlobalResource::GetShader<ShaderBase>(shaderID);
 	if (shader)
 	{
-		Color color = shader->GetColor();
-		r = color.r;
-		g = color.g;
-		b = color.b;
-		a = color.a;
-	}
-}
-
-extern "C" __declspec(dllexport) void SetTransparencyShaderColor(int shaderID, float r, float g, float b, float a)
-{
-	if (!isInitialized)
-		return;
-	TransparencyShader* shader = GlobalResource::GetShader<TransparencyShader>(shaderID);
-	if (shader)
-	{
-		shader->SetColor(Color(r, g, b, a));
+		shader->SetFloat(key, v);
 	}
 }
 
@@ -929,6 +913,13 @@ extern "C" __declspec(dllexport) int CreateTextureFromFile(const char* path, boo
 	if (texture == nullptr)
 		return -1;
 	return textureID;
+}
+
+extern "C" __declspec(dllexport) bool DestroyTexture(int textureID)
+{
+	if (!isInitialized)
+		return false;
+	return GlobalResource::RemoveTexture(textureID);
 }
 
 extern "C" __declspec(dllexport) unsigned int GetTextureWidth(int textureID)
@@ -1045,6 +1036,22 @@ extern "C" __declspec(dllexport) int CreateMesh(unsigned int vertexCount, unsign
 	if (mesh == nullptr)
 		return -1;
 	return meshID;
+}
+
+extern "C" __declspec(dllexport) void CreateMeshesFromFile(const char* path, int& startMeshID, int& endMeshID)
+{
+	startMeshID = -1;
+	endMeshID = -1;
+	if (!isInitialized)
+		return;
+	Mesh::CreateMeshesFromFile(path, startMeshID, endMeshID);
+}
+
+extern "C" __declspec(dllexport) bool DestroyMesh(int meshID)
+{
+	if (!isInitialized)
+		return false;
+	return GlobalResource::RemoveMesh(meshID);
 }
 
 extern "C" __declspec(dllexport) unsigned int GetMeshVertexCount(int meshID)

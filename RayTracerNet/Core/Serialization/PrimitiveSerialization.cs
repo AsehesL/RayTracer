@@ -14,22 +14,32 @@ namespace RayTracerNet.Serialization
 
     internal abstract class PrimitiveSerialization
     {
-        public abstract void GenerateGeometry(string scenePath, List<MaterialShader> shaders, Dictionary<string, PrimitiveParamDataSerialization> geoParams, Dictionary<string, Mesh> meshes, List<PrimitiveBase> output);
+        public List<MaterialShader> shaders;
+
+        public Dictionary<string, Mesh[]> meshes;
+
+        public abstract void GenerateGeometry(string scenePath, List<PrimitiveBase> output);
     }
 
     [PrimitiveAnalyse(type = "Cube")]
     internal class CubeSerialization : PrimitiveSerialization
     {
-        public override void GenerateGeometry(string scenePath, List<MaterialShader> shaders, Dictionary<string, PrimitiveParamDataSerialization> geoParams, Dictionary<string, Mesh> meshes, List<PrimitiveBase> output)
+        public Vector3 Position
         {
-            string position = geoParams["Position"].paramValue;
-            string scale = geoParams["Scale"].paramValue;
-            Vector3 s = Vector3.Parse(scale);
-            Vector3 p = Vector3.Parse(position);
+            get;set;
+        }
+
+        public Vector3 Scale
+        {
+            get;set;
+        }
+
+        public override void GenerateGeometry(string scenePath, List<PrimitiveBase> output)
+        {
 
             CubePrimitive cube = CubePrimitive.Create();
-            cube.position = p;
-            cube.scale = s;
+            cube.position = Position;
+            cube.scale = Scale;
             cube.euler = Vector3.zero;
             cube.material = shaders[0];
 
@@ -40,19 +50,27 @@ namespace RayTracerNet.Serialization
     [PrimitiveAnalyse(type = "Plane")]
     internal class PlaneSerialization : PrimitiveSerialization
     {
-        public override void GenerateGeometry(string scenePath, List<MaterialShader> shaders, Dictionary<string, PrimitiveParamDataSerialization> geoParams, Dictionary<string, Mesh> meshes, List<PrimitiveBase> output)
+        public Vector3 Position
         {
-            string euler = geoParams["Euler"].paramValue;
-            string scale = geoParams["Scale"].paramValue;
-            string position = geoParams["Position"].paramValue;
-            Vector3 s = Vector3.Parse(scale);
-            Vector3 p = Vector3.Parse(position);
-            Vector3 r = Vector3.Parse(euler);
+            get; set;
+        }
 
+        public Vector3 Euler
+        {
+            get; set;
+        }
+
+        public Vector3 Scale
+        {
+            get; set;
+        }
+
+        public override void GenerateGeometry(string scenePath, List<PrimitiveBase> output)
+        {
             PlanePrimitive plane = PlanePrimitive.Create();
-            plane.position = p;
-            plane.scale = s;
-            plane.euler = r;
+            plane.position = Position;
+            plane.scale = Scale;
+            plane.euler = Euler;
             plane.material = shaders[0];
 
             output.Add(plane);
@@ -62,18 +80,23 @@ namespace RayTracerNet.Serialization
     [PrimitiveAnalyse(type = "Sphere")]
     internal class SphereSerialization : PrimitiveSerialization
     {
-        public override void GenerateGeometry(string scenePath, List<MaterialShader> shaders, Dictionary<string, PrimitiveParamDataSerialization> geoParams, Dictionary<string, Mesh> meshes, List<PrimitiveBase> output)
+        public Vector3 Position
         {
-            string position = geoParams["Position"].paramValue;
-            string radius = geoParams["Radius"].paramValue;
+            get; set;
+        }
 
-            float r = float.Parse(radius);
-            Vector3 p = Vector3.Parse(position);
+        public float Radius
+        {
+            get; set;
+        }
+
+        public override void GenerateGeometry(string scenePath, List<PrimitiveBase> output)
+        {
 
             SpherePrimitive sphere = SpherePrimitive.Create();
-            sphere.position = p;
+            sphere.position = Position;
             sphere.euler = Vector3.zero;
-            sphere.scale = new Vector3(r, r, r) * 2.0f;
+            sphere.scale = new Vector3(Radius, Radius, Radius) * 2.0f;
             sphere.material = shaders[0];
 
             output.Add(sphere);
@@ -83,40 +106,58 @@ namespace RayTracerNet.Serialization
     [PrimitiveAnalyse(type = "Mesh")]
     internal class MeshSerialization : PrimitiveSerialization
     {
-        public override void GenerateGeometry(string scenePath, List<MaterialShader> shaders, Dictionary<string, PrimitiveParamDataSerialization> geoParams, Dictionary<string, Mesh> meshes, List<PrimitiveBase> output)
+        public Vector3 Position
         {
-            string path = geoParams["Path"].paramValue;
-            string euler = geoParams["Euler"].paramValue;
-            string scale = geoParams["Scale"].paramValue;
-            string position = geoParams["Position"].paramValue;
+            get; set;
+        }
 
+        public Vector3 Euler
+        {
+            get; set;
+        }
+
+        public Vector3 Scale
+        {
+            get; set;
+        }
+
+        public string Path
+        {
+            get;set;
+        }
+
+        public override void GenerateGeometry(string scenePath, List<PrimitiveBase> output)
+        {
             var fileInfo = new System.IO.FileInfo(scenePath);
-            string p = System.IO.Path.Combine(fileInfo.DirectoryName, path);
+            string p = System.IO.Path.Combine(fileInfo.DirectoryName, Path);
 
-            Vector3 rot = Vector3.Parse(euler);
-            Vector3 sca = Vector3.Parse(scale);
-            Vector3 pos = Vector3.Parse(position);
-
-            Mesh mesh = null;
+            //List<Mesh> meshes = null;
+            Mesh[] meshArray = null;
             if (meshes.ContainsKey(p))
             {
-                mesh = meshes[p];
+                meshArray = meshes[p];
             }
             else
             {
-                mesh = Mesh.CreateFromFile(p);
-                if (mesh != null)
-                    meshes[p] = mesh;
+                meshArray = Mesh.CreateFromFile(p);
+                if (meshArray != null)
+                    meshes[p] = meshArray;
             }
 
-            MeshPrimitive meshprimitive = MeshPrimitive.Create();
-            meshprimitive.position = pos;
-            meshprimitive.euler = rot;
-            meshprimitive.scale = sca;
-            meshprimitive.mesh = mesh;
-            meshprimitive.material = shaders[0];
+            if (meshArray != null)
+            {
+                for(int i=0;i<meshArray.Length;i++)
+                {
+                    MeshPrimitive meshprimitive = MeshPrimitive.Create();
+                    meshprimitive.position = Position;
+                    meshprimitive.euler = Euler;
+                    meshprimitive.scale = Scale;
+                    meshprimitive.mesh = meshArray[i];
+                    meshprimitive.material = shaders[0];
 
-            output.Add(meshprimitive);
+                    output.Add(meshprimitive);
+                }
+            }
         }
     }
 }

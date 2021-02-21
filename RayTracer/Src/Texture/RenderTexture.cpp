@@ -6,12 +6,10 @@ RenderTexture::RenderTexture(unsigned int width, unsigned int height, GLContext*
 {
 }
 
-RenderTexture::RenderTexture(unsigned int width, unsigned int height, bool isShadowMap, GLContext* glContext)
+RenderTexture::RenderTexture(unsigned int width, unsigned int height, bool isShadowMap, GLContext* glContext) : TextureBase()
 {
 	m_width = width;
 	m_height = height;
-	m_filterMode = FilterMode::Point;
-	m_wrapMode = WrapMode::Repeat;
 
 	m_colorBuffer = nullptr;
 	m_depthBuffer = nullptr;
@@ -20,17 +18,14 @@ RenderTexture::RenderTexture(unsigned int width, unsigned int height, bool isSha
 
 	if (m_textureBuffer)
 	{
-		m_textureBuffer->SetFilterMode(m_filterMode);
-		m_textureBuffer->SetWrapMode(m_wrapMode);
+		m_textureBuffer->SetFilterMode(FilterMode::Point);
+		m_textureBuffer->SetWrapMode(WrapMode::Repeat);
 	}
 	m_isShadowMap = isShadowMap;
 }
 
 RenderTexture::~RenderTexture()
 {
-	if (m_textureBuffer)
-		delete m_textureBuffer;
-	m_textureBuffer = nullptr;
 	if (m_colorBuffer)
 		delete m_colorBuffer;
 	m_colorBuffer = nullptr;
@@ -54,41 +49,9 @@ bool RenderTexture::IsShadowMap() const
 	return m_isShadowMap;
 }
 
-void RenderTexture::SetFilterMode(FilterMode filterMode)
-{
-	m_filterMode = filterMode;
-	m_textureBuffer->SetFilterMode(filterMode);
-}
-
-FilterMode RenderTexture::GetFilterMode()
-{
-	return m_filterMode;
-}
-
-void RenderTexture::SetWrapMode(WrapMode wrapMode)
-{
-	m_wrapMode = wrapMode;
-	m_textureBuffer->SetWrapMode(wrapMode);
-}
-
-WrapMode RenderTexture::GetWrapMode()
-{
-	return m_wrapMode;
-}
-
-void RenderTexture::SetShaderResource(unsigned int slot)
-{
-	if (m_textureBuffer)
-	{
-		m_textureBuffer->SetShaderResource(slot);
-	}
-}
-
-CubeMapRenderTexture::CubeMapRenderTexture(unsigned int size, GLContext* glContext)
+CubeMapRenderTexture::CubeMapRenderTexture(unsigned int size, GLContext* glContext) : TextureBase()
 {
 	m_size = size;
-	m_filterMode = FilterMode::Trilinear;
-	m_wrapMode = WrapMode::Repeat;
 
 	m_cubeMapColorBuffer = nullptr;
 	m_depthBuffer = nullptr;
@@ -97,8 +60,8 @@ CubeMapRenderTexture::CubeMapRenderTexture(unsigned int size, GLContext* glConte
 
 	if (m_textureBuffer)
 	{
-		m_textureBuffer->SetFilterMode(m_filterMode);
-		m_textureBuffer->SetWrapMode(m_wrapMode);
+		m_textureBuffer->SetFilterMode(FilterMode::Trilinear);
+		m_textureBuffer->SetWrapMode(WrapMode::Repeat);
 	}
 
 	m_glContext = glContext;
@@ -106,9 +69,6 @@ CubeMapRenderTexture::CubeMapRenderTexture(unsigned int size, GLContext* glConte
 
 CubeMapRenderTexture::~CubeMapRenderTexture()
 {
-	if (m_textureBuffer)
-		delete m_textureBuffer;
-	m_textureBuffer = nullptr;
 	if (m_cubeMapColorBuffer)
 		delete m_cubeMapColorBuffer;
 	m_cubeMapColorBuffer = nullptr;
@@ -120,36 +80,6 @@ CubeMapRenderTexture::~CubeMapRenderTexture()
 unsigned int CubeMapRenderTexture::GetSize() const
 {
 	return m_size;
-}
-
-void CubeMapRenderTexture::SetFilterMode(FilterMode filterMode)
-{
-	m_filterMode = filterMode;
-	m_textureBuffer->SetFilterMode(filterMode);
-}
-
-FilterMode CubeMapRenderTexture::GetFilterMode()
-{
-	return m_filterMode;
-}
-
-void CubeMapRenderTexture::SetWrapMode(WrapMode wrapMode)
-{
-	m_wrapMode = wrapMode;
-	m_textureBuffer->SetWrapMode(wrapMode);
-}
-
-WrapMode CubeMapRenderTexture::GetWrapMode()
-{
-	return m_wrapMode;
-}
-
-void CubeMapRenderTexture::SetShaderResource(unsigned int slot)
-{
-	if (m_textureBuffer)
-	{
-		m_textureBuffer->SetShaderResource(slot);
-	}
 }
 
 void CubeMapRenderTexture::GenerateMipMap()

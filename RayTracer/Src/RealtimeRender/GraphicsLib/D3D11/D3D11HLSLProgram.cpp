@@ -1,93 +1,7 @@
 #include "D3D11HLSLProgram.h"
-
-D3D11ShaderUniformBuffer::D3D11ShaderUniformBuffer(ID3D11Device* device, ID3D11DeviceContext* deviceContext, unsigned int bufferSize)
-{
-	m_uniformBuffer = 0;
-
-	m_device = device;
-	m_deviceContext = deviceContext;
-
-	m_isValid = false;
-
-	m_isMapped = false;
-
-	D3D11_BUFFER_DESC uniformBufferDesc;
-
-	uniformBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	uniformBufferDesc.ByteWidth = bufferSize;
-	uniformBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	uniformBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	uniformBufferDesc.MiscFlags = 0;
-	uniformBufferDesc.StructureByteStride = 0;
-
-	HRESULT result = device->CreateBuffer(&uniformBufferDesc, NULL, &m_uniformBuffer);
-	if (FAILED(result))
-	{
-		return;
-	}
-
-	m_isValid = true;
-}
-
-D3D11ShaderUniformBuffer::~D3D11ShaderUniformBuffer()
-{
-	if (m_uniformBuffer)
-		m_uniformBuffer->Release();
-	m_uniformBuffer = nullptr;
-}
-
-bool D3D11ShaderUniformBuffer::IsValid()
-{
-	return m_isValid;
-}
-
-void* D3D11ShaderUniformBuffer::Map()
-{
-	if (!IsValid())
-		return nullptr;
-	if (m_isMapped)
-		return nullptr;
-
-	D3D11_MAPPED_SUBRESOURCE mappedResource;
-
-	HRESULT result = m_deviceContext->Map(m_uniformBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	if (FAILED(result))
-	{
-		return nullptr;
-	}
-	m_isMapped = true;
-
-	return mappedResource.pData;
-}
-
-void D3D11ShaderUniformBuffer::Unmap()
-{
-	if (!IsValid())
-		return;
-	if (!m_isMapped)
-		return;
-	m_isMapped = false;
-
-	m_deviceContext->Unmap(m_uniformBuffer, 0);
-}
-
-void D3D11ShaderUniformBuffer::ApplyVSUniformBuffer(int position)
-{
-	if (!IsValid())
-		return;
-	if (m_isMapped)
-		return;
-	m_deviceContext->VSSetConstantBuffers(position, 1, &m_uniformBuffer);
-}
-
-void D3D11ShaderUniformBuffer::ApplyPSUniformBuffer(int position)
-{
-	if (!IsValid())
-		return;
-	if (m_isMapped)
-		return;
-	m_deviceContext->PSSetConstantBuffers(position, 1, &m_uniformBuffer);
-}
+#include "D3D11UniformBuffer.h"
+#include <D3Dcompiler.h>
+#include <d3dx11async.h>
 
 D3D11HLSLProgram::D3D11HLSLProgram(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
@@ -119,52 +33,64 @@ D3D11HLSLProgram::~D3D11HLSLProgram()
 		m_vertexShader->Release();
 		m_vertexShader = 0;
 	}
+	for (auto kvp : m_uniformBuffers)
+	{
+		UniformBuffer* uniformBuffer = kvp.second;
+		if (uniformBuffer)
+			delete uniformBuffer;
+	}
+	m_uniformBuffers.clear();
 }
 
 bool D3D11HLSLProgram::Compile(const WCHAR* vsPath, const WCHAR* psPath)
 {
 	HRESULT result;
-	ID3D10Blob* errorMessage;
-	ID3D10Blob* vertexShaderBuffer;
-	ID3D10Blob* pixelShaderBuffer;
+	ID3D10Blob* vertexShaderBlob;
+	ID3D10Blob* pixelShaderBlob;
 	D3D11_INPUT_ELEMENT_DESC polygonLayout[4];
 	unsigned int numElements;
 	D3D11_BUFFER_DESC matrixBufferDesc;
 
-	errorMessage = 0;
-	vertexShaderBuffer = 0;
-	pixelShaderBuffer = 0;
+	vertexShaderBlob = 0;
+	pixelShaderBlob = 0;
 
 #if _DEBUG
-	result = D3DX11CompileFromFile(vsPath, NULL, NULL, "VertexFunc", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS | D3D10_SHADER_SKIP_OPTIMIZATION | D3D10_SHADER_DEBUG, 0, NULL, &vertexShaderBuffer, &errorMessage, NULL);
+	result = D3DX11CompileFromFile(vsPath, NULL, NULL, "VertexFunc", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS | D3D10_SHADER_SKIP_OPTIMIZATION | D3D10_SHADER_DEBUG, 0, NULL, &vertexShaderBlob, NULL, NULL);
 #else
-	result = D3DX11CompileFromFile(vsPath, NULL, NULL, "VertexFunc", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL, &vertexShaderBuffer, &errorMessage, NULL);
+	result = D3DX11CompileFromFile(vsPath, NULL, NULL, "VertexFunc", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL, &vertexShaderBlob, NULL, NULL);
 #endif
 
 	if (FAILED(result))
 	{
+		vertexShaderBlob->Release();
 		return false;
 	}
 
 #if _DEBUG
-	result = D3DX11CompileFromFile(psPath, NULL, NULL, "PixelFunc", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS | D3D10_SHADER_SKIP_OPTIMIZATION | D3D10_SHADER_DEBUG, 0, NULL, &pixelShaderBuffer, &errorMessage, NULL);
+	result = D3DX11CompileFromFile(psPath, NULL, NULL, "PixelFunc", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS | D3D10_SHADER_SKIP_OPTIMIZATION | D3D10_SHADER_DEBUG, 0, NULL, &pixelShaderBlob, NULL, NULL);
 #else
-	result = D3DX11CompileFromFile(psPath, NULL, NULL, "PixelFunc", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL, &pixelShaderBuffer, &errorMessage, NULL);
+	result = D3DX11CompileFromFile(psPath, NULL, NULL, "PixelFunc", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL, &pixelShaderBlob, NULL, NULL);
 #endif
 	if (FAILED(result))
 	{
+		vertexShaderBlob->Release();
+		pixelShaderBlob->Release();
 		return false;
 	}
 
-	result = m_device->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &m_vertexShader);
+	result = m_device->CreateVertexShader(vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), NULL, &m_vertexShader);
 	if (FAILED(result))
 	{
+		vertexShaderBlob->Release();
+		pixelShaderBlob->Release();
 		return false;
 	}
 
-	result = m_device->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(), pixelShaderBuffer->GetBufferSize(), NULL, &m_pixelShader);
+	result = m_device->CreatePixelShader(pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize(), NULL, &m_pixelShader);
 	if (FAILED(result))
 	{
+		vertexShaderBlob->Release();
+		pixelShaderBlob->Release();
 		return false;
 	}
 
@@ -202,18 +128,44 @@ bool D3D11HLSLProgram::Compile(const WCHAR* vsPath, const WCHAR* psPath)
 
 	numElements = sizeof(polygonLayout) / sizeof(polygonLayout[0]);
 
-	result = m_device->CreateInputLayout(polygonLayout, numElements, vertexShaderBuffer->GetBufferPointer(),
-		vertexShaderBuffer->GetBufferSize(), &m_layout);
+	result = m_device->CreateInputLayout(polygonLayout, numElements, vertexShaderBlob->GetBufferPointer(),
+		vertexShaderBlob->GetBufferSize(), &m_layout);
 	if (FAILED(result))
 	{
+		vertexShaderBlob->Release();
+		pixelShaderBlob->Release();
 		return false;
 	}
 
-	vertexShaderBuffer->Release();
-	vertexShaderBuffer = 0;
+	ID3D11ShaderReflection* vertexShaderReflection = nullptr;
 
-	pixelShaderBuffer->Release();
-	pixelShaderBuffer = 0;
+	if (FAILED(D3DReflect(vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&vertexShaderReflection)))
+	{
+		vertexShaderBlob->Release();
+		pixelShaderBlob->Release();
+		return false;
+	}
+
+	ID3D11ShaderReflection* pixelShaderReflection = nullptr;
+
+	if (FAILED(D3DReflect(pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&pixelShaderReflection)))
+	{
+		vertexShaderBlob->Release();
+		pixelShaderBlob->Release();
+		return false;
+	}
+
+	InitUniformBuffers(vertexShaderReflection);
+	InitUniformBuffers(pixelShaderReflection);
+
+	vertexShaderBlob->Release();
+	vertexShaderBlob = 0;
+
+	pixelShaderBlob->Release();
+	pixelShaderBlob = 0;
+
+	vertexShaderReflection->Release();
+	pixelShaderReflection->Release();
 
 	m_isValid = true;
 
@@ -236,6 +188,122 @@ bool D3D11HLSLProgram::Execute()
 }
 
 bool D3D11HLSLProgram::IsValid()
+{
+	return m_isValid;
+}
+
+UniformBuffer* D3D11HLSLProgram::GetUniformBuffer(const char* key)
+{
+	if (m_uniformBuffers.find(key) != m_uniformBuffers.end())
+		return m_uniformBuffers.at(key);
+	return nullptr;
+}
+
+void D3D11HLSLProgram::InitUniformBuffers(ID3D11ShaderReflection* pShaderReflection)
+{
+	D3D11_SHADER_DESC shaderDesc;
+	pShaderReflection->GetDesc(&shaderDesc);
+
+	for (UINT i = 0; i < shaderDesc.ConstantBuffers; ++i)
+	{
+		ID3D11ShaderReflectionConstantBuffer* bf = pShaderReflection->GetConstantBufferByIndex(i);
+		D3D11_SHADER_BUFFER_DESC desc;
+		bf->GetDesc(&desc);
+
+		if (m_uniformBuffers.find(desc.Name) == m_uniformBuffers.end())
+		{
+			D3D11UniformBuffer* uniformBuffer = new D3D11UniformBuffer(m_device, m_deviceContext, desc.Size);
+			m_uniformBuffers.insert(std::pair<std::string, UniformBuffer*>(desc.Name, uniformBuffer));
+		}
+	}
+}
+
+D3D11ComputeShaderProgram::D3D11ComputeShaderProgram(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+{
+	m_computeShader = NULL;
+	m_deviceContext = deviceContext;
+	m_device = device;
+
+	m_isValid = false;
+}
+
+D3D11ComputeShaderProgram::~D3D11ComputeShaderProgram()
+{
+	if (m_computeShader)
+	{
+		m_computeShader->Release();
+		m_computeShader = 0;
+	}
+}
+
+bool D3D11ComputeShaderProgram::Compile(const WCHAR* csPath)
+{
+	ID3DBlob* shaderBlob = nullptr;
+	ID3DBlob* errorBlob = nullptr;
+#if _DEBUG
+	HRESULT result = D3DX11CompileFromFile(csPath, NULL, NULL, "CSMain", "cs_5_0", D3D10_SHADER_ENABLE_STRICTNESS | D3D10_SHADER_SKIP_OPTIMIZATION | D3D10_SHADER_DEBUG, 0, NULL, &shaderBlob, &errorBlob, NULL);
+#else
+	HRESULT result = D3DX11CompileFromFile(csPath, NULL, NULL, "CSMain", "cs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL, &shaderBlob, NULL, NULL);
+#endif 
+
+	if (FAILED(result))
+	{
+		if (errorBlob)
+		{
+			char* errormessage = (char*)errorBlob->GetBufferPointer();
+			errorBlob->Release();
+		}
+
+		if (shaderBlob)
+			shaderBlob->Release();
+		return false;
+	}
+
+	result = m_device->CreateComputeShader(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), nullptr, &m_computeShader);
+	
+	if (FAILED(result))
+		return false;
+
+	shaderBlob->Release();
+
+	m_isValid = true;
+}
+
+bool D3D11ComputeShaderProgram::CSSetShader()
+{
+	if (!IsValid())
+		return false;
+	if (m_computeShader)
+	{
+		m_deviceContext->CSSetShader(m_computeShader, NULL, 0);
+		return true;
+	}
+	return false;
+}
+
+void D3D11ComputeShaderProgram::CSClearShader()
+{
+	if (!IsValid())
+		return;
+	if (m_computeShader)
+	{
+		m_deviceContext->CSSetShader(NULL, NULL, 0);
+		return;
+	}
+	return;
+}
+
+void D3D11ComputeShaderProgram::Dispatch(int threadGroupsX, int threadGroupsY, int threadGroupsZ)
+{
+	if (!IsValid())
+		return;
+	if (m_computeShader)
+	{
+		m_deviceContext->Dispatch(threadGroupsX, threadGroupsY, threadGroupsZ);
+	}
+}
+
+bool D3D11ComputeShaderProgram::IsValid()
 {
 	return m_isValid;
 }

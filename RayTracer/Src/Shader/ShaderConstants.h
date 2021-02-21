@@ -1,0 +1,30 @@
+#pragma once
+
+#define SHADER_CONSTANT_LOCAL_TO_WORLD		"localToWorld"
+#define SHADER_CONSTANT_WORLD_TO_VIEW		"worldToView"
+#define SHADER_CONSTANT_PROJECTION			"projection"
+#define SHADER_CONSTANT_COLOR				"color"
+#define SHADER_CONSTANT_INTENSITY			"intensity"
+
+#define SHADER_CONSTANT_SUN_LIGHT_COLOR		"sunLightColor"
+#define SHADER_CONSTANT_SUN_LIGHT_DIRECTION	"sunLightDirection"
+#define SHADER_CONSTANT_CAMERA_POSITION		"cameraPosition"
+#define SHADER_CONSTANT_WORLD_TO_LIGHTSPACE	"worldToLight"
+#define SHADER_CONSTANT_SHADOW_PROJECTION	"shadowProjection"
+#define SHADER_CONSTANT_SHADOW_MAP_SIZE		"shadowMapSize"
+#define SHADER_CONSTANT_SHADOW_BIAS			"shadowBias"
+#define SHADER_CONSTANT_SKY_LIGHT_SH0R		"skyLightSH0R"
+#define SHADER_CONSTANT_SKY_LIGHT_SH0G		"skyLightSH0G"
+#define SHADER_CONSTANT_SKY_LIGHT_SH0B		"skyLightSH0B"
+#define SHADER_CONSTANT_SKY_LIGHT_SH1R		"skyLightSH1R"
+#define SHADER_CONSTANT_SKY_LIGHT_SH1G		"skyLightSH1G"
+#define SHADER_CONSTANT_SKY_LIGHT_SH1B		"skyLightSH1B"
+#define SHADER_CONSTANT_SKY_LIGHT_SH2		"skyLightSH2"
+#define SHADER_CONSTANT_SKY_LIGHT_SH3		"skyLightSH3"
+
+#define SHADER_TEXTURE_ENVIRONMENT			"environmentMap"
+#define SHADER_TEXTURE_TEXTURE				"texture"
+
+#define SHADER_TEXTURE_SHADOW_MAP			"shadowMap"
+#define SHADER_TEXTURE_CUBE_MAP				"cubeMap"
+#define SHADER_TEXTURE_SCREEN_CAPTURE		"screenCapture"

@@ -3,7 +3,7 @@
 #include "../TextureBuffer.h"
 #include <D3D11.h>
 
-class D3D11ColorBuffer : public IColorBuffer
+class D3D11ColorBuffer : public ColorBuffer
 {
 	friend class D3D11Context;
 public:
@@ -17,7 +17,7 @@ private:
 	DXGI_FORMAT m_format;
 };
 
-class D3D11DepthBuffer : public IDepthBuffer
+class D3D11DepthBuffer : public DepthBuffer
 {
 	friend class D3D11Context;
 public:
@@ -30,7 +30,7 @@ private:
 	DXGI_FORMAT m_format;
 };
 
-class D3D11CubeMapBuffer : public ICubeMapColorBuffer
+class D3D11CubeMapBuffer : public CubeMapColorBuffer
 {
 	friend class D3D11Context;
 

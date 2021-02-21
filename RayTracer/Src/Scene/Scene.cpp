@@ -11,6 +11,7 @@
 #include "../Texture/RenderTexture.h"
 #include "../RealtimeRender/GraphicsLib/RenderBuffer.h"
 #include "../Gizmos/GizmosRenderer.h"
+#include "../Shader/ShaderConstants.h"
 
 Scene::Scene()
 {
@@ -214,9 +215,12 @@ void Scene::RenderOpaqueScene()
 	Vector3 cameraPos = m_camera->GetPosition();
 
 	CubeMapRenderTexture* cubeMap = nullptr;
+	Vector4 skyLightSH0R, skyLightSH0G, skyLightSH0B, skyLightSH1R, skyLightSH1G, skyLightSH1B;
+	Vector3 skyLightSH2, skyLightSH3;
 	if (m_skyLight != nullptr)
 	{
 		cubeMap = m_skyLight->GetCubeMap();
+		m_skyLight->GetDiffuseSkyLightSH(skyLightSH0R, skyLightSH0G, skyLightSH0B, skyLightSH1R, skyLightSH1G, skyLightSH1B, skyLightSH2, skyLightSH3);
 	}
 	RenderTexture* shadowMap = nullptr;
 	Matrix4x4 lightSpaceMatrix;
@@ -238,10 +242,23 @@ void Scene::RenderOpaqueScene()
 		PrimitiveBase* primitive = m_opaquePrimitives[i];
 		if (primitive->material)
 		{
-			primitive->material->SetSkyLightCubeMap(cubeMap);
-			primitive->material->SetCameraInformation(cameraPos);
-			primitive->material->SetSunLightInformation(sunLightDirection, sunLightColor);
-			primitive->material->SetShadowParameters(shadowMap, lightSpaceMatrix, shadowProjectionMatrix);
+			primitive->material->SetTexture(SHADER_TEXTURE_CUBE_MAP, cubeMap);
+			primitive->material->SetVector3(SHADER_CONSTANT_CAMERA_POSITION, cameraPos);
+			primitive->material->SetColor(SHADER_CONSTANT_SUN_LIGHT_COLOR, sunLightColor);
+			primitive->material->SetVector3(SHADER_CONSTANT_SUN_LIGHT_DIRECTION, sunLightDirection);
+			primitive->material->SetMatrix(SHADER_CONSTANT_WORLD_TO_LIGHTSPACE, lightSpaceMatrix);
+			primitive->material->SetMatrix(SHADER_CONSTANT_SHADOW_PROJECTION, shadowProjectionMatrix);
+			primitive->material->SetTexture(SHADER_TEXTURE_SHADOW_MAP, shadowMap);
+			primitive->material->SetVector4(SHADER_CONSTANT_SKY_LIGHT_SH0R, skyLightSH0R);
+			primitive->material->SetVector4(SHADER_CONSTANT_SKY_LIGHT_SH0G, skyLightSH0G);
+			primitive->material->SetVector4(SHADER_CONSTANT_SKY_LIGHT_SH0B, skyLightSH0B);
+			primitive->material->SetVector4(SHADER_CONSTANT_SKY_LIGHT_SH1R, skyLightSH1R);
+			primitive->material->SetVector4(SHADER_CONSTANT_SKY_LIGHT_SH1G, skyLightSH1G);
+			primitive->material->SetVector4(SHADER_CONSTANT_SKY_LIGHT_SH1B, skyLightSH1B);
+			primitive->material->SetVector3(SHADER_CONSTANT_SKY_LIGHT_SH2, skyLightSH2);
+			primitive->material->SetVector3(SHADER_CONSTANT_SKY_LIGHT_SH3, skyLightSH3);
+			Vector4 shadowMapSize = shadowMap ? Vector4(1.0 / shadowMap->GetWidth(), 1.0 / shadowMap->GetHeight(), shadowMap->GetWidth(), shadowMap->GetHeight()) : Vector4();
+			primitive->material->SetVector4(SHADER_CONSTANT_SHADOW_MAP_SIZE, shadowMapSize);
 		}
 		primitive->Render(viewMatrix, projectionMatrix);
 	}
@@ -276,10 +293,11 @@ void Scene::RenderTransparencyScene(RenderTexture* opaqueSceneTexture)
 		PrimitiveBase* primitive = m_transparencyPrimitives[i];
 		if (primitive->material)
 		{
-			primitive->material->SetSkyLightCubeMap(cubeMap);
-			primitive->material->SetCameraInformation(cameraPos);
-			primitive->material->SetSunLightInformation(sunLightDirection, sunLightColor);
-			primitive->material->SetScreenCapture(opaqueSceneTexture);
+			primitive->material->SetTexture(SHADER_TEXTURE_CUBE_MAP, cubeMap);
+			primitive->material->SetVector3(SHADER_CONSTANT_CAMERA_POSITION, cameraPos);
+			primitive->material->SetVector3(SHADER_CONSTANT_SUN_LIGHT_DIRECTION, sunLightDirection);
+			primitive->material->SetColor(SHADER_CONSTANT_SUN_LIGHT_COLOR, sunLightColor);
+			primitive->material->SetTexture(SHADER_TEXTURE_SCREEN_CAPTURE, opaqueSceneTexture);
 		}
 		primitive->Render(viewMatrix, projectionMatrix);
 	}
@@ -305,7 +323,7 @@ void Scene::RenderShadowScene()
 		{
 			if (primitive->material && !primitive->material->IsTransparency())
 			{
-				primitive->material->SetShadowBias(bias);
+				primitive->material->SetFloat(SHADER_CONSTANT_SHADOW_BIAS, bias);
 				primitive->RenderShadow(lightSpaceMatrix, shadowProjectionMatrix);
 			}
 		}

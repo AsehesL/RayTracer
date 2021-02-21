@@ -3,31 +3,26 @@
 #include "../RealtimeRender/GraphicsLib/TextureBuffer.h"
 #include "FreeImage.h"
 
-Texture::Texture(unsigned int width, unsigned int height, GLContext* glContext)
+Texture::Texture(unsigned int width, unsigned int height, GLContext* glContext) : TextureBase()
 {
 	m_width = width;
 	m_height = height;
-	m_filterMode = FilterMode::Point;
-	m_wrapMode = WrapMode::Repeat;
 
 	m_uDelta = 1.0f / width;
 	m_vDelta = 1.0f / height;
 
-	m_colors = new float[width * height * 4];
+	m_colors = new float[width * height * 4u];
 
 	m_textureBuffer = glContext->CreateTextureBuffer();
 
-	m_textureBuffer->SetFilterMode(m_filterMode);
-	m_textureBuffer->SetWrapMode(m_wrapMode);
+	m_textureBuffer->SetFilterMode(FilterMode::Point);
+	m_textureBuffer->SetWrapMode(WrapMode::Repeat);
 }
 
-Texture::Texture(const char* path, bool isLinear, GLContext* glContext)
+Texture::Texture(const char* path, bool isLinear, GLContext* glContext) : TextureBase()
 {
 	m_width = 0;
 	m_height = 0;
-
-	m_filterMode = FilterMode::Point;
-	m_wrapMode = WrapMode::Repeat;
 
 	m_colors = 0;
 
@@ -70,8 +65,8 @@ Texture::Texture(const char* path, bool isLinear, GLContext* glContext)
 
 	m_textureBuffer = glContext->CreateTextureBuffer();
 
-	m_textureBuffer->SetFilterMode(m_filterMode);
-	m_textureBuffer->SetWrapMode(m_wrapMode);
+	m_textureBuffer->SetFilterMode(FilterMode::Point);
+	m_textureBuffer->SetWrapMode(WrapMode::Repeat);
 
 	for (unsigned int i = 0; i < m_height; ++i)
 	{
@@ -121,10 +116,6 @@ Texture::Texture(const char* path, bool isLinear, GLContext* glContext)
 
 Texture::~Texture()
 {
-	if (m_textureBuffer)
-		delete m_textureBuffer;
-	m_textureBuffer = nullptr;
-
 	if (m_colors)
 		delete[] m_colors;
 	m_colors = 0;
@@ -167,7 +158,7 @@ void Texture::SetPixel(int x, int y, const Color& color)
 
 void Texture::GetPixel(int x, int y, Color& out)
 {
-	if (m_wrapMode == WrapMode::Clamp)
+	if (GetWrapMode() == WrapMode::Clamp)
 	{
 		if (x < 0)
 			x = 0;
@@ -178,7 +169,7 @@ void Texture::GetPixel(int x, int y, Color& out)
 		else if (y >= m_height)
 			y = (int)m_height - 1;
 	}
-	else if (m_wrapMode == WrapMode::Repeat)
+	else if (GetWrapMode() == WrapMode::Repeat)
 	{
 		int w = (int)m_width;
 		int h = (int)m_height;
@@ -199,7 +190,7 @@ void Texture::GetPixel(int x, int y, Color& out)
 
 void Texture::Sample(float u, float v, Color& out)
 {
-	if (m_filterMode == FilterMode::Bilinear)
+	if (GetFilterMode() == FilterMode::Bilinear)
 	{
 		int cellx = (int)floor(u / m_uDelta);
 		int celly = (int)floor(v / m_vDelta);
@@ -216,7 +207,7 @@ void Texture::Sample(float u, float v, Color& out)
 
 		out = Color::Lerp(Color::Lerp(topleft, topright, cx), Color::Lerp(bottomleft, bottomright, cx), cy);
 	}
-	else if (m_filterMode == FilterMode::Point)
+	else if (GetFilterMode() == FilterMode::Point)
 	{
 		int x = (int)floor(u * m_width);
 		int y = (int)floor(v * m_height);
@@ -229,35 +220,5 @@ void Texture::ApplyData()
 	if (m_textureBuffer)
 	{
 		m_textureBuffer->Set2DBuffer(m_width, m_height, m_colors);
-	}
-}
-
-void Texture::SetFilterMode(FilterMode filterMode)
-{
-	m_filterMode = filterMode;
-	m_textureBuffer->SetFilterMode(filterMode);
-}
-
-FilterMode Texture::GetFilterMode()
-{
-	return m_filterMode;
-}
-
-void Texture::SetWrapMode(WrapMode wrapMode)
-{
-	m_wrapMode = wrapMode;
-	m_textureBuffer->SetWrapMode(wrapMode);
-}
-
-WrapMode Texture::GetWrapMode()
-{
-	return m_wrapMode;
-}
-
-void Texture::SetShaderResource(unsigned int slot)
-{
-	if (m_textureBuffer)
-	{
-		m_textureBuffer->SetShaderResource(slot);
 	}
 }

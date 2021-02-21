@@ -2,6 +2,7 @@
 #include "../Core/ObjectPool.hpp"
 #include "../Primitive/Primitive.h"
 #include "../Shader/ShaderBase.h"
+#include "../Shader/ComputeShaderBase.h"
 #include "../Primitive/Mesh.h"
 #include "../Texture/Texture.h"
 #include "../Texture/RenderTexture.h"
@@ -34,13 +35,24 @@ public:
 	static T* CreateShader(int& shaderID);
 	template<class T>
 	static T* CreateShader();
+	static bool RemoveShader(int shaderID);
+
+	template<class T>
+	static T* CreateComputeShader(int& computeShaderID);
+	template<class T>
+	static T* CreateComputeShader();
+	static bool RemoveComputeShader(int computeShaderID);
 
 	static Texture* CreateTexture(unsigned int width, unsigned int height, int& textureID);
 	static Texture* CreateTexture(unsigned int width, unsigned int height);
 	static Texture* CreateTexture(const char* path, bool isLinear, int& textureID);
 	static Texture* CreateTexture(const char* path, bool isLinear);
 
+	static bool RemoveTexture(int textureID);
+
 	static Mesh* GetMesh(int meshID);
+
+	static bool RemoveMesh(int meshID);
 
 	template<class T>
 	static T* GetShader(int shaderID);
@@ -58,8 +70,8 @@ private:
 	static GlobalResource* GetInstance();
 
 private:
-	ObjectPool<PrimitiveBase>* m_primitiveObjectPool = nullptr;
 	ObjectPool<ShaderBase>* m_shaderObjectPool = nullptr;
+	ObjectPool<ComputeShaderBase>* m_computeShaderObjectPool = nullptr;
 	ObjectPool<Mesh>* m_meshObjectPool = nullptr;
 	ObjectPool<Texture>* m_texturePool = nullptr;
 
@@ -99,6 +111,25 @@ inline T* GlobalResource::CreateShader()
 {
 	int shaderID = -1;
 	return CreateShader<T>(shaderID);
+}
+
+template<class T>
+inline T* GlobalResource::CreateComputeShader(int& computeShaderID)
+{
+	computeShaderID = -1;
+	GlobalResource* instance = GetInstance();
+	if (instance == nullptr)
+		return nullptr;
+	T* computeShader = new T(instance->m_glContext);
+	computeShaderID = instance->m_computeShaderObjectPool->Add(computeShader);
+	return computeShader;
+}
+
+template<class T>
+inline T* GlobalResource::CreateComputeShader()
+{
+	int computeShaderID = -1;
+	return CreateComputeShader<T>(computeShaderID);
 }
 
 template<class T>

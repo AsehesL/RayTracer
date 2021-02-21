@@ -1,11 +1,21 @@
 #pragma once
 #include "../../Core/ConcurrentQueue.hpp"
 #include "../../Core/Color.h"
+#include "../../Texture/TextureBase.h"
 
-class ITextureBuffer;
+class TextureBuffer;
 
 namespace RayTracer
 {
+	class RTRenderTexture : public TextureBase
+	{
+	public:
+		RTRenderTexture(TextureBuffer* textureBuffer);
+		virtual ~RTRenderTexture() override;
+
+		TextureBuffer* GetTextureBuffer() const;
+	};
+
 	class RenderTarget
 	{
 	public:
@@ -15,7 +25,7 @@ namespace RayTracer
 		void SetPixel(int x, int y, const Color& color);
 		void GetPixel(int x, int y, Color& color);
 		void Fill(const Color& color);
-		void ApplyData(ITextureBuffer* textureBuffer);
+		void ApplyData(RTRenderTexture* renderTexture);
 		unsigned int GetWidth();
 		unsigned int GetHeight();
 		void Save(const char* path, bool isHDR);

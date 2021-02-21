@@ -11,11 +11,11 @@ enum class Topology
 	TriangleList,
 };
 
-class IVertexBuffer
+class VertexBuffer
 {
 public:
-	virtual ~IVertexBuffer() {}
+	virtual ~VertexBuffer() {}
 	virtual void SetVertices(float* vertices, unsigned int* indices, int vertexcount, int indexcount) = 0;
-	virtual void Bind(Topology topology, int indexCount = 0) = 0;
+	virtual void Draw(Topology topology, int indexCount = 0) = 0;
 	virtual bool IsValid() = 0;
 };

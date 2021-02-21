@@ -196,7 +196,7 @@ namespace RayTracerForm
             DialogResult result = openFileDialog.ShowDialog();
             if (result == DialogResult.OK)
             {
-                Mesh mesh = Mesh.CreateFromFile(openFileDialog.FileName);
+                Mesh.CreateFromFile(openFileDialog.FileName);
             }
         }
 

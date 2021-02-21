@@ -17,7 +17,12 @@ public:
 
 	void Render(const Vector3& cameraPosition, const Matrix4x4& worldToViewMatrix, const Matrix4x4& projectionMatrix);
 	class CubeMapRenderTexture* GetCubeMap();
+	void GetDiffuseSkyLightSH(Vector4& sh0R, Vector4& sh0G, Vector4& sh0B, Vector4& sh1R, Vector4& sh1G, Vector4& sh1B, Vector3& sh2, Vector3& sh3);
 	virtual RayTracer::RTSkyShader* GetRayTracerSkyLightShader() = 0;
+
+protected:
+	void MakeCubeMapDirty() { m_isCubeMapDirty = true; }
+	bool IsCubeMapDirty() const { return m_isCubeMapDirty; }
 
 private:
 	void RenderCubemapFace(class CubeMapRenderTexture* cubeMap, int face);
@@ -27,6 +32,10 @@ protected:
 	class Mesh* m_skySphereMesh;
 	class SkyShader* m_shader;
 	class CubeMapRenderTexture* m_cubeMap;
+	class SkyLightToSHComputeShader* m_skyLightToSHComputeShader;
+
+private:
+	bool m_isCubeMapDirty;
 };
 
 class EnvironmentMapSkyLight : public SkyLight

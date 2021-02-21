@@ -24,6 +24,7 @@ struct PixelInputType
 {
     float4 position : SV_POSITION;
     float3 normal : NORMAL;
+    float4 tangent : TANGENT;
     float2 uv0 : TEXCOORD0;
     float3 worldPos : TEXCOORD1;
 };
@@ -39,6 +40,7 @@ PixelInputType VertexFunc(VertexInputType input)
     output.position = mul(output.position, projectionMatrix);
     
 	output.normal = input.normal;
+    output.tangent = input.tangent;
 
     output.uv0 = input.uv0;
 

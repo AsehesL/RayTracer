@@ -905,6 +905,14 @@ public:
 typedef struct Vector4f
 {
 public:
+	Vector4f()
+	{
+		x = 0;
+		y = 0;
+		z = 0;
+		w = 0;
+	}
+
 	Vector4f(const Vector4 vector)
 	{
 		x = vector.x;

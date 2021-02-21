@@ -20,6 +20,8 @@ namespace RayTracerNet
 
     public abstract class MaterialShader : ResourceObject
     {
+        private Dictionary<string, Texture> m_textures = null;
+
         public override string GetFullPathName()
         {
             return null;
@@ -27,7 +29,114 @@ namespace RayTracerNet
 
         protected MaterialShader(int shaderID) : base(shaderID)
         {
+            m_textures = new Dictionary<string, Texture>();
         }
+
+        public void SetColor(string key, Color color)
+        {
+            SetShaderColor(objectID, key, color.r, color.g, color.b, color.a);
+        }
+
+        public Color GetColor(string key)
+        {
+            float r = 0, g = 0, b = 0, a = 0;
+            GetShaderColor(objectID, key, ref r, ref g, ref b, ref a);
+            return new Color(r, g, b, a);
+        }
+
+        public void SetFloat(string key, float number)
+        {
+            SetShaderFloat(objectID, key, number);
+        }
+
+        public float GetFloat(string key)
+        {
+            return GetShaderFloat(objectID, key);
+        }
+
+        public void SetVector2(string key, Vector2 vector)
+        {
+            SetShaderVector2(objectID, key, vector.x, vector.y);
+        }
+
+        public Vector2 GetVector2(string key)
+        {
+            double x = 0, y = 0;
+            GetShaderVector2(objectID, key, ref x, ref y);
+            return new Vector2(x, y);
+        }
+
+        public void SetVector3(string key, Vector3 vector)
+        {
+            SetShaderVector3(objectID, key, vector.x, vector.y, vector.z);
+        }
+
+        public Vector3 GetVector3(string key)
+        {
+            double x = 0, y = 0, z = 0;
+            GetShaderVector3(objectID, key, ref x, ref y, ref z);
+            return new Vector3(x, y, z);
+        }
+
+        public void SetVector4(string key, Vector4 vector)
+        {
+            SetShaderVector4(objectID, key, vector.x, vector.y, vector.z, vector.w);
+        }
+
+        public Vector4 GetVector4(string key)
+        {
+            double x = 0, y = 0, z = 0, w = 0;
+            GetShaderVector4(objectID, key, ref x, ref y, ref z, ref w);
+            return new Vector4(x, y, z, w);
+        }
+
+        public void SetTexture(string key, Texture texture)
+        {
+            m_textures[key] = texture;
+            if (texture == null)
+                SetShaderTexture(objectID, key, -1);
+            else
+                SetShaderTexture(objectID, key, texture.objectID);
+        }
+
+        public Texture GetTexture(string key)
+        {
+            return m_textures.ContainsKey(key) ? m_textures[key] : null;
+        }
+
+
+        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private extern static void GetShaderColor(int shaderID, string key, ref float r, ref float g, ref float b, ref float a);
+
+        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private extern static void SetShaderColor(int shaderID, string key, float r, float g, float b, float a);
+
+        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private extern static float GetShaderFloat(int shaderID, string key);
+
+        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private extern static void SetShaderFloat(int shaderID, string key, float v);
+
+        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private extern static void SetShaderTexture(int shaderID, string key, int textureID);
+
+        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private extern static void GetShaderVector2(int shaderID, string key, ref double x, ref double y);
+
+        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private extern static void SetShaderVector2(int shaderID, string key, double x, double y);
+
+        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private extern static void GetShaderVector3(int shaderID, string key, ref double x, ref double y, ref double z);
+
+        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private extern static void SetShaderVector3(int shaderID, string key, double x, double y, double z);
+
+        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private extern static void GetShaderVector4(int shaderID, string key, ref double x, ref double y, ref double z, ref double w);
+
+        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private extern static void SetShaderVector4(int shaderID, string key, double x, double y, double z, double w);
     }
 
     [ShaderType("Emissive")]
@@ -35,18 +144,6 @@ namespace RayTracerNet
     {
         [DllImport("RayTracerLib.dll")]
         private extern static int CreateEmissiveShader();
-
-        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
-        private extern static void GetEmissiveShaderColor(int shaderID, ref float r, ref float g, ref float b, ref float a);
-
-        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
-        private extern static void SetEmissiveShaderColor(int shaderID, float r, float g, float b, float a);
-
-        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
-        private extern static float GetEmissiveShaderIntensity(int shaderID);
-
-        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
-        private extern static void SetEmissiveShaderIntensity(int shaderID, float intensity);
 
         protected EmissiveShader(int shaderID) : base(shaderID)
         { }
@@ -58,15 +155,13 @@ namespace RayTracerNet
             {
                 if (objectID < 0)
                     return default(Color);
-                float r = 0, g = 0, b = 0, a = 0;
-                GetEmissiveShaderColor(objectID, ref r, ref g, ref b, ref a);
-                return new Color(r, g, b, a);
+                return GetColor("color");
             }
             set
             {
                 if (objectID < 0)
                     return;
-                SetEmissiveShaderColor(objectID, value.r, value.g, value.b, value.a);
+                SetColor("color", value);
             }
         }
 
@@ -77,13 +172,13 @@ namespace RayTracerNet
             {
                 if (objectID < 0)
                     return 0;
-                return GetEmissiveShaderIntensity(objectID);
+                return GetFloat("intensity");
             }
             set
             {
                 if (objectID < 0)
                     return;
-                SetEmissiveShaderIntensity(objectID, value);
+                SetFloat("intensity", value);
             }
         }
 
@@ -124,12 +219,6 @@ namespace RayTracerNet
         [DllImport("RayTracerLib.dll")]
         private extern static int CreateTransparencyShader();
 
-        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
-        private extern static void GetTransparencyShaderColor(int shaderID, ref float r, ref float g, ref float b, ref float a);
-
-        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
-        private extern static void SetTransparencyShaderColor(int shaderID, float r, float g, float b, float a);
-
         protected TransparencyShader(int shaderID) : base(shaderID)
         { }
 
@@ -140,15 +229,47 @@ namespace RayTracerNet
             {
                 if (objectID < 0)
                     return default(Color);
-                float r = 0, g = 0, b = 0, a = 0;
-                GetTransparencyShaderColor(objectID, ref r, ref g, ref b, ref a);
-                return new Color(r, g, b, a);
+                return GetColor("color");
             }
             set
             {
                 if (objectID < 0)
                     return;
-                SetTransparencyShaderColor(objectID, value.r, value.g, value.b, value.a);
+                SetColor("color", value);
+            }
+        }
+
+        [NumberPropertyDisplay("Refractive")]
+        public float refractive
+        {
+            get
+            {
+                if (objectID < 0)
+                    return 0;
+                return GetFloat("refractive");
+            }
+            set
+            {
+                if (objectID < 0)
+                    return;
+                SetFloat("refractive", value);
+            }
+        }
+
+        [NumberPropertyDisplay("Roughness")]
+        public float roughness
+        {
+            get
+            {
+                if (objectID < 0)
+                    return 0;
+                return GetFloat("roughness");
+            }
+            set
+            {
+                if (objectID < 0)
+                    return;
+                SetFloat("roughness", value);
             }
         }
 
@@ -190,36 +311,28 @@ namespace RayTracerNet
         }
 
         [ColorPropertyDisplay("AlbedoColor")]
-        public Color albedoColor
+        public Color color
         {
             get
             {
-                float r = 0, g = 0, b = 0, a = 0;
-                GetPBRShaderAlbedoColor(objectID, ref r, ref g, ref b, ref a);
-                return new Color(r, g, b, a);
+                return GetColor("albedoColor");
             }
             set
             {
-                SetPBRShaderAlbedoColor(objectID, value.r, value.g, value.b, value.a);
+                SetColor("albedoColor", value);
             }
         }
 
-        private Texture m_albedoTexture;
-
         [ResourcePropertyDisplay("Albedo")]
-        public Texture albedoTexture
+        public Texture albedo
         {
             get
             {
-                return m_albedoTexture;
+                return GetTexture("albedoTexture");
             }
             set
             {
-                m_albedoTexture = value;
-                if (value == null)
-                    SetPBRShaderAlbedoTexture(objectID, -1);
-                else
-                    SetPBRShaderAlbedoTexture(objectID, value.objectID);
+                SetTexture("albedoTexture", value);
             }
         }
 
@@ -228,11 +341,11 @@ namespace RayTracerNet
         {
             get
             {
-                return GetPBRShaderRoughness(objectID);
+                return GetFloat("roughness");
             }
             set
             {
-                SetPBRShaderRoughness(objectID, value);
+                SetFloat("roughness", value);
             }
         }
 
@@ -241,34 +354,79 @@ namespace RayTracerNet
         {
             get
             {
-                return GetPBRShaderMetallic(objectID);
+                return GetFloat("metallic");
             }
             set
             {
-                SetPBRShaderMetallic(objectID, value);
+                SetFloat("metallic", value);
             }
         }
 
-        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
-        private extern static void GetPBRShaderAlbedoColor(int shaderID, ref float r, ref float g, ref float b, ref float a);
 
-        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
-        private extern static void SetPBRShaderAlbedoColor(int shaderID, float r, float g, float b, float a);
+        [ResourcePropertyDisplay("Normal")]
+        public Texture bump
+        {
+            get
+            {
+                return GetTexture("bumpTex");
+            }
+            set
+            {
+                SetTexture("bumpTex", value);
+            }
+        }
 
-        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
-        private extern static void SetPBRShaderAlbedoTexture(int shaderID, int textureID);
+        [ResourcePropertyDisplay("MRO")]
+        public Texture mroTex
+        {
+            get
+            {
+                return GetTexture("mroTex");
+            }
+            set
+            {
+                SetTexture("mroTex", value);
+            }
+        }
 
-        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
-        private extern static float GetPBRShaderRoughness(int shaderID);
+        [ColorPropertyDisplay("EmissiveColor")]
+        public Color emissive
+        {
+            get
+            {
+                return GetColor("emissive");
+            }
+            set
+            {
+                SetColor("emissive", value);
+            }
+        }
 
-        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
-        private extern static void SetPBRShaderRoughness(int shaderID, float roughness);
+        [ResourcePropertyDisplay("Emissive")]
+        public Texture emissiveTex
+        {
+            get
+            {
+                return GetTexture("emissiveTex");
+            }
+            set
+            {
+                SetTexture("emissiveTex", value);
+            }
+        }
 
-        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
-        private extern static float GetPBRShaderMetallic(int shaderID);
-
-        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
-        private extern static void SetPBRShaderMetallic(int shaderID, float metallic);
+        [ResourcePropertyDisplay("UVTile")]
+        public Vector2 tile
+        {
+            get
+            {
+                return GetVector2("uvTile");
+            }
+            set
+            {
+                SetVector2("uvTile", value);
+            }
+        }
     }
 
     [ShaderType("PBR")]

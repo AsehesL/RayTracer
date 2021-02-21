@@ -12,11 +12,4 @@ public:
 
 protected:
 	virtual bool OnApplyParameters() override;
-
-private:
-	class IShaderUniformBuffer* m_matrixUniformBuffer;
-
-	Matrix4x4 m_screenMatrix;
-
-	bool m_isMatrixUniformBufferDirty;
 };

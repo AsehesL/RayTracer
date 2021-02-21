@@ -1,4 +1,4 @@
-cbuffer ShadowBiasBuffer
+cbuffer ShadowPassBuffer
 {
 	float4 shadowBias;
 };

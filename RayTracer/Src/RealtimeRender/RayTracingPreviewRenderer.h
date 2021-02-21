@@ -5,6 +5,7 @@
 namespace RayTracer
 {
 	class RenderTarget;
+	class RTRenderTexture;
 }
 
 class RayTracingPreviewRenderer
@@ -29,5 +30,5 @@ private:
 	class GLContext* m_glContext;
 	class Mesh* m_screenQuadMesh;
 	class LinearToGammaShader* m_screenQuadShader;
-	class ITextureBuffer* m_textureBuffer;
+	RayTracer::RTRenderTexture* m_renderTexture;
 };

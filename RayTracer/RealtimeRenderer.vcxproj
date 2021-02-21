@@ -100,7 +100,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include;../Includes;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86;../Libs;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;../Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TestForWindow|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -109,6 +109,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include;../Includes;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x64;../Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TestForWindow|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -135,13 +137,13 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>dxgi.lib;d3dx11.lib;d3d11.lib;d3dx11d.lib;d3dcompiler.lib;dxguid.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dxgi.lib;d3dx11.lib;d3d11.lib;d3dx11d.lib;d3dcompiler.lib;dxguid.lib;FreeImage.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy  "$(TargetDir)$(TargetName).dll" "$(SolutionDir)RayTracerForm\bin\Debug"  /y
 xcopy  "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)RayTracerForm\bin\Debug"  /y
 xcopy "$(ProjectDir)Shaders" "$(SolutionDir)RayTracerForm\bin\Debug\Shaders\" /y
-xcopy "$(SolutionDir)Libs" "$(SolutionDir)RayTracerForm\bin\Debug\" /y</Command>
+xcopy "$(SolutionDir)DLLs" "$(SolutionDir)RayTracerForm\bin\Debug\" /y</Command>
     </PostBuildEvent>
     <Bscmake>
       <PreserveSbr>true</PreserveSbr>
@@ -179,7 +181,14 @@ xcopy "$(SolutionDir)Libs" "$(SolutionDir)RayTracerForm\bin\Debug\" /y</Command>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>dxgi.lib;d3dx11.lib;d3d11.lib;d3dx11d.lib;d3dcompiler.lib;dxguid.lib;FreeImage.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy  "$(TargetDir)$(TargetName).dll" "$(SolutionDir)RayTracerForm\bin\Debug"  /y
+xcopy  "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)RayTracerForm\bin\Debug"  /y
+xcopy "$(ProjectDir)Shaders" "$(SolutionDir)RayTracerForm\bin\Debug\Shaders\" /y
+xcopy "$(SolutionDir)DLLs" "$(SolutionDir)RayTracerForm\bin\Debug\" /y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='TestForWindow|x64'">
     <ClCompile>
@@ -279,22 +288,27 @@ xcopy "$(SolutionDir)Libs" "$(SolutionDir)RayTracerForm\bin\Debug\" /y</Command>
     <ClInclude Include="Src\RayTracer\Shader\RayTracerPBRShader.h" />
     <ClInclude Include="Src\RayTracer\Shader\RayTracerShader.h" />
     <ClInclude Include="Src\RayTracer\Shader\RayTracerSkyShader.h" />
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\ComputeBuffer.h" />
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\ComputeShaderProgram.h" />
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11ComputeBuffer.h" />
     <ClInclude Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11Context.h" />
     <ClInclude Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11HLSLProgram.h" />
     <ClInclude Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11RenderBuffer.h" />
     <ClInclude Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11RenderStateMachine.h" />
     <ClInclude Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11TextureBuffer.h" />
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11UniformBuffer.h" />
     <ClInclude Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11VertexBuffer.h" />
     <ClInclude Include="Src\RealtimeRender\GraphicsLib\GLContext.h" />
     <ClInclude Include="Src\RealtimeRender\GraphicsLib\GLDefines.h" />
     <ClInclude Include="Src\RealtimeRender\GraphicsLib\RenderBuffer.h" />
     <ClInclude Include="Src\RealtimeRender\GraphicsLib\ShaderProgram.h" />
-    <ClInclude Include="Src\RealtimeRender\GraphicsLib\ShaderResource.h" />
     <ClInclude Include="Src\RealtimeRender\GraphicsLib\TextureBuffer.h" />
+    <ClInclude Include="Src\RealtimeRender\GraphicsLib\UniformBuffer.h" />
     <ClInclude Include="Src\RealtimeRender\GraphicsLib\VertexBuffer.h" />
     <ClInclude Include="Src\RealtimeRender\RayTracingPreviewRenderer.h" />
     <ClInclude Include="Src\RealtimeRender\RealtimeRenderer.h" />
     <ClInclude Include="Src\Scene\Scene.h" />
+    <ClInclude Include="Src\Shader\ComputeShaderBase.h" />
     <ClInclude Include="Src\Shader\EmissiveShader.h" />
     <ClInclude Include="Src\Shader\ErrorShader.h" />
     <ClInclude Include="Src\Shader\GizmosShader.h" />
@@ -305,10 +319,14 @@ xcopy "$(SolutionDir)Libs" "$(SolutionDir)RayTracerForm\bin\Debug\" /y</Command>
     <ClInclude Include="Src\Shader\PostProcessShaderBase.h" />
     <ClInclude Include="Src\Shader\ScreenQuadShader.h" />
     <ClInclude Include="Src\Shader\ShaderBase.h" />
+    <ClInclude Include="Src\Shader\ShaderConstants.h" />
+    <ClInclude Include="Src\Shader\SkyLightToSHComputeShader.h" />
     <ClInclude Include="Src\Shader\SkyShader.h" />
     <ClInclude Include="Src\Shader\TransparencyShader.h" />
     <ClInclude Include="Src\Texture\RenderTexture.h" />
     <ClInclude Include="Src\Texture\Texture.h" />
+    <ClInclude Include="Src\Texture\TextureBase.h" />
+    <ClInclude Include="Test\ComputeShaderTest.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -343,16 +361,19 @@ xcopy "$(SolutionDir)Libs" "$(SolutionDir)RayTracerForm\bin\Debug\" /y</Command>
     <ClCompile Include="Src\RayTracer\Shader\RayTracerPBRShader.cpp" />
     <ClCompile Include="Src\RayTracer\Shader\RayTracerShader.cpp" />
     <ClCompile Include="Src\RayTracer\Shader\RayTracerSkyShader.cpp" />
+    <ClCompile Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11ComputeBuffer.cpp" />
     <ClCompile Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11Context.cpp" />
     <ClCompile Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11HLSLProgram.cpp" />
     <ClCompile Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11RenderBuffer.cpp" />
     <ClCompile Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11RenderStateMachine.cpp" />
     <ClCompile Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11TextureBuffer.cpp" />
+    <ClCompile Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11UniformBuffer.cpp" />
     <ClCompile Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11VertexBuffer.cpp" />
     <ClCompile Include="Src\RealtimeRender\GraphicsLib\GLContext.cpp" />
     <ClCompile Include="Src\RealtimeRender\RayTracingPreviewRenderer.cpp" />
     <ClCompile Include="Src\RealtimeRender\RealtimeRenderer.cpp" />
     <ClCompile Include="Src\Scene\Scene.cpp" />
+    <ClCompile Include="Src\Shader\ComputeShaderBase.cpp" />
     <ClCompile Include="Src\Shader\EmissiveShader.cpp" />
     <ClCompile Include="Src\Shader\ErrorShader.cpp" />
     <ClCompile Include="Src\Shader\GizmosShader.cpp" />
@@ -363,10 +384,13 @@ xcopy "$(SolutionDir)Libs" "$(SolutionDir)RayTracerForm\bin\Debug\" /y</Command>
     <ClCompile Include="Src\Shader\PostProcessShaderBase.cpp" />
     <ClCompile Include="Src\Shader\ScreenQuadShader.cpp" />
     <ClCompile Include="Src\Shader\ShaderBase.cpp" />
+    <ClCompile Include="Src\Shader\SkyLightToSHComputeShader.cpp" />
     <ClCompile Include="Src\Shader\SkyShader.cpp" />
     <ClCompile Include="Src\Shader\TransparencyShader.cpp" />
     <ClCompile Include="Src\Texture\RenderTexture.cpp" />
     <ClCompile Include="Src\Texture\Texture.cpp" />
+    <ClCompile Include="Src\Texture\TextureBase.cpp" />
+    <ClCompile Include="Test\ComputeShaderTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\LinearToGammaPS.hlsl" />

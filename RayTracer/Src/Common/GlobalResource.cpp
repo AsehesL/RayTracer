@@ -449,6 +449,20 @@ RenderTexture* GlobalResource::GetPreIntegratedBRDFTexture()
 	return gResource->m_preIntegratedBRDFTexture;
 }
 
+bool GlobalResource::RemoveShader(int shaderID)
+{
+	if (gResource == nullptr)
+		return false;
+	return gResource->m_shaderObjectPool->Delete(shaderID);
+}
+
+bool GlobalResource::RemoveComputeShader(int computeShaderID)
+{
+	if (gResource == nullptr)
+		return false;
+	return gResource->m_computeShaderObjectPool->Delete(computeShaderID);
+}
+
 Texture* GlobalResource::CreateTexture(unsigned int width, unsigned int height, int& textureID)
 {
 	textureID = -1;
@@ -481,11 +495,25 @@ Texture* GlobalResource::CreateTexture(const char* path, bool isLinear)
 	return CreateTexture(path, isLinear, textureID);
 }
 
+bool GlobalResource::RemoveTexture(int textureID)
+{
+	if (gResource == nullptr)
+		return false;
+	return gResource->m_texturePool->Delete(textureID);
+}
+
 Mesh* GlobalResource::GetMesh(int meshID)
 {
 	if (gResource == nullptr)
 		return nullptr;
 	return gResource->m_meshObjectPool->Get(meshID);
+}
+
+bool GlobalResource::RemoveMesh(int meshID)
+{
+	if (gResource == nullptr)
+		return false;
+	return gResource->m_meshObjectPool->Delete(meshID);
 }
 
 Texture* GlobalResource::GetTexture(int textureID)
@@ -542,8 +570,8 @@ ErrorShader* GlobalResource::GetErrorShader()
 
 GlobalResource::GlobalResource(GLContext* glContext)
 {
-	m_primitiveObjectPool = new ObjectPool<PrimitiveBase>();
 	m_shaderObjectPool = new ObjectPool<ShaderBase>();
+	m_computeShaderObjectPool = new ObjectPool<ComputeShaderBase>();
 	m_meshObjectPool = new ObjectPool<Mesh>();
 	m_texturePool = new ObjectPool<Texture>();
 
@@ -569,8 +597,8 @@ GlobalResource::GlobalResource(GLContext* glContext)
 
 GlobalResource::~GlobalResource()
 {
-	delete m_primitiveObjectPool;
 	delete m_shaderObjectPool;
+	delete m_computeShaderObjectPool;
 	delete m_meshObjectPool;
 	delete m_texturePool;
 

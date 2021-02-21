@@ -10,7 +10,4 @@ public:
 
 protected:
 	virtual bool OnApplyParameters() override;
-
-public:
-	class IShaderResource* texture;
 };

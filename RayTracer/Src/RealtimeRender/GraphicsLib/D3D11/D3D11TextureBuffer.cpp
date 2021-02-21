@@ -1,6 +1,65 @@
 #include "D3D11TextureBuffer.h"
 #include "D3D11RenderStateMachine.h"
 
+D3D11SamplerState::D3D11SamplerState(ID3D11Device* device, ID3D11DeviceContext* deviceContext, FilterMode filterMode, WrapMode wrapMode)
+{
+	D3D11_TEXTURE_ADDRESS_MODE u = D3D11_TEXTURE_ADDRESS_WRAP;
+	D3D11_TEXTURE_ADDRESS_MODE v = D3D11_TEXTURE_ADDRESS_WRAP;
+	if (wrapMode == WrapMode::Clamp)
+	{
+		u = D3D11_TEXTURE_ADDRESS_CLAMP;
+		v = D3D11_TEXTURE_ADDRESS_CLAMP;
+	}
+
+	D3D11_FILTER filter;
+	if (filterMode == FilterMode::Point)
+		filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+	else if (filterMode == FilterMode::Bilinear)
+		filter = D3D11_FILTER_MIN_POINT_MAG_LINEAR_MIP_POINT;
+	else
+		filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+
+	D3D11_SAMPLER_DESC samplerDesc;
+	samplerDesc.Filter = filter;
+	samplerDesc.AddressU = u;
+	samplerDesc.AddressV = v;
+	samplerDesc.AddressW = u;
+	samplerDesc.MipLODBias = 0.0f;
+	samplerDesc.MaxAnisotropy = 1;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	samplerDesc.BorderColor[0] = 0;
+	samplerDesc.BorderColor[1] = 0;
+	samplerDesc.BorderColor[2] = 0;
+	samplerDesc.BorderColor[3] = 0;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	device->CreateSamplerState(&samplerDesc, &m_samplerState);
+
+	m_deviceContext = deviceContext;
+}
+
+D3D11SamplerState::~D3D11SamplerState()
+{
+	m_samplerState->Release();
+}
+
+void D3D11SamplerState::VSSetSampler(unsigned int slot)
+{
+	m_deviceContext->VSSetSamplers(slot, 1, &m_samplerState);
+}
+
+void D3D11SamplerState::PSSetSampler(unsigned int slot)
+{
+	m_deviceContext->PSSetSamplers(slot, 1, &m_samplerState);
+}
+
+void D3D11SamplerState::CSSetSampler(unsigned int slot)
+{
+	m_deviceContext->CSSetSamplers(slot, 1, &m_samplerState);
+}
+
+
 D3D11TextureBuffer::D3D11TextureBuffer(ID3D11Device* device, ID3D11DeviceContext* deviceContext, D3D11RenderStateMachine* stateMachine)
 {
 	m_deviceContext = deviceContext;
@@ -106,7 +165,7 @@ void D3D11TextureBuffer::Set2DBuffer(unsigned int width, unsigned int height, co
 	}*/
 }
 
-void D3D11TextureBuffer::SetCubeBuffer(ITextureBuffer* right, ITextureBuffer* left, ITextureBuffer* top, ITextureBuffer* bottom, ITextureBuffer* front, ITextureBuffer* back)
+void D3D11TextureBuffer::SetCubeBuffer(TextureBuffer* right, TextureBuffer* left, TextureBuffer* top, TextureBuffer* bottom, TextureBuffer* front, TextureBuffer* back)
 {
 	ID3D11Resource* srcTex[6];
 
@@ -171,6 +230,13 @@ void D3D11TextureBuffer::SetCubeBuffer(ITextureBuffer* right, ITextureBuffer* le
 	m_deviceContext->GenerateMips(m_shaderResourceView);
 }
 
+SamplerState* D3D11TextureBuffer::GetSampler()
+{
+	if (m_stateMachine)
+		return m_stateMachine->GetSamplerState(m_filterMode, m_wrapMode);
+	return nullptr;
+}
+
 void D3D11TextureBuffer::SetFilterMode(FilterMode filterMode)
 {
 	m_filterMode = filterMode;
@@ -191,11 +257,35 @@ WrapMode D3D11TextureBuffer::GetWrapMode()
 	return m_wrapMode;
 }
 
-void D3D11TextureBuffer::SetShaderResource(unsigned int slot)
+void D3D11TextureBuffer::VSSetTexture(unsigned int slot)
 {
-	if (m_shaderResourceView != nullptr)
+	if (m_shaderResourceView)
 	{
-		m_stateMachine->SetSamplerState(slot, m_filterMode, m_wrapMode);
+		auto sampler = GetSampler();
+		if (sampler)
+			sampler->VSSetSampler(slot);
+		m_deviceContext->VSSetShaderResources(slot, 1, &m_shaderResourceView);
+	}
+}
+
+void D3D11TextureBuffer::PSSetTexture(unsigned int slot)
+{
+	if (m_shaderResourceView)
+	{
+		auto sampler = GetSampler();
+		if (sampler)
+			sampler->PSSetSampler(slot);
 		m_deviceContext->PSSetShaderResources(slot, 1, &m_shaderResourceView);
+	}
+}
+
+void D3D11TextureBuffer::CSSetTexture(unsigned int slot)
+{
+	if (m_shaderResourceView)
+	{
+		auto sampler = GetSampler();
+		if (sampler)
+			sampler->CSSetSampler(slot);
+		m_deviceContext->CSSetShaderResources(slot, 1, &m_shaderResourceView);
 	}
 }

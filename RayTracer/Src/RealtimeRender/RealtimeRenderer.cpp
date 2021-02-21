@@ -7,6 +7,7 @@
 #include "../Camera/Camera.h"
 #include "../Light/SunLight.h"
 #include "../Gizmos/GizmosRenderer.h"
+#include "../Shader/ShaderConstants.h"
 
 RealtimeRenderer::RealtimeRenderer(GLContext* glContext, Scene* scene)
 {
@@ -77,7 +78,7 @@ RenderTexture* RealtimeRenderer::GetOpaqueSceneScreenCapture()
 	m_glContext->Clear((int)ClearFlags::Color | (int)ClearFlags::Depth);
 
 	m_screenQuadShader->SetRenderSize(m_opaqueSceneTexture->GetWidth(), m_opaqueSceneTexture->GetHeight(), m_opaqueSceneTexture->GetWidth(), m_opaqueSceneTexture->GetHeight());
-	m_screenQuadShader->texture = m_renderTexture;
+	m_screenQuadShader->SetTexture(SHADER_TEXTURE_TEXTURE, m_renderTexture);
 	if (m_screenQuadShader->Execute())
 	{
 		m_screenQuadMesh->Commit();
@@ -150,7 +151,7 @@ void RealtimeRenderer::RenderPostProcess(int windowWidth, int windowHeight, int 
 	if (m_screenQuadMesh && m_linearToGammaShader && m_renderTexture)
 	{
 		m_linearToGammaShader->SetRenderSize(windowWidth, windowHeight, renderWidth, renderHeight);
-		m_linearToGammaShader->renderTexture = m_renderTexture;
+		m_linearToGammaShader->SetTexture(SHADER_TEXTURE_TEXTURE, m_renderTexture);
 		if (m_linearToGammaShader->Execute())
 		{
 			m_screenQuadMesh->Commit();

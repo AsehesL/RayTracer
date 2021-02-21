@@ -1,9 +1,11 @@
 #include "TransparencyShader.h"
 #include "../RealtimeRender/GraphicsLib/GLContext.h"
 #include "../RealtimeRender/GraphicsLib/ShaderProgram.h"
-#include "../RealtimeRender/GraphicsLib/ShaderResource.h"
+#include "../RealtimeRender/GraphicsLib/UniformBuffer.h"
+#include "../Texture/TextureBase.h"
 #include "../Texture/RenderTexture.h"
 #include "../Common/GlobalResource.h"
+#include "ShaderConstants.h"
 
 struct TransparencyMaterialPSUniformBuffer
 {
@@ -13,23 +15,11 @@ public:
 
 TransparencyShader::TransparencyShader(GLContext* glContext) : MaterialShader(glContext)
 {
-	m_transparencyMaterialPSUniformBuffer = glContext->CreateShaderUniformBuffer(sizeof(TransparencyMaterialPSUniformBuffer));
-
 	m_shaderProgram->Compile(L"Shaders/TransparencyVS.hlsl", L"Shaders/TransparencyPS.hlsl");
-
-	m_isTransparencyMaterialPSUniformBufferDirty = true;
-
-	m_screenCapture = nullptr;
 }
 
 TransparencyShader::~TransparencyShader()
 {
-	delete m_transparencyMaterialPSUniformBuffer;
-}
-
-void TransparencyShader::SetScreenCapture(RenderTexture* screenCapture)
-{
-	m_screenCapture = screenCapture;
 }
 
 RayTracer::RTShaderBase* TransparencyShader::GetRTShader()
@@ -41,26 +31,36 @@ bool TransparencyShader::OnApplyParameters()
 {
 	if (!MaterialShader::OnApplyParameters())
 		return false;
-	if (m_isTransparencyMaterialPSUniformBufferDirty)
+	UniformBuffer* transparencyMaterialPSUniformBuffer = m_shaderProgram->GetUniformBuffer("SkyBuffer");
+	UniformBuffer* matrixUniformBuffer = m_shaderProgram->GetUniformBuffer("MatrixBuffer");
+	UniformBuffer* viewUniformBuffer = m_shaderProgram->GetUniformBuffer("ViewBuffer");
+	if (IsUniformBufferDirty("color"))
 	{
-		TransparencyMaterialPSUniformBuffer* transparencyMaterialPSUniformBuffer = (TransparencyMaterialPSUniformBuffer*)m_transparencyMaterialPSUniformBuffer->Map();
 		if (transparencyMaterialPSUniformBuffer)
 		{
-			transparencyMaterialPSUniformBuffer->color = m_color;
-			m_transparencyMaterialPSUniformBuffer->Unmap();
+			TransparencyMaterialPSUniformBuffer* transparencyMaterialPSUniformBufferData = (TransparencyMaterialPSUniformBuffer*)transparencyMaterialPSUniformBuffer->Map();
+			if (transparencyMaterialPSUniformBufferData)
+			{
+				Color color = GetColor("color");
+				transparencyMaterialPSUniformBufferData->color = color;
+				transparencyMaterialPSUniformBuffer->Unmap();
+			}
 		}
-		m_isTransparencyMaterialPSUniformBufferDirty = false;
+		ClearDirtyFlag("color");
 	}
-	m_matrixUniformBuffer->ApplyPSUniformBuffer(0);
-	m_viewUniformBuffer->ApplyPSUniformBuffer(1);
-	m_transparencyMaterialPSUniformBuffer->ApplyPSUniformBuffer(2);
+	if (matrixUniformBuffer)
+		matrixUniformBuffer->PSSetUniformBuffer(0);
+	if(viewUniformBuffer)
+		viewUniformBuffer->PSSetUniformBuffer(1);
+	if (transparencyMaterialPSUniformBuffer)
+		transparencyMaterialPSUniformBuffer->PSSetUniformBuffer(2);
 
-	IShaderResource* screenCapture = m_screenCapture;
+	TextureBase* screenCapture = GetTexture(SHADER_TEXTURE_SCREEN_CAPTURE);
 	if (screenCapture == nullptr)
 	{
 		screenCapture = GlobalResource::GetWhiteTexture();
 	}
-	screenCapture->SetShaderResource(0);
+	screenCapture->PSSetTexture(0);
 
 	return true;
 }

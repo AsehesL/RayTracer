@@ -15,15 +15,32 @@ public:
 	void ClearColor(float r, float g, float b, float a) override;
 	void Clear(int clearFlags) override;
 	void SetViewport(float x, float y, float width, float height) override;
-	class IVertexBuffer* CreateVertexBuffer(bool isDynamic) override;
-	class IShaderProgram* CreateShaderProgram() override;
-	class IShaderUniformBuffer* CreateShaderUniformBuffer(unsigned int bufferSize) override;
-	class ITextureBuffer* CreateTextureBuffer() override;
-	void CreateRenderBuffer(unsigned int width, unsigned int height, bool isShadowMap, class IColorBuffer** outColorBuffer, class IDepthBuffer** outDepthBuffer, class ITextureBuffer** outTextureBuffer) override;
-	void CreateCubeRenderBuffer(unsigned int size, class ICubeMapColorBuffer** outCubeMapColorBuffer, class IDepthBuffer** outDepthBuffer, class ITextureBuffer** outTextureBuffer) override;
-	void SetRenderBuffer(class IColorBuffer* colorBuffer, class IDepthBuffer* depthBuffer) override;
-	void SetCubeRenderBuffer(class ICubeMapColorBuffer* cubeMapColorBuffer, class IDepthBuffer* depthBuffer, int face) override;
-	void GenerateMipmap(class ITextureBuffer* textureBuffer) override;
+	class VertexBuffer* CreateVertexBuffer(bool isDynamic) override;
+
+	class ShaderProgram* CreateShaderProgram() override;
+
+	class ComputeShaderProgram* CreateComputeShaderProgram() override;
+
+	class UniformBuffer* CreateUniformBuffer(unsigned int bufferSize) override;
+
+	class ComputeBuffer* CreateComputeBuffer(unsigned int elementSize, unsigned int count, void* data) override;
+
+	class TextureBuffer* CreateTextureBuffer() override;
+
+	class SamplerState* GetSamplerState(FilterMode filterMode, WrapMode wrapMode) override;
+
+	void CreateRenderBuffer(unsigned int width, unsigned int height, bool isShadowMap, class ColorBuffer** outColorBuffer, class DepthBuffer** outDepthBuffer, class TextureBuffer** outTextureBuffer) override;
+
+	void CreateCubeRenderBuffer(unsigned int size, class CubeMapColorBuffer** outCubeMapColorBuffer, class DepthBuffer** outDepthBuffer, class TextureBuffer** outTextureBuffer) override;
+
+	void SetRenderBuffer(class ColorBuffer* colorBuffer, class DepthBuffer* depthBuffer) override;
+
+	void SetCubeRenderBuffer(class CubeMapColorBuffer* cubeMapColorBuffer, class DepthBuffer* depthBuffer, int face) override;
+
+	void GenerateMipmap(class TextureBuffer* textureBuffer) override;
+
+	ID3D11DeviceContext* GetDeviceContext() const { return m_deviceContext; }
+	ID3D11Device* GetDevice() const { return m_device; }
 
 protected:
 	void ApplyRenderStates(bool forceApply) override;
@@ -35,8 +52,8 @@ private:
 	ID3D11DeviceContext* m_deviceContext;
 	D3D11_VIEWPORT m_viewPort;
 	float m_clearColor[4];
-	class IColorBuffer* m_colorBuffer;
-	class IDepthBuffer* m_depthBuffer;
+	class ColorBuffer* m_colorBuffer;
+	class DepthBuffer* m_depthBuffer;
 	//class IColorBuffer* m_currentColorBuffer;
 	//class IDepthBuffer* m_currentDepthBuffer;
 	ID3D11RenderTargetView* m_currentColorRenderTargetView;

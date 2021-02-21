@@ -25,6 +25,8 @@ public:
 
 	void Commit();
 
+	static void CreateMeshesFromFile(const char* path, int& startMeshID, int& endMeshID);
+
 private:
 	Vector3* m_vertices;
 	Vector2* m_uv0s;
@@ -35,7 +37,7 @@ private:
 	unsigned int m_vertexCount;
 	unsigned int m_indexCount;
 	unsigned int* m_indices;
-	class IVertexBuffer* m_vertexBuffer;
+	class VertexBuffer* m_vertexBuffer;
 	class GLContext* m_glContext;
 	bool m_meshHasModified;
 };

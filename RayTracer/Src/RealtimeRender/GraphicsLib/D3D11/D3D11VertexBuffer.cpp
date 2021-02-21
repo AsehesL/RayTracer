@@ -102,7 +102,7 @@ void D3D11VertexBuffer::SetVertices(float* vertices, unsigned int* indices, int 
 	}
 }
 
-void D3D11VertexBuffer::Bind(Topology topology, int indexCount)
+void D3D11VertexBuffer::Draw(Topology topology, int indexCount)
 {
 	if (!IsValid())
 		return;

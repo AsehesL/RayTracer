@@ -65,13 +65,15 @@ void RayTracer::RenderTarget::Fill(const Color& color)
 	lock.unlock();
 }
 
-void RayTracer::RenderTarget::ApplyData(ITextureBuffer* textureBuffer)
+void RayTracer::RenderTarget::ApplyData(RTRenderTexture* renderTexture)
 {
 	std::unique_lock<std::mutex> lock(m_lock);
 
-	if (m_isDirty && textureBuffer)
+	if (m_isDirty && renderTexture)
 	{
-		textureBuffer->Set2DBuffer(m_width, m_height, m_colors);
+		TextureBuffer* textureBuffer = renderTexture->GetTextureBuffer();
+		if (textureBuffer)
+			textureBuffer->Set2DBuffer(m_width, m_height, m_colors);
 		m_isDirty = false;
 	}
 
@@ -147,4 +149,18 @@ void RayTracer::RenderTarget::Save(const char* path, bool isHDR)
 		FreeImage_Save(fif, dib, path);
 		FreeImage_Unload(dib);
 	}
+}
+
+RayTracer::RTRenderTexture::RTRenderTexture(TextureBuffer* textureBuffer) : TextureBase()
+{
+	m_textureBuffer = textureBuffer;
+}
+
+RayTracer::RTRenderTexture::~RTRenderTexture()
+{
+}
+
+TextureBuffer* RayTracer::RTRenderTexture::GetTextureBuffer() const
+{
+	return m_textureBuffer;
 }

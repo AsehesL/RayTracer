@@ -1,4 +1,5 @@
 #include "D3D11RenderStateMachine.h"
+#include "D3D11TextureBuffer.h"
 
 D3D11_COMPARISON_FUNC ToD3D11ComparisonFunc(CompareFunc func)
 {
@@ -155,18 +156,10 @@ unsigned long D3D11RenderStateMachine::D3D11BlendState::GetKey()
 	return key;
 }
 
-unsigned int D3D11RenderStateMachine::D3D11SamplerState::GetKey()
-{
-	unsigned int key = (unsigned int)filterMode << 8;
-	key = key | ((unsigned int)wrapMode);
-	return key;
-}
-
 D3D11RenderStateMachine::D3D11RenderStateMachine(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
 	m_device = device;
 	m_deviceContext = deviceContext;
-	m_hasSampler = false;
 }
 
 D3D11RenderStateMachine::~D3D11RenderStateMachine()
@@ -209,12 +202,14 @@ D3D11RenderStateMachine::~D3D11RenderStateMachine()
 		m_disableBlendState = NULL;
 	}
 
-	std::map<unsigned int, ID3D11SamplerState*>::iterator  siter;
+	std::map<unsigned int, SamplerState*>::iterator  siter;
 	for (siter = m_samplerStates.begin(); siter != m_samplerStates.end(); siter++)
 	{
 		if (siter->second != NULL)
 		{
-			siter->second->Release();
+			SamplerState* samplerState = siter->second;
+			if (samplerState)
+				delete samplerState;
 		}
 	}
 	m_samplerStates.clear();
@@ -276,16 +271,17 @@ void D3D11RenderStateMachine::SetBlendEnable(bool enable, BlendOp blendOp, Blend
 	}
 }
 
-void D3D11RenderStateMachine::SetSamplerState(UINT startSlot, FilterMode filterMode, WrapMode wrapMode)
+SamplerState* D3D11RenderStateMachine::GetSamplerState(FilterMode filterMode, WrapMode wrapMode)
 {
-	if (m_device == NULL || m_deviceContext == NULL)
-		return;
-	if (!m_hasSampler || (m_hasSampler && (m_currentSamplerState.filterMode != filterMode || m_currentSamplerState.wrapMode != wrapMode)))
+	unsigned int key = (unsigned int)filterMode << 8;
+	key = key | ((unsigned int)wrapMode);
+	if (m_samplerStates.find(key) != m_samplerStates.end())
+		return m_samplerStates.at(key);
+	else
 	{
-		m_hasSampler = true;
-		m_currentSamplerState.filterMode = filterMode;
-		m_currentSamplerState.wrapMode = wrapMode;
-		RefreshSamplerState(startSlot);
+		SamplerState* sampler = new D3D11SamplerState(m_device, m_deviceContext, filterMode, wrapMode);
+		m_samplerStates.insert(std::pair<unsigned int, SamplerState*>(key, sampler));
+		return sampler;
 	}
 }
 
@@ -373,26 +369,6 @@ void D3D11RenderStateMachine::RefreshBlendState()
 				m_blendStates.insert(std::pair<unsigned long, ID3D11BlendState*>(key, state));
 				m_deviceContext->OMSetBlendState(state, blendFactor, 0xffffffff);
 			}
-		}
-	}
-}
-
-void D3D11RenderStateMachine::RefreshSamplerState(UINT startSlot)
-{
-	unsigned int key = m_currentSamplerState.GetKey();
-	if (m_samplerStates.find(key) != m_samplerStates.end())
-	{
-		ID3D11SamplerState* state = m_samplerStates.at(key);
-		m_deviceContext->PSSetSamplers(startSlot, 1, &state);
-	}
-	else
-	{
-		ID3D11SamplerState* state;
-		HRESULT result = CreateSamplerState(m_currentSamplerState, &state);
-		if (!FAILED(result))
-		{
-			m_samplerStates.insert(std::pair<unsigned int, ID3D11SamplerState*>(key, state));
-			m_deviceContext->PSSetSamplers(startSlot, 1, &state);
 		}
 	}
 }
@@ -495,42 +471,6 @@ HRESULT D3D11RenderStateMachine::CreateDisableBlendState(ID3D11BlendState** stat
 
 	HRESULT result = m_device->CreateBlendState(&blenddesc, state);
 	return result;
-}
-
-HRESULT D3D11RenderStateMachine::CreateSamplerState(D3D11SamplerState stateDesc, ID3D11SamplerState** state)
-{
-	D3D11_TEXTURE_ADDRESS_MODE u = D3D11_TEXTURE_ADDRESS_WRAP;
-	D3D11_TEXTURE_ADDRESS_MODE v = D3D11_TEXTURE_ADDRESS_WRAP;
-	if (stateDesc.wrapMode == WrapMode::Clamp)
-	{ 
-		u = D3D11_TEXTURE_ADDRESS_CLAMP;
-		v = D3D11_TEXTURE_ADDRESS_CLAMP;
-	}
-
-	D3D11_FILTER filter;
-	if (stateDesc.filterMode == FilterMode::Point)
-		filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
-	else if (stateDesc.filterMode == FilterMode::Bilinear)
-		filter = D3D11_FILTER_MIN_POINT_MAG_LINEAR_MIP_POINT;
-	else
-		filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-
-	D3D11_SAMPLER_DESC samplerDesc;
-	samplerDesc.Filter = filter;
-	samplerDesc.AddressU = u;
-	samplerDesc.AddressV = v;
-	samplerDesc.AddressW = u;
-	samplerDesc.MipLODBias = 0.0f;
-	samplerDesc.MaxAnisotropy = 1;
-	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-	samplerDesc.BorderColor[0] = 0;
-	samplerDesc.BorderColor[1] = 0;
-	samplerDesc.BorderColor[2] = 0;
-	samplerDesc.BorderColor[3] = 0;
-	samplerDesc.MinLOD = 0;
-	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-
-	return m_device->CreateSamplerState(&samplerDesc, state);
 }
 
 

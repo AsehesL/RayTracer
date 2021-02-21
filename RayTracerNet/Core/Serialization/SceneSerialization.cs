@@ -10,12 +10,22 @@ using System.Reflection;
 namespace RayTracerNet.Serialization
 {
 
+    //[System.AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
+    //public class PropertySerializationAttribute : System.Attribute
+    //{
+    //    public string propertyName;
+    //}
+
     [XmlRoot("SceneRoot")]
     public class SceneDataSerialization
     {
         [XmlArray("Textures")]
         [XmlArrayItem("Texture")]
         public List<TextureDataSerialization> textures;
+
+        [XmlArray("Meshes")]
+        [XmlArrayItem("Meshes")]
+        public List<MeshDataSerialization> meshes;
 
         [XmlArray("Shaders")]
         [XmlArrayItem("Shader")]
@@ -98,13 +108,13 @@ namespace RayTracerNet.Serialization
         [XmlArrayItem("Shader")]
         public List<ShaderNameSerialization> shaders;
 
-        public void CreatePrimitive(string scenePath, Dictionary<string, MaterialShader> shadersDic, Dictionary<string, Mesh> meshDic, List<PrimitiveBase> output)
+        public void CreatePrimitive(string scenePath, Dictionary<string, MaterialShader> shadersDic, Dictionary<string, Mesh[]> meshDic, List<PrimitiveBase> output)
         {
-            Dictionary<string, PrimitiveParamDataSerialization> geoParamDic = new Dictionary<string, PrimitiveParamDataSerialization>();
-            for (int i = 0; i < geoParams.Count; i++)
-            {
-                geoParamDic[geoParams[i].paramName] = geoParams[i];
-            }
+            //Dictionary<string, PrimitiveParamDataSerialization> geoParamDic = new Dictionary<string, PrimitiveParamDataSerialization>();
+            //for (int i = 0; i < geoParams.Count; i++)
+            //{
+            //    geoParamDic[geoParams[i].paramName] = geoParams[i];
+            //}
 
             List<MaterialShader> s = new List<MaterialShader>();
             for (int i = 0; i < shaders.Count; i++)
@@ -142,7 +152,14 @@ namespace RayTracerNet.Serialization
                 return;
             }
 
-            geoSerialization.GenerateGeometry(scenePath, s, geoParamDic, meshDic, output);
+            for (int i = 0; i < geoParams.Count; i++)
+            {
+                SceneSerialization.SetParameterToObject(geoSerialization, geoParams[i].paramName, geoParams[i].paramValue, null);
+            }
+
+            geoSerialization.meshes = meshDic;
+            geoSerialization.shaders = s;
+            geoSerialization.GenerateGeometry(scenePath, output);
         }
     }
 
@@ -195,6 +212,23 @@ namespace RayTracerNet.Serialization
                 tex.wrapMode = wrapMode;
             }
             return tex;
+        }
+    }
+
+    public class MeshDataSerialization
+    {
+        [XmlAttribute("Name")]
+        public string name;
+
+        [XmlAttribute("Path")]
+        public string path;
+
+        public Mesh[] CreateMesh(string scenePath)
+        {
+            var fileInfo = new System.IO.FileInfo(scenePath);
+            string p = System.IO.Path.Combine(fileInfo.DirectoryName, path);
+            var meshes = Mesh.CreateFromFile(p);
+            return meshes;
         }
     }
 
@@ -322,7 +356,7 @@ namespace RayTracerNet.Serialization
                     SceneSerialization.SetParameterToObject(sky, shaderParams[i].paramName, shaderParams[i].paramValue, textures);
                 }
             }
-            
+
             Log.Info($"天空盒创建成功:{sky.GetType()}");
 
 
@@ -368,6 +402,21 @@ namespace RayTracerNet.Serialization
                 System.Object valueObject = CreateParamValue(propertyInfo.PropertyType, propertyValue, textures);
                 propertyInfo.SetValue(targetObject, valueObject);
             }
+            else
+            {
+                var properties = targetObject.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+                for (int i = 0; i < properties.Length; i++)
+                {
+                    //PropertySerializationAttribute attribute = properties[i].GetCustomAttribute<PropertySerializationAttribute>();
+                    //if (attribute != null && attribute.propertyName == propertyName)
+                    if (properties[i].Name == propertyName)
+                    {
+                        System.Object valueObject = CreateParamValue(properties[i].PropertyType, propertyValue, textures);
+                        properties[i].SetValue(targetObject, valueObject);
+                        return;
+                    }
+                }
+            }
         }
 
         internal static System.Object CreateParamValue(System.Type propertyType, string propertyValue, Dictionary<string, Texture> textures)
@@ -410,7 +459,7 @@ namespace RayTracerNet.Serialization
             {
                 return Vector4.Parse(propertyValue);
             }
-            return null;
+            return propertyValue;
         }
 
         public static SceneDataSerialization Deserialize(string path)

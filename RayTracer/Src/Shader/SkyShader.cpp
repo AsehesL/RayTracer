@@ -1,8 +1,10 @@
 #include "SkyShader.h"
 #include "../RealtimeRender/GraphicsLib/ShaderProgram.h"
+#include "../RealtimeRender/GraphicsLib/UniformBuffer.h"
 #include "../RealtimeRender/GraphicsLib/GLContext.h"
 #include "../Texture/Texture.h"
 #include "../RayTracer/Shader/RayTracerSkyShader.h"
+#include "ShaderConstants.h"
 
 struct SkyUniformBufferData
 {
@@ -20,55 +22,25 @@ SkyShader::~SkyShader()
 
 EnvironmentMapSkyShader::EnvironmentMapSkyShader(GLContext* glContext) : SkyShader(glContext)
 {
-	m_environmentSkyUniformBuffer = glContext->CreateShaderUniformBuffer(sizeof(SkyUniformBufferData));
 	m_shaderProgram->Compile(L"Shaders/EnvironmentSkyShaderVS.hlsl", L"Shaders/EnvironmentSkyShaderPS.hlsl");
-	m_environmentMap = nullptr;
-	m_environmentIntensity = 1.0f;
-	m_isEnvironmentSkyUniformBufferDirty = true;
-	m_isCubeMapDirty = true;
 	m_rtShader = new RayTracer::RTEnvironmentMapSkyShader();
+
+	SetColor(SHADER_CONSTANT_COLOR, Color(1,1,1,1));
+	SetFloat(SHADER_CONSTANT_INTENSITY, 1.0f);
 }
 
 EnvironmentMapSkyShader::~EnvironmentMapSkyShader()
 {
-	delete m_environmentSkyUniformBuffer;
 	delete m_rtShader;
-}
-
-void EnvironmentMapSkyShader::SetEnvironmentMap(Texture* environmentMap)
-{
-	m_environmentMap = environmentMap;
-	m_isCubeMapDirty = true;
-}
-
-void EnvironmentMapSkyShader::SetEnvironmentColor(const Color& color)
-{
-	m_environmentColor = color;
-	m_isCubeMapDirty = true;
-	m_isEnvironmentSkyUniformBufferDirty = true;
-}
-
-void EnvironmentMapSkyShader::SetEnvironmentIntensity(float intensity)
-{
-	m_environmentIntensity = intensity;
-	m_isCubeMapDirty = true;
-	m_isEnvironmentSkyUniformBufferDirty = true;
-}
-
-bool EnvironmentMapSkyShader::ShouldUpdateCubeMap()
-{
-	if (m_isCubeMapDirty)
-	{
-		m_isCubeMapDirty = false;
-		return true;
-	}
-	return false;
 }
 
 RayTracer::RTShaderBase* EnvironmentMapSkyShader::GetRTShader()
 {
-	m_rtShader->environmentMap = m_environmentMap;
-	m_rtShader->environmentColor = m_environmentColor * m_environmentIntensity;
+	Color color = GetColor(SHADER_CONSTANT_COLOR);
+	float intensity = GetFloat(SHADER_CONSTANT_INTENSITY);
+	Texture* environmentMap = (Texture*)GetTexture(SHADER_TEXTURE_ENVIRONMENT);
+	m_rtShader->environmentMap = environmentMap;
+	m_rtShader->environmentColor = color * intensity;
 	return m_rtShader;
 }
 
@@ -76,21 +48,30 @@ bool EnvironmentMapSkyShader::OnApplyParameters()
 {
 	if (!SkyShader::OnApplyParameters())
 		return false;
-	if (m_isEnvironmentSkyUniformBufferDirty)
+	UniformBuffer* environmentSkyUniformBuffer = m_shaderProgram->GetUniformBuffer("SkyBuffer");
+	if (IsUniformBufferDirty(SHADER_CONSTANT_COLOR) || IsUniformBufferDirty(SHADER_CONSTANT_INTENSITY))
 	{
-		SkyUniformBufferData* environmentSkyUniformBuffer = (SkyUniformBufferData*)m_environmentSkyUniformBuffer->Map();
 		if (environmentSkyUniformBuffer)
 		{
-			environmentSkyUniformBuffer->skyColor = m_environmentColor * m_environmentIntensity;
-			m_environmentSkyUniformBuffer->Unmap();
+			SkyUniformBufferData* environmentSkyUniformBufferData = (SkyUniformBufferData*)environmentSkyUniformBuffer->Map();
+			if (environmentSkyUniformBufferData)
+			{
+				Color color = GetColor(SHADER_CONSTANT_COLOR);
+				float intensity = GetFloat(SHADER_CONSTANT_INTENSITY);
+				environmentSkyUniformBufferData->skyColor = color * intensity;
+				environmentSkyUniformBuffer->Unmap();
+			}
 		}
-		m_isEnvironmentSkyUniformBufferDirty = false;
+		ClearDirtyFlag(SHADER_CONSTANT_COLOR);
+		ClearDirtyFlag(SHADER_CONSTANT_INTENSITY);
 	}
-	if (m_environmentMap == nullptr)
+	TextureBase* environmentMap = GetTexture(SHADER_TEXTURE_ENVIRONMENT);
+	if (environmentMap == nullptr)
 	{
 		return false;
 	}
-	m_environmentSkyUniformBuffer->ApplyPSUniformBuffer(0);
-	m_environmentMap->SetShaderResource(0);
+	if (environmentSkyUniformBuffer)
+		environmentSkyUniformBuffer->PSSetUniformBuffer(0);
+	environmentMap->PSSetTexture(0);
 	return true;
 }

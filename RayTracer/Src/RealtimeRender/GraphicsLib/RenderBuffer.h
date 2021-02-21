@@ -1,19 +1,19 @@
 #pragma once
 
-class IColorBuffer
+class ColorBuffer
 {
 public:
-	virtual ~IColorBuffer() {}
+	virtual ~ColorBuffer() {}
 };
 
-class IDepthBuffer
+class DepthBuffer
 {
 public:
-	virtual ~IDepthBuffer() {}
+	virtual ~DepthBuffer() {}
 };
 
-class ICubeMapColorBuffer
+class CubeMapColorBuffer
 {
 public:
-	virtual ~ICubeMapColorBuffer() {}
+	virtual ~CubeMapColorBuffer() {}
 };

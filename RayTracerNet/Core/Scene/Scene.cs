@@ -13,6 +13,7 @@ namespace RayTracerNet
         private Camera m_activeCamera;
 
         private List<RayTracerObject> m_sceneObjects;
+        private List<RayTracerObject> m_resObjects;
 
 
         [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -25,6 +26,7 @@ namespace RayTracerNet
             m_activeCamera.euler = new Vector3(0, 0, 0);
 
             m_sceneObjects = new List<RayTracerObject>();
+            m_resObjects = new List<RayTracerObject>();
         }
 
         public PrimitiveBase GetPrimitiveRaycasted(int screenPosX, int screenPosY)
@@ -48,6 +50,8 @@ namespace RayTracerNet
                 if (createMethod != null)
                 {
                     T obj = createMethod.Invoke(null, new object[] { }) as T;
+                    if (obj != null)
+                        m_sceneObjects.Add(obj);
                     return obj;
                 }
             }
@@ -111,11 +115,27 @@ namespace RayTracerNet
                 {
                     var t = sceneData.textures[i].CreateTexture(scenePath);
                     if (t != null)
+                    {
+                        m_resObjects.Add(t);
                         textures.Add(sceneData.textures[i].name, t);
+                    }
                 }
             }
 
             Log.Info($"纹理加载完毕：共{textures.Count}张纹理");
+
+            Dictionary<string, Mesh[]> meshes = new Dictionary<string, Mesh[]>();
+            if (sceneData.meshes != null)
+            {
+                for (int i = 0; i < sceneData.meshes.Count; i++)
+                {
+                    var m = sceneData.meshes[i].CreateMesh(scenePath);
+                    if (m != null)
+                    {
+                        m_resObjects.AddRange(m);
+                    }
+                }
+            }
 
             var sky = sceneData.sky != null ? sceneData.sky.CreateSkyLight(textures) : null;
             var sun = sceneData.sky != null ? sceneData.sky.CreateSunLight() : null;
@@ -131,14 +151,16 @@ namespace RayTracerNet
                 {
                     var s = sceneData.shaders[i].CreateShader(textures);
                     if (shaders != null)
+                    {
+                        m_resObjects.Add(s);
                         shaders.Add(sceneData.shaders[i].name, s);
+                    }
                 }
             }
 
             Log.Info($"Shader加载完毕：共{shaders.Count}个Shader");
 
             List<PrimitiveBase> primivites = new List<PrimitiveBase>();
-            Dictionary<string, Mesh> meshes = new Dictionary<string, Mesh>();
 
             if (sceneData.geometries != null)
             {
@@ -149,6 +171,11 @@ namespace RayTracerNet
             }
             for (int i = 0; i < primivites.Count; i++)
                 m_sceneObjects.Add(primivites[i]);
+
+            foreach (var mesh in meshes)
+            {
+                m_resObjects.AddRange(mesh.Value);
+            }
 
             Log.Info($"几何体加载完毕：共{primivites.Count}个几何体");
 
@@ -162,6 +189,11 @@ namespace RayTracerNet
                 m_sceneObjects[i].Destroy();
             }
             m_sceneObjects.Clear();
+            for (int i=0;i< m_resObjects.Count;i++)
+            {
+                m_resObjects[i].Destroy();
+            }
+            m_resObjects.Clear();
         }
     }
 }

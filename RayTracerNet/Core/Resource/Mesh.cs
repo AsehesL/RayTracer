@@ -14,6 +14,9 @@ namespace RayTracerNet
         private extern static int CreateMesh(uint vertexCount, uint indexCount);
 
         [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private extern static void CreateMeshesFromFile(string path, ref int startMeshID, ref int endMeshID);
+
+        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
         private extern static uint GetMeshVertexCount(int meshID);
 
         [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -118,7 +121,7 @@ namespace RayTracerNet
             return null;
         }
 
-        public static Mesh CreateFromFile(string path)
+        public static Mesh[] CreateFromFile(string path)
         {
             RayTracer instance = RayTracer.GetInstance();
             if (!instance.IsInitialized())
@@ -126,179 +129,29 @@ namespace RayTracerNet
             System.IO.FileInfo fileInfo = new System.IO.FileInfo(path);
             if (fileInfo.Exists == false)
                 return null;
-            if (fileInfo.Extension.ToLower().EndsWith(".obj") == true)
-            {
-                Mesh mesh = LoadFromObj(path);
-                if (mesh != null)
-                {
-                    MessageHandler.Broadcast<ResourceObject>(MessageName.AddNewResource, mesh);
-                }
-                return mesh;
-            }
-            else if(fileInfo.Extension.ToLower().EndsWith(".mesh") == true)
+            if(fileInfo.Extension.ToLower().EndsWith(".mesh") == true)
             {
                 Mesh mesh = LoadFromMesh(path);
                 if (mesh != null)
                     MessageHandler.Broadcast<ResourceObject>(MessageName.AddNewResource, mesh);
-                return mesh;
+                return new Mesh[] { mesh };
+            }
+            int startMeshID = -1;
+            int endMeshID = -1;
+            CreateMeshesFromFile(path, ref startMeshID, ref endMeshID);
+            if (startMeshID >= 0 && endMeshID >= 0)
+            {
+                Mesh[] results = new Mesh[endMeshID - startMeshID + 1];
+                for(int i=startMeshID;i<=endMeshID;i++)
+                {
+                    Mesh mesh = new Mesh(i);
+                    mesh.m_path = path;
+                    MessageHandler.Broadcast<ResourceObject>(MessageName.AddNewResource, mesh);
+                    results[i - startMeshID] = mesh;
+                }
+                return results;
             }
             return null;
-        }
-
-        private static Mesh LoadFromObj(string path)
-        {
-            using (System.IO.StreamReader reader = new System.IO.StreamReader(path))
-            {
-                List<Vector3> vlist = new List<Vector3>();
-                List<Vector3> nlist = new List<Vector3>();
-                List<Vector2> ulist = new List<Vector2>();
-                List<Vector4> tangentlist = new List<Vector4>();
-                List<Vector3> vertexList = new List<Vector3>();
-                List<Vector3> normalList = new List<Vector3>();
-                List<Vector2> uv0List = new List<Vector2>();
-                List<int> flist = new List<int>();
-
-                Vector4[] tangents = null;
-                int[] tangentCounts = null;
-
-                while (reader.EndOfStream == false)
-                {
-                    string line = reader.ReadLine();
-                    if (line.Length > 1)
-                    {
-                        char df0 = line[0];
-                        char df1 = line[1];
-
-                        if (df0 == 'v')
-                        {
-                            string[] sp = line.Substring(2).Trim().Split(' ');
-                            if (df1 == 'n')
-                            {
-                                double nx = -double.Parse(sp[0]);
-                                double ny = double.Parse(sp[1]);
-                                double nz = double.Parse(sp[2]);
-                                nlist.Add(new Vector3(nx, ny, nz));
-                            }
-                            else if (df1 == 't')
-                            {
-                                double ux = double.Parse(sp[0]);
-                                double uy = double.Parse(sp[1]);
-                                ulist.Add(new Vector2(ux, uy));
-                            }
-                            else
-                            {
-                                double px = -double.Parse(sp[0]);
-                                double py = double.Parse(sp[1]);
-                                double pz = double.Parse(sp[2]);
-                                vlist.Add(new Vector3(px, py, pz));
-                            }
-                        }
-                        else if (df0 == 'g')
-                        {
-                            //sdindex += 1;
-                        }
-                        else if (df0 == 'f')
-                        {
-                            string[] sp = line.Split(' ');
-                            string[] face0 = sp[1].Split('/');
-                            string[] face1 = sp[2].Split('/');
-                            string[] face2 = sp[3].Split('/');
-
-                            int vindex0 = int.Parse(face0[0]) - 1;
-                            int vindex1 = int.Parse(face1[0]) - 1;
-                            int vindex2 = int.Parse(face2[0]) - 1;
-
-                            int uindex0 = int.Parse(face0[1]) - 1;
-                            int uindex1 = int.Parse(face1[1]) - 1;
-                            int uindex2 = int.Parse(face2[1]) - 1;
-
-                            int nindex0 = int.Parse(face0[2]) - 1;
-                            int nindex1 = int.Parse(face1[2]) - 1;
-                            int nindex2 = int.Parse(face2[2]) - 1;
-
-                            Vector3 v0 = vlist[vindex0];
-                            Vector3 v1 = vlist[vindex2];
-                            Vector3 v2 = vlist[vindex1];
-
-                            Vector3 n0 = nlist[nindex0];
-                            Vector3 n1 = nlist[nindex2];
-                            Vector3 n2 = nlist[nindex1];
-
-                            Vector2 uv0 = ulist[uindex0];
-                            Vector2 uv1 = ulist[uindex2];
-                            Vector2 uv2 = ulist[uindex1];
-
-                            vertexList.Add(v0);
-                            vertexList.Add(v1);
-                            vertexList.Add(v2);
-
-                            normalList.Add(n0);
-                            normalList.Add(n1);
-                            normalList.Add(n2);
-
-                            uv0List.Add(uv0);
-                            uv0List.Add(uv1);
-                            uv0List.Add(uv2);
-
-                            Vector4 tangent0 = CalculateTangent(v0, v1, v2, uv0, uv1, uv2, n0);
-                            Vector4 tangent1 = CalculateTangent(v0, v1, v2, uv0, uv1, uv2, n1);
-                            Vector4 tangent2 = CalculateTangent(v0, v1, v2, uv0, uv1, uv2, n2);
-
-                            if (tangents == null)
-                                tangents = new Vector4[nlist.Count];
-                            if (tangentCounts == null)
-                                tangentCounts = new int[nlist.Count];
-                            flist.Add(nindex0);
-                            flist.Add(nindex2);
-                            flist.Add(nindex1);
-                            tangents[nindex0] += tangent0;
-                            tangents[nindex2] += tangent1;
-                            tangents[nindex1] += tangent2;
-                            tangentCounts[nindex0] += 1;
-                            tangentCounts[nindex2] += 1;
-                            tangentCounts[nindex1] += 1;
-                        }
-                    }
-                }
-
-                int tcount = flist.Count / 3;
-                for (int i = 0; i < tcount; i++)
-                {
-                    int tangentIndex0 = flist[i * 3];
-                    int tangentIndex1 = flist[i * 3 + 1];
-                    int tangentIndex2 = flist[i * 3 + 2];
-                    Vector4 tangent0 = tangents[tangentIndex0] / tangentCounts[tangentIndex0];
-                    Vector4 tangent1 = tangents[tangentIndex1] / tangentCounts[tangentIndex1];
-                    Vector4 tangent2 = tangents[tangentIndex2] / tangentCounts[tangentIndex2];
-
-                    tangentlist.Add(tangent0);
-                    tangentlist.Add(tangent1);
-                    tangentlist.Add(tangent2);
-                }
-
-                int meshID = CreateMesh((uint)vertexList.Count, (uint)vertexList.Count);
-                if (meshID < 0)
-                {
-                    return null;
-                };
-
-                Mesh mesh = new Mesh(meshID);
-                mesh.m_path = path;
-
-                {
-                    int vcount = (int)mesh.vertexCount;
-                    int icount = (int)mesh.indexCount;
-                    for (int i = 0; i < vcount; i++)
-                    {
-                        SetMeshVertex(mesh.objectID, i, vertexList[i].x, vertexList[i].y, vertexList[i].z);
-                        SetMeshNormal(mesh.objectID, i, normalList[i].x, normalList[i].y, normalList[i].z);
-                        SetMeshUV(mesh.objectID, i, 0, uv0List[i].x, uv0List[i].y);
-                        SetMeshTangent(mesh.objectID, i, tangentlist[i].x, tangentlist[i].y, tangentlist[i].z, tangentlist[i].w);
-                        SetMeshIndex(mesh.objectID, i, (uint)i);
-                    }
-                }
-                return mesh;
-            }
         }
 
         private static Mesh LoadFromMesh(string path)

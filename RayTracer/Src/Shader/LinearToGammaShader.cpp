@@ -1,13 +1,12 @@
 #include "LinearToGammaShader.h"
 #include "../RealtimeRender/GraphicsLib/GLContext.h"
 #include "../RealtimeRender/GraphicsLib/ShaderProgram.h"
-#include "../RealtimeRender/GraphicsLib/ShaderResource.h"
+#include "../Texture/TextureBase.h"
+#include "ShaderConstants.h"
 
 LinearToGammaShader::LinearToGammaShader(GLContext* glContext) : PostProcessShaderBase(glContext)
 {
 	m_shaderProgram->Compile(L"Shaders/ScreenQuadVS.hlsl", L"Shaders/LinearToGammaPS.hlsl");
-
-	renderTexture = nullptr;
 }
 
 LinearToGammaShader::~LinearToGammaShader()
@@ -18,9 +17,10 @@ bool LinearToGammaShader::OnApplyParameters()
 {
 	if (!PostProcessShaderBase::OnApplyParameters())
 		return false;
+	TextureBase* renderTexture = GetTexture(SHADER_TEXTURE_TEXTURE);
 	if (renderTexture != nullptr)
 	{
-		renderTexture->SetShaderResource(0);
+		renderTexture->PSSetTexture(0);
 		return true;
 	}
 	return false;
