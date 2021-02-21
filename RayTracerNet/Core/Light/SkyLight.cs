@@ -27,7 +27,7 @@ namespace RayTracerNet
         protected SkyLight(int objectID) : base(objectID)
         { }
 
-        internal override void Destroy()
+        public override void Destroy()
         {
             if (objectID < 0)
                 return;
@@ -115,7 +115,7 @@ namespace RayTracerNet
             return "EnvironmentMapSkyLight";
         }
 
-        internal static EnvironmentMapSkyLight Create()
+        public static EnvironmentMapSkyLight Create()
         {
             RayTracer instance = RayTracer.GetInstance();
             if (!instance.IsInitialized())

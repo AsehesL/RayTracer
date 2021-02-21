@@ -2,6 +2,11 @@
 #include "MaterialShader.h"
 #include "../Core/Color.h"
 
+namespace RayTracer
+{
+	class RTTransparencyShader;
+}
+
 class TransparencyShader : public MaterialShader
 {
 public:
@@ -13,4 +18,7 @@ public:
 
 protected:
 	virtual bool OnApplyParameters() override;
+
+private:
+	RayTracer::RTTransparencyShader* m_rtShader;
 };

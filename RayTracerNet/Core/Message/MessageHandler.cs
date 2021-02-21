@@ -18,6 +18,7 @@ namespace RayTracerNet
         AddNewResource,
 
         RemoveSceneObject,
+        RemoveResource,
 
         ClearLogs,
         AddLog,

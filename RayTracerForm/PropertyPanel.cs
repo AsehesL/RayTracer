@@ -327,7 +327,7 @@ namespace RayTracerForm
                 this.comboBox.SelectedItem = null;
                 this.comboBox.Items.Clear();
 
-                List<ResourceObject> resourceObjects = RayTracerNet.RayTracer.GetInstance().resourceList;
+                List<ResourceObject> resourceObjects = RayTracerNet.RayTracer.GetInstance().GetScene().resourceList;
                 if (resourceObjects != null)
                 {
                     foreach (var resource in resourceObjects)

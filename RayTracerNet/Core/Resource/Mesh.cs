@@ -37,6 +37,9 @@ namespace RayTracerNet
         [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
         private extern static void SetMeshIndex(int meshID, int i, uint index);
 
+        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private extern static bool DestroyMesh(int meshID);
+
         private string m_path = null;
 
         public override string GetFullPathName()
@@ -59,6 +62,16 @@ namespace RayTracerNet
             if (string.IsNullOrEmpty(m_path))
                 return "Mesh_" + objectID;
             return "Mesh_" + objectID + ":" + m_path;
+        }
+
+        public override void Destroy()
+        {
+            if (objectID >= 0)
+            {
+                DestroyMesh(objectID);
+                MessageHandler.Broadcast<ResourceObject>(MessageName.RemoveResource, this);
+                objectID = -1;
+            }
         }
 
         public uint vertexCount

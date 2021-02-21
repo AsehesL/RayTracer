@@ -12,10 +12,5 @@ namespace RayTracerNet
 
         protected ResourceObject(int objectID) : base(objectID)
         { }
-
-        internal override void Destroy()
-        {
-            
-        }
     }
 }

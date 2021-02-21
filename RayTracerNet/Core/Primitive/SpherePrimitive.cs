@@ -16,7 +16,7 @@ namespace RayTracerNet
         {
         }
 
-        internal static SpherePrimitive Create()
+        public static SpherePrimitive Create()
         {
             RayTracer instance = RayTracer.GetInstance();
             if (!instance.IsInitialized())

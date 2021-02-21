@@ -13,8 +13,6 @@ namespace RayTracerNet
 
         private bool m_isInitialized;
 
-        public List<ResourceObject> resourceList;
-
         private PathTracerRenderSettings m_pathTracerRenderSettings;
         private PhotonMapperRenderSettings m_photonMapperRenderSettings;
         private DebugRendererRenderSettings m_debugRendererRenderSettings;
@@ -86,11 +84,16 @@ namespace RayTracerNet
             if (m_isInitialized)
                 return m_isInitialized;
             m_isInitialized = Init(hwnd, width, height);
+            
+            MessageHandler.AddListener<ResourceObject>(MessageName.AddNewResource, this.OnAddNewResource);
+            MessageHandler.AddListener<RayTracerObject>(MessageName.AddNewSceneObject, this.OnAddNewSceneObject);
+            MessageHandler.AddListener<RayTracerObject>(MessageName.RemoveSceneObject, this.OnRemoveNewSceneObject);
+            MessageHandler.AddListener<ResourceObject>(MessageName.RemoveResource, this.OnRemoveResource);
             if (m_isInitialized)
             {
                 m_scene = new Scene();
+                m_scene.Create();
             }
-            MessageHandler.AddListener<ResourceObject>(MessageName.AddNewResource, this.OnAddNewResource);
             return m_isInitialized;
         }
 
@@ -141,9 +144,26 @@ namespace RayTracerNet
 
         private void OnAddNewResource(ResourceObject resource)
         {
-            if (resourceList == null)
-                resourceList = new List<ResourceObject>();
-            resourceList.Add(resource);
+            if (m_scene != null)
+                m_scene.AddResourceObject(resource);
+        }
+
+        private void OnAddNewSceneObject(RayTracerObject obj)
+        {
+            if (m_scene != null)
+                m_scene.AddSceneObject(obj);
+        }
+
+        private void OnRemoveNewSceneObject(RayTracerObject obj)
+        {
+            if (m_scene != null)
+                m_scene.RemoveSceneObject(obj);
+        }
+
+        private void OnRemoveResource(ResourceObject resource)
+        {
+            if (m_scene != null)
+                m_scene.RemoveResourceObject(resource);
         }
     }
 }

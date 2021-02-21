@@ -87,6 +87,16 @@ RenderTexture* RealtimeRenderer::GetOpaqueSceneScreenCapture()
 	return m_opaqueSceneTexture;
 }
 
+RenderTexture* RealtimeRenderer::DownSample(RenderTexture* renderTexture, unsigned int width, unsigned int height)
+{
+	return nullptr;
+}
+
+RenderTexture* RealtimeRenderer::UpSample(RenderTexture* renderTexture, unsigned int width, unsigned int height)
+{
+	return nullptr;
+}
+
 void RealtimeRenderer::RenderColorPass(int renderWidth, int renderHeight)
 {
 	int opaqueCount = 0;

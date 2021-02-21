@@ -71,6 +71,28 @@ namespace RayTracer
 		double radius;
 	};
 
+	class PlanePrimitive : public PrimitiveBase
+	{
+	public:
+		PlanePrimitive();
+		virtual ~PlanePrimitive() override;
+
+		virtual void AddToScene(SceneDataBase* sceneData) override;
+		virtual bool Tracing(const Ray& ray, RayTracingResult& result) override;
+		virtual void GetBounds(Bounds& bounds) override;
+		virtual void RefreshArea() override;
+		virtual Vector3 GetSurfacePosition(SamplerBase* sampler, Vector2 pos) override;
+		virtual Vector3 GetSurfaceNormal(Vector3 pos) override;
+
+	public:
+		double widthSquared;
+		double heightSquared;
+		Vector3 right;
+		Vector3 up;
+		Vector3 normal;
+		Vector3 position;
+	};
+
 	class MeshPrimitive : public PrimitiveBase
 	{
 	public:

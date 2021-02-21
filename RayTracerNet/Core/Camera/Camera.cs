@@ -71,7 +71,7 @@ namespace RayTracerNet
         {
         }
 
-        internal override void Destroy()
+        public override void Destroy()
         {
             if (objectID < 0)
                 return;

@@ -59,6 +59,9 @@ namespace RayTracerNet
         [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
         private extern static int GetTextureWrapMode(int textureID);
 
+        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private extern static bool DestroyTexture(int textureID);
+
         private string m_path = null;
 
         public override string GetFullPathName()
@@ -213,6 +216,16 @@ namespace RayTracerNet
         public void Apply()
         {
             ApplyTextureData(objectID);
+        }
+
+        public override void Destroy()
+        {
+            if (objectID >= 0)
+            {
+                DestroyTexture(objectID);
+                MessageHandler.Broadcast<ResourceObject>(MessageName.RemoveResource, this);
+                objectID = -1;
+            }
         }
     }
 }

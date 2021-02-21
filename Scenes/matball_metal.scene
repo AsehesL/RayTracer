@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SceneRoot xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Textures>
+  	<Texture Name="sky" Path="piazza_bologni_1k.hdr" WrapMode="Repeat" FilterMode="Bilinear" />
+    <Texture Name="board_10150" Path="board.png" WrapMode="Repeat" FilterMode="Bilinear" Linear="false" />
+    <Texture Name="logo_10182" Path="logo.png" WrapMode="Repeat" FilterMode="Bilinear" Linear="false" />
+    <Texture Name="logo_mro_12470" Path="logo_mro.png" WrapMode="Repeat" FilterMode="Bilinear" Linear="false" />
+    <Texture Name="metal2_albedo_10634" Path="metal2_albedo.png" WrapMode="Repeat" FilterMode="Bilinear" Linear="false" />
+    <Texture Name="metal2_metalheight_12134" Path="metal2_metalheight.png" WrapMode="Repeat" FilterMode="Bilinear" Linear="true" />
+    <Texture Name="metal2_mro_11978" Path="metal2_mro.png" WrapMode="Repeat" FilterMode="Bilinear" Linear="false" />
+  </Textures>
+  <Shaders>
+    <Shader Name="ShaderID_board_10092" ShaderType="PBR">
+      <Params>
+        <Param Key="color" Value="1,1,1,1" Type="Color" />
+        <Param Key="albedo" Value="board_10150" Type="Texture" />
+        <Param Key="tile" Value="17.7,22.65" Type="Vector2" />
+        <Param Key="roughness" Value="1" Type="Number" />
+        <Param Key="metallic" Value="0" Type="Number" />
+        <Param Key="refractive" Value="1.5" Type="Number" />
+        <Param Key="emissive" Value="0,0,0,0" Type="Color" />
+      </Params>
+    </Shader>
+    <Shader Name="ShaderID_logo_10670" ShaderType="PBR">
+      <Params>
+        <Param Key="color" Value="1,1,1,1" Type="Color" />
+        <Param Key="albedo" Value="logo_10182" Type="Texture" />
+        <Param Key="tile" Value="1,1" Type="Vector2" />
+        <Param Key="roughness" Value="1" Type="Number" />
+        <Param Key="metallic" Value="1" Type="Number" />
+        <Param Key="mroTex" Value="logo_mro_12470" Type="Texture" />
+        <Param Key="refractive" Value="1.5" Type="Number" />
+        <Param Key="emissive" Value="0,0,0,0" Type="Color" />
+      </Params>
+    </Shader>
+    <Shader Name="ShaderID_mat_show_10324" ShaderType="PBR">
+      <Params>
+        <Param Key="color" Value="1,1,1,1" Type="Color" />
+        <Param Key="albedo" Value="metal2_albedo_10634" Type="Texture" />
+        <Param Key="tile" Value="1,1" Type="Vector2" />
+        <Param Key="roughness" Value="1" Type="Number" />
+        <Param Key="metallic" Value="1" Type="Number" />
+        <Param Key="bump" Value="metal2_metalheight_12134" Type="Texture" />
+        <Param Key="mroTex" Value="metal2_mro_11978" Type="Texture" />
+        <Param Key="refractive" Value="1.5" Type="Number" />
+        <Param Key="emissive" Value="0,0,0,0" Type="Color" />
+      </Params>
+    </Shader>
+  </Shaders>
+  <Sky ShaderType="Environment">
+    <SunLight Direction="0.4465178,-0.7660444,0.4623828" Color="1,0.98,0.92,1" Intensity="2.3" VolumetricLighting="false" />
+    <Params>
+      <Param Key="environment" Value="sky" Type="Texture" />
+      <Param Key="intensity" Value="1.5" Type="Number" />
+      <Param Key="numExtraSamples" Value="0" Type="Number" />
+      <Param Key="maxDistance" Value="0" Type="Number" />
+      <Param Key="scatteringCoef" Value="0" Type="Number" />
+      <Param Key="extinctionCoef" Value="0" Type="Number" />
+    </Params>
+  </Sky>
+  <Camera Position="-1.9,1.38,-1.2" Euler="19.86999,-121.4,-8.170375E-06" Near="0.30000001192092896" FieldOfView="45" UseThinLens="true" Focal="1.9" Radius="0.03" Width="530" Height="600" />
+  <Geometries>
+    <Geometry Type="Mesh">
+      <Params>
+        <Param Key="Position" Value="-2.05,0,0" />
+        <Param Key="Euler" Value="0,328,0" />
+        <Param Key="Scale" Value="1,1,1" />
+        <Param Key="Path" Value="Plane001_11234.obj" />
+      </Params>
+      <Shaders>
+        <Shader Name="ShaderID_board_10092" />
+      </Shaders>
+    </Geometry>
+    <Geometry Type="Mesh">
+      <Params>
+        <Param Key="Position" Value="0,0,0" />
+        <Param Key="Euler" Value="0,0,0" />
+        <Param Key="Scale" Value="1,1,1" />
+        <Param Key="Path" Value="Sphere004_9984.obj" />
+      </Params>
+      <Shaders>
+        <Shader Name="ShaderID_logo_10670" />
+      </Shaders>
+    </Geometry>
+    <Geometry Type="Mesh">
+      <Params>
+        <Param Key="Position" Value="0,0,0" />
+        <Param Key="Euler" Value="0,0,0" />
+        <Param Key="Scale" Value="1,1,1" />
+        <Param Key="Path" Value="Sphere003_9982.obj" />
+      </Params>
+      <Shaders>
+        <Shader Name="ShaderID_mat_show_10324" />
+      </Shaders>
+    </Geometry>
+  </Geometries>
+</SceneRoot>

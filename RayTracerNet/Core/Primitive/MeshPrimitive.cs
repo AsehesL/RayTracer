@@ -39,7 +39,7 @@ namespace RayTracerNet
             }
         }
 
-        internal static MeshPrimitive Create()
+        public static MeshPrimitive Create()
         {
             RayTracer instance = RayTracer.GetInstance();
             if (!instance.IsInitialized())

@@ -63,5 +63,20 @@ namespace RayTracer
 		virtual ~RTTransparencyShader() override;
 
 		virtual Color PathTracing(PathTracer* pathTracer, SamplerBase* sampler, PathTracerScene* scene, const Ray& ray, RayTracingResult& result) override;
+		virtual void PhotonMapperInteract(SamplerBase* sampler, const Vector3& direction, RayTracingResult& hitResult, PhotonMappingResult& photonMappingResult) override;
+		virtual bool IsEmissive() const override;
+		virtual Color GetEmissions() const override;
+
+	private:
+		Color PathTracingDirectionalLight(PathTracer* pathTracer, SamplerBase* sampler, PathTracerScene* scene, const Vector3& worldPoint, const Vector3& worldNormal, const Vector3& viewDirection);
+		Color PathTracingAmbientLighting(PathTracer* pathTracer, SamplerBase* sampler, PathTracerScene* scene, const Vector3& worldPoint, const Vector3& worldNormal, const Vector3& viewDirection, int depth);
+	
+	public:
+		float roughness;
+		Color color;
+		float refractive;
+
+	private:
+		class BRDF* m_specularBRDF;
 	};
 }

@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SceneRoot xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Textures>
+    <Texture Name="sky" Path="piazza_bologni_1k.hdr" WrapMode="Repeat" FilterMode="Bilinear" />
+    <Texture Name="floor" Path="paving05_albedo.png" WrapMode="Repeat" FilterMode="Bilinear" />
+    <Texture Name="floor_n" Path="paving05_n.png" WrapMode="Repeat" FilterMode="Bilinear" Linear="true" />
+    <Texture Name="floor_mro" Path="paving05_mro.png" WrapMode="Repeat" FilterMode="Bilinear" />
+  </Textures>
+  <Shaders>
+    <Shader Name="ShaderID_Ball_2616" ShaderType="PBR">
+      <Params>
+        <Param Key="color" Value="1,1,1,1" Type="Color" />
+        <Param Key="albedo" Value="floor" Type="Texture" />
+        <Param Key="mroTex" Value="floor_mro" Type="Texture" />
+        <Param Key="bump" Value="floor_n" Type="Texture" />
+        <Param Key="tile" Value="1,1" Type="Vector2" />
+      </Params>
+    </Shader>
+    <Shader Name="PBRBall_01" ShaderType="PBR">
+      <Params>
+        <Param Key="color" Value="1,1,1,1" Type="Color" />
+        <Param Key="metallic" Value="0" Type="Number" />
+        <Param Key="roughness" Value="0" Type="Number" />
+      </Params>
+    </Shader>
+    <Shader Name="PBRBall_02" ShaderType="PBR">
+      <Params>
+        <Param Key="color" Value="1,1,1,1" Type="Color" />
+        <Param Key="metallic" Value="0" Type="Number" />
+        <Param Key="roughness" Value="0.11111" Type="Number" />
+      </Params>
+    </Shader>
+    <Shader Name="PBRBall_03" ShaderType="PBR">
+      <Params>
+        <Param Key="color" Value="1,1,1,1" Type="Color" />
+        <Param Key="metallic" Value="0" Type="Number" />
+        <Param Key="roughness" Value="0.22222" Type="Number" />
+      </Params>
+    </Shader>
+    <Shader Name="PBRBall_04" ShaderType="PBR">
+      <Params>
+        <Param Key="color" Value="1,1,1,1" Type="Color" />
+        <Param Key="metallic" Value="0" Type="Number" />
+        <Param Key="roughness" Value="0.33333" Type="Number" />
+      </Params>
+    </Shader>
+    <Shader Name="PBRBall_05" ShaderType="PBR">
+      <Params>
+        <Param Key="color" Value="1,1,1,1" Type="Color" />
+        <Param Key="metallic" Value="0" Type="Number" />
+        <Param Key="roughness" Value="0.44444" Type="Number" />
+      </Params>
+    </Shader>
+    <Shader Name="PBRBall_06" ShaderType="PBR">
+      <Params>
+        <Param Key="color" Value="1,1,1,1" Type="Color" />
+        <Param Key="metallic" Value="0" Type="Number" />
+        <Param Key="roughness" Value="0.55555" Type="Number" />
+      </Params>
+    </Shader>
+    <Shader Name="PBRBall_07" ShaderType="PBR">
+      <Params>
+        <Param Key="color" Value="1,1,1,1" Type="Color" />
+        <Param Key="metallic" Value="0" Type="Number" />
+        <Param Key="roughness" Value="0.66666" Type="Number" />
+      </Params>
+    </Shader>
+    <Shader Name="PBRBall_08" ShaderType="PBR">
+      <Params>
+        <Param Key="color" Value="1,1,1,1" Type="Color" />
+        <Param Key="metallic" Value="0" Type="Number" />
+        <Param Key="roughness" Value="0.77777" Type="Number" />
+      </Params>
+    </Shader>
+    <Shader Name="PBRBall_09" ShaderType="PBR">
+      <Params>
+        <Param Key="color" Value="1,1,1,1" Type="Color" />
+        <Param Key="metallic" Value="0" Type="Number" />
+        <Param Key="roughness" Value="0.88888" Type="Number" />
+      </Params>
+    </Shader>
+    <Shader Name="PBRBall_10" ShaderType="PBR">
+      <Params>
+        <Param Key="color" Value="1,1,1,1" Type="Color" />
+        <Param Key="metallic" Value="0" Type="Number" />
+        <Param Key="roughness" Value="1" Type="Number" />
+      </Params>
+    </Shader>
+    <Shader Name="PBRBall_11" ShaderType="PBR">
+      <Params>
+        <Param Key="color" Value="1,1,1,1" Type="Color" />
+        <Param Key="metallic" Value="1" Type="Number" />
+        <Param Key="roughness" Value="0" Type="Number" />
+      </Params>
+    </Shader>
+    <Shader Name="PBRBall_12" ShaderType="PBR">
+      <Params>
+        <Param Key="color" Value="1,1,1,1" Type="Color" />
+        <Param Key="metallic" Value="1" Type="Number" />
+        <Param Key="roughness" Value="0.11111" Type="Number" />
+      </Params>
+    </Shader>
+    <Shader Name="PBRBall_13" ShaderType="PBR">
+      <Params>
+        <Param Key="color" Value="1,1,1,1" Type="Color" />
+        <Param Key="metallic" Value="1" Type="Number" />
+        <Param Key="roughness" Value="0.22222" Type="Number" />
+      </Params>
+    </Shader>
+    <Shader Name="PBRBall_14" ShaderType="PBR">
+      <Params>
+        <Param Key="color" Value="1,1,1,1" Type="Color" />
+        <Param Key="metallic" Value="1" Type="Number" />
+        <Param Key="roughness" Value="0.33333" Type="Number" />
+      </Params>
+    </Shader>
+    <Shader Name="PBRBall_15" ShaderType="PBR">
+      <Params>
+        <Param Key="color" Value="1,1,1,1" Type="Color" />
+        <Param Key="metallic" Value="1" Type="Number" />
+        <Param Key="roughness" Value="0.44444" Type="Number" />
+      </Params>
+    </Shader>
+    <Shader Name="PBRBall_16" ShaderType="PBR">
+      <Params>
+        <Param Key="color" Value="1,1,1,1" Type="Color" />
+        <Param Key="metallic" Value="1" Type="Number" />
+        <Param Key="roughness" Value="0.55555" Type="Number" />
+      </Params>
+    </Shader>
+    <Shader Name="PBRBall_17" ShaderType="PBR">
+      <Params>
+        <Param Key="color" Value="1,1,1,1" Type="Color" />
+        <Param Key="metallic" Value="1" Type="Number" />
+        <Param Key="roughness" Value="0.66666" Type="Number" />
+      </Params>
+    </Shader>
+    <Shader Name="PBRBall_18" ShaderType="PBR">
+      <Params>
+        <Param Key="color" Value="1,1,1,1" Type="Color" />
+        <Param Key="metallic" Value="1" Type="Number" />
+        <Param Key="roughness" Value="0.77777" Type="Number" />
+      </Params>
+    </Shader>
+    <Shader Name="PBRBall_19" ShaderType="PBR">
+      <Params>
+        <Param Key="color" Value="1,1,1,1" Type="Color" />
+        <Param Key="metallic" Value="1" Type="Number" />
+        <Param Key="roughness" Value="0.88888" Type="Number" />
+      </Params>
+    </Shader>
+    <Shader Name="PBRBall_20" ShaderType="PBR">
+      <Params>
+        <Param Key="color" Value="1,1,1,1" Type="Color" />
+        <Param Key="metallic" Value="1" Type="Number" />
+        <Param Key="roughness" Value="1" Type="Number" />
+      </Params>
+    </Shader>
+  </Shaders>
+  <Sky ShaderType="Environment">
+    <SunLight Direction="-0.4861,-0.5678,-0.6642" Color="1,0.9,0.8,1" Intensity="2" VolumetricLighting="false" />
+    <Params>
+      <Param Key="environment" Value="sky" Type="Texture" />
+      <Param Key="intensity" Value="1" Type="Number" />
+    </Params>
+  </Sky>
+  <Camera Position="3.56,4.27,0.27" Euler="44.519,-90.411,0" Near="0.30000001192092896" FieldOfView="40" />
+  <Geometries>
+    <Geometry Type="Sphere">
+      <Params>
+        <Param Key="Position" Value="-1.08,0.5,-4.51" />
+        <Param Key="Radius" Value="0.5" />
+      </Params>
+      <Shaders>
+        <Shader Name="PBRBall_01" />
+      </Shaders>
+    </Geometry>
+    <Geometry Type="Sphere">
+      <Params>
+        <Param Key="Position" Value="-1.08,0.5,-3.46" />
+        <Param Key="Radius" Value="0.5" />
+      </Params>
+      <Shaders>
+        <Shader Name="PBRBall_02" />
+      </Shaders>
+    </Geometry>
+    <Geometry Type="Sphere">
+      <Params>
+        <Param Key="Position" Value="-1.08,0.5,-2.41" />
+        <Param Key="Radius" Value="0.5" />
+      </Params>
+      <Shaders>
+        <Shader Name="PBRBall_03" />
+      </Shaders>
+    </Geometry>
+    <Geometry Type="Sphere">
+      <Params>
+        <Param Key="Position" Value="-1.08,0.5,-1.36" />
+        <Param Key="Radius" Value="0.5" />
+      </Params>
+      <Shaders>
+        <Shader Name="PBRBall_04" />
+      </Shaders>
+    </Geometry>
+    <Geometry Type="Sphere">
+      <Params>
+        <Param Key="Position" Value="-1.08,0.5,-0.31" />
+        <Param Key="Radius" Value="0.5" />
+      </Params>
+      <Shaders>
+        <Shader Name="PBRBall_05" />
+      </Shaders>
+    </Geometry>
+    <Geometry Type="Sphere">
+      <Params>
+        <Param Key="Position" Value="-1.08,0.5,0.74" />
+        <Param Key="Radius" Value="0.5" />
+      </Params>
+      <Shaders>
+        <Shader Name="PBRBall_06" />
+      </Shaders>
+    </Geometry>
+    <Geometry Type="Sphere">
+      <Params>
+        <Param Key="Position" Value="-1.08,0.5,1.79" />
+        <Param Key="Radius" Value="0.5" />
+      </Params>
+      <Shaders>
+        <Shader Name="PBRBall_07" />
+      </Shaders>
+    </Geometry>
+    <Geometry Type="Sphere">
+      <Params>
+        <Param Key="Position" Value="-1.08,0.5,2.84" />
+        <Param Key="Radius" Value="0.5" />
+      </Params>
+      <Shaders>
+        <Shader Name="PBRBall_08" />
+      </Shaders>
+    </Geometry>
+    <Geometry Type="Sphere">
+      <Params>
+        <Param Key="Position" Value="-1.08,0.5,3.89" />
+        <Param Key="Radius" Value="0.5" />
+      </Params>
+      <Shaders>
+        <Shader Name="PBRBall_09" />
+      </Shaders>
+    </Geometry>
+    <Geometry Type="Sphere">
+      <Params>
+        <Param Key="Position" Value="-1.08,0.5,4.94" />
+        <Param Key="Radius" Value="0.5" />
+      </Params>
+      <Shaders>
+        <Shader Name="PBRBall_10" />
+      </Shaders>
+    </Geometry>
+    <Geometry Type="Sphere">
+      <Params>
+        <Param Key="Position" Value="0.6,0.5,-4.51" />
+        <Param Key="Radius" Value="0.5" />
+      </Params>
+      <Shaders>
+        <Shader Name="PBRBall_11" />
+      </Shaders>
+    </Geometry>
+    <Geometry Type="Sphere">
+      <Params>
+        <Param Key="Position" Value="0.6,0.5,-3.46" />
+        <Param Key="Radius" Value="0.5" />
+      </Params>
+      <Shaders>
+        <Shader Name="PBRBall_12" />
+      </Shaders>
+    </Geometry>
+    <Geometry Type="Sphere">
+      <Params>
+        <Param Key="Position" Value="0.6,0.5,-2.41" />
+        <Param Key="Radius" Value="0.5" />
+      </Params>
+      <Shaders>
+        <Shader Name="PBRBall_13" />
+      </Shaders>
+    </Geometry>
+    <Geometry Type="Sphere">
+      <Params>
+        <Param Key="Position" Value="0.6,0.5,-1.36" />
+        <Param Key="Radius" Value="0.5" />
+      </Params>
+      <Shaders>
+        <Shader Name="PBRBall_14" />
+      </Shaders>
+    </Geometry>
+    <Geometry Type="Sphere">
+      <Params>
+        <Param Key="Position" Value="0.6,0.5,-0.31" />
+        <Param Key="Radius" Value="0.5" />
+      </Params>
+      <Shaders>
+        <Shader Name="PBRBall_15" />
+      </Shaders>
+    </Geometry>
+    <Geometry Type="Sphere">
+      <Params>
+        <Param Key="Position" Value="0.6,0.5,0.74" />
+        <Param Key="Radius" Value="0.5" />
+      </Params>
+      <Shaders>
+        <Shader Name="PBRBall_16" />
+      </Shaders>
+    </Geometry>
+    <Geometry Type="Sphere">
+      <Params>
+        <Param Key="Position" Value="0.6,0.5,1.79" />
+        <Param Key="Radius" Value="0.5" />
+      </Params>
+      <Shaders>
+        <Shader Name="PBRBall_17" />
+      </Shaders>
+    </Geometry>
+    <Geometry Type="Sphere">
+      <Params>
+        <Param Key="Position" Value="0.6,0.5,2.84" />
+        <Param Key="Radius" Value="0.5" />
+      </Params>
+      <Shaders>
+        <Shader Name="PBRBall_18" />
+      </Shaders>
+    </Geometry>
+    <Geometry Type="Sphere">
+      <Params>
+        <Param Key="Position" Value="0.6,0.5,3.89" />
+        <Param Key="Radius" Value="0.5" />
+      </Params>
+      <Shaders>
+        <Shader Name="PBRBall_19" />
+      </Shaders>
+    </Geometry>
+    <Geometry Type="Sphere">
+      <Params>
+        <Param Key="Position" Value="0.6,0.5,4.94" />
+        <Param Key="Radius" Value="0.5" />
+      </Params>
+      <Shaders>
+        <Shader Name="PBRBall_20" />
+      </Shaders>
+    </Geometry>
+
+    <Geometry Type="Mesh">
+      <Params>
+        <Param Key="Position" Value="0,0,0" />
+        <Param Key="Euler" Value="0,0,0" />
+        <Param Key="Scale" Value="1,1,1" />
+        <Param Key="Path" Value="Plane001.obj" />
+      </Params>
+      <Shaders>
+        <Shader Name="ShaderID_Ball_2616" />
+      </Shaders>
+    </Geometry>
+  </Geometries>
+</SceneRoot>

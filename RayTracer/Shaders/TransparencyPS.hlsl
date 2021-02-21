@@ -5,12 +5,12 @@ cbuffer MatrixBuffer
 	matrix projectionMatrix;
 };
 
-cbuffer ViewBuffer
-{
-    float4 cameraPosition;
-    float4 sunlightDirection;
-    float4 sunlightColor;
-};
+//cbuffer ViewBuffer
+//{
+//    float4 cameraPosition;
+//    float4 sunlightDirection;
+//    float4 sunlightColor;
+//};
 
 cbuffer TransparencyBuffer
 {
@@ -42,5 +42,5 @@ float4 PixelFunc(PixelInputType input) : SV_TARGET
 {
 	float2 screenCaptureUV = GetScreenCaptureUV(input.worldPos, input.worldNormal);
 
-	return _screenCaptureTexture.Sample(_screenCaptureSampleType, screenCaptureUV) * float4(0.3,0.6,1,1);
+	return _screenCaptureTexture.Sample(_screenCaptureSampleType, screenCaptureUV) * color;
 }

@@ -104,6 +104,16 @@ namespace RayTracerNet
             return m_textures.ContainsKey(key) ? m_textures[key] : null;
         }
 
+        public override void Destroy()
+        {
+            if (objectID >= 0)
+            {
+                DestroyShader(objectID);
+                MessageHandler.Broadcast<ResourceObject>(MessageName.RemoveResource, this);
+                objectID = -1;
+            }
+        }
+
 
         [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
         private extern static void GetShaderColor(int shaderID, string key, ref float r, ref float g, ref float b, ref float a);
@@ -137,6 +147,9 @@ namespace RayTracerNet
 
         [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
         private extern static void SetShaderVector4(int shaderID, string key, double x, double y, double z, double w);
+
+        [DllImport("RayTracerLib.dll", CallingConvention = CallingConvention.Cdecl)]
+        private extern static bool DestroyShader(int shaderID);
     }
 
     [ShaderType("Emissive")]

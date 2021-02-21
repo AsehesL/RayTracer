@@ -6,6 +6,7 @@
 #include "../Texture/RenderTexture.h"
 #include "../Common/GlobalResource.h"
 #include "ShaderConstants.h"
+#include "../RayTracer/Shader/RayTracerMaterialShader.h"
 
 struct TransparencyMaterialPSUniformBuffer
 {
@@ -16,24 +17,29 @@ public:
 TransparencyShader::TransparencyShader(GLContext* glContext) : MaterialShader(glContext)
 {
 	m_shaderProgram->Compile(L"Shaders/TransparencyVS.hlsl", L"Shaders/TransparencyPS.hlsl");
+	m_rtShader = new RayTracer::RTTransparencyShader();
 }
 
 TransparencyShader::~TransparencyShader()
 {
+	delete m_rtShader;
 }
 
 RayTracer::RTShaderBase* TransparencyShader::GetRTShader()
 {
-	return nullptr;
+	m_rtShader->color = GetColor("color");
+	m_rtShader->refractive = GetFloat("refractive");
+	m_rtShader->roughness = GetFloat("roughness");
+	return m_rtShader;
 }
 
 bool TransparencyShader::OnApplyParameters()
 {
 	if (!MaterialShader::OnApplyParameters())
 		return false;
-	UniformBuffer* transparencyMaterialPSUniformBuffer = m_shaderProgram->GetUniformBuffer("SkyBuffer");
+	UniformBuffer* transparencyMaterialPSUniformBuffer = m_shaderProgram->GetUniformBuffer("TransparencyBuffer");
 	UniformBuffer* matrixUniformBuffer = m_shaderProgram->GetUniformBuffer("MatrixBuffer");
-	UniformBuffer* viewUniformBuffer = m_shaderProgram->GetUniformBuffer("ViewBuffer");
+	//UniformBuffer* viewUniformBuffer = m_shaderProgram->GetUniformBuffer("ViewBuffer");
 	if (IsUniformBufferDirty("color"))
 	{
 		if (transparencyMaterialPSUniformBuffer)
@@ -50,10 +56,10 @@ bool TransparencyShader::OnApplyParameters()
 	}
 	if (matrixUniformBuffer)
 		matrixUniformBuffer->PSSetUniformBuffer(0);
-	if(viewUniformBuffer)
-		viewUniformBuffer->PSSetUniformBuffer(1);
+	//if(viewUniformBuffer)
+	//	viewUniformBuffer->PSSetUniformBuffer(1);
 	if (transparencyMaterialPSUniformBuffer)
-		transparencyMaterialPSUniformBuffer->PSSetUniformBuffer(2);
+		transparencyMaterialPSUniformBuffer->PSSetUniformBuffer(1);
 
 	TextureBase* screenCapture = GetTexture(SHADER_TEXTURE_SCREEN_CAPTURE);
 	if (screenCapture == nullptr)

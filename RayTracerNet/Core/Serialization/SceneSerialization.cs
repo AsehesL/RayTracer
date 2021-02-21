@@ -31,7 +31,7 @@ namespace RayTracerNet.Serialization
         [XmlArrayItem("Shader")]
         public List<ShaderDataSerialization> shaders;
 
-        [XmlElement("Sky")] public SkyData sky;
+        [XmlElement("Sky")] public SkyDataSerialization sky;
 
         [XmlElement("Camera")] public CameraDataSerialization camera;
 
@@ -299,14 +299,14 @@ namespace RayTracerNet.Serialization
         public string paramValue;
     }
 
-    public class SkyData
+    public class SkyDataSerialization
     {
 
         [XmlAttribute("ShaderType")]
         public string shaderType;
 
         [XmlElement("SunLight")]
-        public SunLightData sun;
+        public SunLightDataSerialization sun;
 
         [XmlArray("Params")]
         [XmlArrayItem("Param")]
@@ -364,7 +364,7 @@ namespace RayTracerNet.Serialization
         }
     }
 
-    public class SunLightData
+    public class SunLightDataSerialization
     {
         [XmlAttribute("Euler")] public string euler;
 
@@ -460,6 +460,28 @@ namespace RayTracerNet.Serialization
                 return Vector4.Parse(propertyValue);
             }
             return propertyValue;
+        }
+
+        public static void Serialize(string path, SceneDataSerialization serialization)
+        {
+            FileInfo fileInfo = new FileInfo(path);
+            if (fileInfo.Directory.Exists == false)
+                fileInfo.Directory.Create();
+
+            FileStream stream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write);
+
+            XmlSerializer serializer = new XmlSerializer(typeof(SceneDataSerialization));
+            try
+            {
+                serializer.Serialize(stream, serialization);
+            }
+            catch (System.Exception e)
+            {
+                Log.Err(e.Message);
+            }
+
+            stream.Dispose();
+            stream.Close();
         }
 
         public static SceneDataSerialization Deserialize(string path)

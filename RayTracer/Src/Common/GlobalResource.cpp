@@ -495,6 +495,32 @@ Texture* GlobalResource::CreateTexture(const char* path, bool isLinear)
 	return CreateTexture(path, isLinear, textureID);
 }
 
+RenderTexture* GlobalResource::GetRenderTexture(unsigned int width, unsigned int height, bool isShadowMap)
+{
+	if (gResource == nullptr)
+		return nullptr;
+	unsigned long key = (unsigned long)(isShadowMap) << 32l | (width << 16l) | height;
+	RenderTexture* rt = gResource->m_renderTexturePool->Pop(key);
+	if (rt == nullptr)
+		return new RenderTexture(width, height, isShadowMap, gResource->m_glContext);
+	return rt;
+}
+
+RenderTexture* GlobalResource::GetRenderTexture(unsigned int width, unsigned int height)
+{
+	return GetRenderTexture(width, height, false);
+}
+
+void GlobalResource::ReleaseRenderTexture(RenderTexture* renderTexture)
+{
+	if (gResource == nullptr)
+		return;
+	if (renderTexture == nullptr)
+		return;
+	unsigned long key = (unsigned long)(renderTexture->IsShadowMap()) << 32l | (renderTexture->GetWidth() << 16l) | renderTexture->GetHeight();
+	gResource->m_renderTexturePool->Push(renderTexture, key);
+}
+
 bool GlobalResource::RemoveTexture(int textureID)
 {
 	if (gResource == nullptr)
@@ -574,6 +600,7 @@ GlobalResource::GlobalResource(GLContext* glContext)
 	m_computeShaderObjectPool = new ObjectPool<ComputeShaderBase>();
 	m_meshObjectPool = new ObjectPool<Mesh>();
 	m_texturePool = new ObjectPool<Texture>();
+	m_renderTexturePool = new ObjectPoolForCache<RenderTexture>();
 
 	m_cubeMesh = nullptr;
 	m_sphereMesh = nullptr;
@@ -601,6 +628,7 @@ GlobalResource::~GlobalResource()
 	delete m_computeShaderObjectPool;
 	delete m_meshObjectPool;
 	delete m_texturePool;
+	delete m_renderTexturePool;
 
 	if (m_preIntegratedBRDFTexture)
 		delete m_preIntegratedBRDFTexture;

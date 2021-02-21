@@ -57,8 +57,8 @@ namespace RayTracer
 		virtual Color GetEmissions() const override { return Color(0,0,0); }
 
 	protected:
-		virtual Color PathTracingDirectionalLight(PathTracer* pathTracer, SamplerBase* sampler, PathTracerScene* scene, const Ray& ray, const RayTracingResult& result, RTPBRShaderProperty& shaderProperty) = 0;
-		virtual Color PathTracingAmbientLighting(PathTracer* pathTracer, SamplerBase* sampler, PathTracerScene* scene, const Ray& ray, const RayTracingResult& result, RTPBRShaderProperty& shaderProperty, int depth) = 0;
+		virtual Color PathTracingDirectionalLight(PathTracer* pathTracer, SamplerBase* sampler, PathTracerScene* scene, const Ray& ray, const RayTracingResult& result) = 0;
+		virtual Color PathTracingAmbientLighting(PathTracer* pathTracer, SamplerBase* sampler, PathTracerScene* scene, const Ray& ray, const RayTracingResult& result, int depth) = 0;
 
 		virtual void GetProperty(RTPBRShaderProperty& shaderProperty) = 0;
 

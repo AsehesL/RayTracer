@@ -326,7 +326,6 @@ xcopy "$(SolutionDir)DLLs" "$(SolutionDir)RayTracerForm\bin\Debug\" /y</Command>
     <ClInclude Include="Src\Texture\RenderTexture.h" />
     <ClInclude Include="Src\Texture\Texture.h" />
     <ClInclude Include="Src\Texture\TextureBase.h" />
-    <ClInclude Include="Test\ComputeShaderTest.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -390,7 +389,6 @@ xcopy "$(SolutionDir)DLLs" "$(SolutionDir)RayTracerForm\bin\Debug\" /y</Command>
     <ClCompile Include="Src\Texture\RenderTexture.cpp" />
     <ClCompile Include="Src\Texture\Texture.cpp" />
     <ClCompile Include="Src\Texture\TextureBase.cpp" />
-    <ClCompile Include="Test\ComputeShaderTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\LinearToGammaPS.hlsl" />

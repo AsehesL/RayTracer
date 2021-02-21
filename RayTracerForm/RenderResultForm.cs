@@ -43,6 +43,12 @@ namespace RayTracerForm
                     g = (float)Math.Min(Math.Max(Math.Pow(g, 0.45), 0.0), 1.0);
                     b = (float)Math.Min(Math.Max(Math.Pow(b, 0.45), 0.0), 1.0);
                     a = 1.0f;
+                    if (float.IsNaN(r))
+                        r = 0.0f;
+                    if (float.IsNaN(g))
+                        g = 0.0f;
+                    if (float.IsNaN(b))
+                        b = 0.0f;
                     System.Drawing.Color c = System.Drawing.Color.FromArgb((int)(r * 255.0f),
                         (int)(g * 255.0f), (int)(b * 255.0f));
                     m_result.SetPixel(i, j, c);

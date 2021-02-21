@@ -10,6 +10,8 @@ public:
 
 private:
 	class RenderTexture* GetOpaqueSceneScreenCapture();
+	class RenderTexture* DownSample(class RenderTexture* renderTexture, unsigned int width, unsigned int height);
+	class RenderTexture* UpSample(class RenderTexture* renderTexture, unsigned int width, unsigned int height);
 
 	void RenderColorPass(int renderWidth, int renderHeight);
 	void RenderShadowPass();

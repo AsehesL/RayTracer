@@ -48,6 +48,10 @@ public:
 	static Texture* CreateTexture(const char* path, bool isLinear, int& textureID);
 	static Texture* CreateTexture(const char* path, bool isLinear);
 
+	static RenderTexture* GetRenderTexture(unsigned int width, unsigned int height, bool isShadowMap);
+	static RenderTexture* GetRenderTexture(unsigned int width, unsigned int height);
+	static void ReleaseRenderTexture(RenderTexture* renderTexture);
+
 	static bool RemoveTexture(int textureID);
 
 	static Mesh* GetMesh(int meshID);
@@ -74,6 +78,7 @@ private:
 	ObjectPool<ComputeShaderBase>* m_computeShaderObjectPool = nullptr;
 	ObjectPool<Mesh>* m_meshObjectPool = nullptr;
 	ObjectPool<Texture>* m_texturePool = nullptr;
+	ObjectPoolForCache<RenderTexture>* m_renderTexturePool = nullptr;
 
 	Mesh* m_cubeMesh = nullptr;
 	Mesh* m_sphereMesh = nullptr;

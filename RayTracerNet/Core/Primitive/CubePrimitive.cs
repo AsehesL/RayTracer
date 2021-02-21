@@ -16,7 +16,7 @@ namespace RayTracerNet
         {
         }
 
-        internal static CubePrimitive Create()
+        public static CubePrimitive Create()
         {
             RayTracer instance = RayTracer.GetInstance();
             if (!instance.IsInitialized())

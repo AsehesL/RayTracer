@@ -25,11 +25,11 @@ namespace RayTracerForm
         {
             RayTracerNet.MessageHandler.AddListener<RayTracerObject>(MessageName.AddNewSceneObject, this.OnAddNewSceneObject);
             RayTracerNet.MessageHandler.AddListener<RayTracerNet.ResourceObject>(MessageName.AddNewResource, this.OnAddNewResource);
+            RayTracerNet.MessageHandler.AddListener<RayTracerObject>(MessageName.RemoveSceneObject, this.OnRemoveNewSceneObject);
+            RayTracerNet.MessageHandler.AddListener<RayTracerNet.ResourceObject>(MessageName.RemoveResource, this.OnRemoveResource);
             RayTracerNet.MessageHandler.AddListener<RayTracerNet.LogItem>(MessageName.AddLog, this.OnAddNewLog);
             RayTracerNet.MessageHandler.AddListener(MessageName.ClearLogs, this.OnClearLogs);
             RayTracerNet.MessageHandler.AddListener<RayTracerNet.IntegratorType>(MessageName.ChangeIntegratorType, this.OnChangeIntegratorType);
-
-            RayTracerNet.MessageHandler.AddListener<RayTracerObject>(MessageName.RemoveSceneObject, this.OnRemoveNewSceneObject);
 
             RayTracerNet.MessageHandler.AddListener<RayTracerObject>(MessageName.SelectSceneObject, this.OnSelectSceneObject);
 
@@ -49,13 +49,13 @@ namespace RayTracerForm
             this.worldListView.Items.Add(new WorldListViewItem(newObject));
         }
 
-        private void OnRemoveNewSceneObject(RayTracerNet.RayTracerObject newObject)
+        private void OnRemoveNewSceneObject(RayTracerNet.RayTracerObject rtObject)
         {
             int i = 0;
             while (i < this.worldListView.Items.Count)
             {
                 WorldListViewItem item = this.worldListView.Items[i] as WorldListViewItem;
-                if (item != null && item.rtObject == newObject)
+                if (item != null && item.rtObject == rtObject)
                 {
                     this.worldListView.Items.RemoveAt(i);
                 }
@@ -75,7 +75,25 @@ namespace RayTracerForm
         {
             this.resourceListView.Items.Add(new ResourceListViewItem(resourceObject));
         }
-        
+
+        private void OnRemoveResource(RayTracerNet.ResourceObject resourceObject)
+        {
+            int i = 0;
+            while (i < this.resourceListView.Items.Count)
+            {
+                ResourceListViewItem item = this.resourceListView.Items[i] as ResourceListViewItem;
+                if (item != null && item.resObject == resourceObject)
+                {
+                    this.resourceListView.Items.RemoveAt(i);
+                }
+                else
+                {
+                    i++;
+                }
+            }
+        }
+
+
         private void OnAddNewLog(RayTracerNet.LogItem logItem)
         {
             ListViewItem item = new ListViewItem();
@@ -139,7 +157,9 @@ namespace RayTracerForm
                     WorldListViewItem item = listView.SelectedItems[0] as WorldListViewItem;
                     if (item != null && item.rtObject != null)
                     {
-                        RayTracerNet.RayTracer.GetInstance().GetScene().DestroySceneObject(item.rtObject);
+                        var rtObj = item.rtObject;
+                        listView.Items.Remove(item);
+                        rtObj.Destroy();
                     }
                 }
             }
@@ -160,7 +180,7 @@ namespace RayTracerForm
 
         private void CubePrimitiveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RayTracerNet.CubePrimitive cube = RayTracerNet.RayTracer.GetInstance().GetScene().CreateSceneObject<RayTracerNet.CubePrimitive>();
+            RayTracerNet.CubePrimitive cube = RayTracerNet.CubePrimitive.Create();
             cube.position = Vector3.zero;
             cube.euler = Vector3.zero;
             cube.scale = Vector3.one;
@@ -168,7 +188,7 @@ namespace RayTracerForm
 
         private void SpherePrimitiveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RayTracerNet.SpherePrimitive sphere = RayTracerNet.RayTracer.GetInstance().GetScene().CreateSceneObject<RayTracerNet.SpherePrimitive>();
+            RayTracerNet.SpherePrimitive sphere = RayTracerNet.SpherePrimitive.Create();
             sphere.position = Vector3.zero;
             sphere.euler = Vector3.zero;
             sphere.scale = Vector3.one;
@@ -176,7 +196,7 @@ namespace RayTracerForm
 
         private void PlanePrimitiveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RayTracerNet.PlanePrimitive plane = RayTracerNet.RayTracer.GetInstance().GetScene().CreateSceneObject<RayTracerNet.PlanePrimitive>();
+            RayTracerNet.PlanePrimitive plane = RayTracerNet.PlanePrimitive.Create();
             plane.position = Vector3.zero;
             plane.euler = Vector3.zero;
             plane.scale = Vector3.one;
@@ -184,7 +204,7 @@ namespace RayTracerForm
 
         private void MeshPrimitiveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RayTracerNet.MeshPrimitive meshPrimitive = RayTracerNet.RayTracer.GetInstance().GetScene().CreateSceneObject<RayTracerNet.MeshPrimitive>();
+            RayTracerNet.MeshPrimitive meshPrimitive = RayTracerNet.MeshPrimitive.Create();
             meshPrimitive.position = Vector3.zero;
             meshPrimitive.euler = Vector3.zero;
             meshPrimitive.scale = Vector3.one;
@@ -227,12 +247,12 @@ namespace RayTracerForm
 
         private void EnvironmentSkyLightToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RayTracerNet.RayTracer.GetInstance().GetScene().CreateSceneObject<RayTracerNet.EnvironmentMapSkyLight>();
+            RayTracerNet.EnvironmentMapSkyLight.Create();
         }
 
         private void SunLightToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RayTracerNet.RayTracer.GetInstance().GetScene().CreateSceneObject<RayTracerNet.SunLight>();
+            RayTracerNet.SunLight.Create();
         }
 
         private void NewToolStripMenuItem_Click(object sender, EventArgs e)
@@ -292,6 +312,16 @@ namespace RayTracerForm
             m_resultForm.Show();
             m_resultForm.Focus();
             m_resultForm.UpdateResult();
+        }
+
+        private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            saveFileDialog.Filter = "场景文件|*.scene";
+            DialogResult result = saveFileDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                //RayTracer.GetInstance().GetScene().Save(saveFileDialog.FileName);
+            }
         }
     }
 }

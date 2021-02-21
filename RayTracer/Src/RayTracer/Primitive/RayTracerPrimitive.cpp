@@ -236,6 +236,95 @@ Vector3 RayTracer::SpherePrimitive::GetSurfaceNormal(Vector3 pos)
 	return (pos - position) / radius;
 }
 
+RayTracer::PlanePrimitive::PlanePrimitive() : PrimitiveBase()
+{
+}
+
+RayTracer::PlanePrimitive::~PlanePrimitive()
+{
+}
+
+void RayTracer::PlanePrimitive::AddToScene(SceneDataBase* sceneData)
+{
+	if (sceneData)
+		sceneData->AddPrimitive(this);
+}
+
+bool RayTracer::PlanePrimitive::Tracing(const Ray& ray, RayTracingResult& result)
+{
+	double t = Vector3::Dot(this->position - ray.origin, this->normal) / Vector3::Dot(ray.direction, this->normal);
+	if (t < DBL_EPSILON)
+		return false;
+	if (t > result.distance)
+		return false;
+	Vector3 p = ray.origin + ray.direction * t;
+	Vector3 d = p - this->position;
+	double ddw = Vector3::Dot(d, this->right);
+	if (ddw < 0.0 || ddw > this->widthSquared)
+		return false;
+	double ddh = Vector3::Dot(d, this->up);
+	if (ddh < 0.0 || ddh > this->heightSquared)
+		return false;
+	result.distance = t;
+	result.normal = normal;
+
+	Vector3 lp = p - this->position;
+	double texcoordx = Vector3::Dot(lp, this->right.GetNormalized()) / this->right.Magnitude();
+	double texcoordy = 1.0 - Vector3::Dot(lp, this->up.GetNormalized()) / this->up.Magnitude();
+
+	result.texcoord = Vector2(texcoordx, texcoordy);
+	result.normal = this->normal;
+	result.material = material;
+	result.hit = p + this->normal * DBL_EPSILON;
+	return true;
+}
+
+void RayTracer::PlanePrimitive::GetBounds(Bounds& bounds)
+{
+	Vector3 pos0 = position;
+	Vector3 pos1 = position + right;
+	Vector3 pos2 = position + up;
+	Vector3 pos3 = position + right + up;
+
+	Vector3 min = pos0;
+	Vector3 max = pos0;
+
+	min = Vector3::Min(min, pos1);
+	min = Vector3::Min(min, pos2);
+	min = Vector3::Min(min, pos3);
+
+	max = Vector3::Max(max, pos1);
+	max = Vector3::Max(max, pos2);
+	max = Vector3::Max(max, pos3);
+
+	Vector3 si = max - min;
+	Vector3 ct = min + si * 0.5;
+
+	if (si.x <= 0)
+		si.x = 0.1;
+	if (si.y <= 0)
+		si.y = 0.1;
+	if (si.z <= 0)
+		si.z = 0.1;
+
+	bounds = Bounds(ct, si);
+}
+
+void RayTracer::PlanePrimitive::RefreshArea()
+{
+	m_area = sqrt(widthSquared)*sqrt(heightSquared);
+}
+
+Vector3 RayTracer::PlanePrimitive::GetSurfacePosition(SamplerBase* sampler, Vector2 pos)
+{
+	return position + right * (pos.x) + up * (pos.y);
+}
+
+Vector3 RayTracer::PlanePrimitive::GetSurfaceNormal(Vector3 pos)
+{
+	return normal;
+}
+
 RayTracer::MeshPrimitive::MeshPrimitive() : PrimitiveBase()
 {
 	mesh = nullptr;

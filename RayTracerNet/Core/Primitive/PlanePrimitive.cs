@@ -16,7 +16,7 @@ namespace RayTracerNet
         {
         }
 
-        internal static PlanePrimitive Create()
+        public static PlanePrimitive Create()
         {
             RayTracer instance = RayTracer.GetInstance();
             if (!instance.IsInitialized())

@@ -71,80 +71,82 @@ private:
 	int m_objectID;
 };
 
-//template<class T>
-//class ObjectPoolStack
-//{
-//public:
-//	ObjectPoolStack()
-//	{
-//	}
-//
-//	~ObjectPoolStack()
-//	{
-//		while (m_objects.size() > 0)
-//		{
-//			T* obj = m_objects.top();
-//			if (obj)
-//				delete obj;
-//			m_objects.pop();
-//		}
-//	}
-//
-//	void Push(T* object)
-//	{
-//		m_objects.push(object);
-//	}
-//
-//	T* Pop()
-//	{
-//		if (m_objects.size() == 0)
-//			return nullptr;
-//		T* obj = m_objects.top();
-//		m_objects.pop();
-//		return obj;
-//	}
-//
-//private:
-//	std::stack<T*> m_objects;
-//};
-//
-//template<class T>
-//class ObjectPoolForCache
-//{
-//public:
-//	ObjectPoolForCache()
-//	{
-//	}
-//
-//	~ObjectPoolForCache()
-//	{
-//		for (auto kvp : m_objects)
-//		{
-//			T* obj = kvp.second;
-//			if (obj)
-//			{
-//				delete obj;
-//			}
-//		}
-//		m_objects.clear();
-//	}
-//
-//	void Push(T* object, unsigned long key)
-//	{
-//		ObjectPoolStack<T>* stack = nullptr;
-//		if (m_objects.find(key) == m_objects.end())
-//		{
-//			m_objects.insert(std::pair<unsigned long, ObjectPoolStack<T>*>(key, new ObjectPoolStack<T>()));
-//		}
-//		stack = m_objects[key];
-//		stack->Push(object);
-//	}
-//
-//	T* Pop(unsigned long key)
-//	{
-//		if (m)
-//	}
-//
-//private:
-//	std::map<unsigned long, ObjectPoolStack<T>*> m_objects;
-//};
+template<class T>
+class ObjectPoolStack
+{
+public:
+	ObjectPoolStack()
+	{
+	}
+
+	~ObjectPoolStack()
+	{
+		while (m_objects.size() > 0)
+		{
+			T* obj = m_objects.top();
+			if (obj)
+				delete obj;
+			m_objects.pop();
+		}
+	}
+
+	void Push(T* object)
+	{
+		m_objects.push(object);
+	}
+
+	T* Pop()
+	{
+		if (m_objects.size() == 0)
+			return nullptr;
+		T* obj = m_objects.top();
+		m_objects.pop();
+		return obj;
+	}
+
+private:
+	std::stack<T*> m_objects;
+};
+
+template<class T>
+class ObjectPoolForCache
+{
+public:
+	ObjectPoolForCache()
+	{
+	}
+
+	~ObjectPoolForCache()
+	{
+		for (auto kvp : m_objects)
+		{
+			ObjectPoolStack<T>* stack = kvp.second;
+			if (stack)
+			{
+				delete stack;
+			}
+		}
+		m_objects.clear();
+	}
+
+	void Push(T* object, unsigned long key)
+	{
+		ObjectPoolStack<T>* stack = nullptr;
+		if (m_objects.find(key) == m_objects.end())
+		{
+			m_objects.insert(std::pair<unsigned long, ObjectPoolStack<T>*>(key, new ObjectPoolStack<T>()));
+		}
+		stack = m_objects[key];
+		stack->Push(object);
+	}
+
+	T* Pop(unsigned long key)
+	{
+		if (m_objects.find(key) == m_objects.end())
+			return nullptr;
+		return m_objects[key]->Pop();
+	}
+
+private:
+	std::map<unsigned long, ObjectPoolStack<T>*> m_objects;
+};

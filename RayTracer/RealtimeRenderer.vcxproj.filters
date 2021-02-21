@@ -94,9 +94,6 @@
     <Filter Include="Src\RayTracer\Scene">
       <UniqueIdentifier>{158c25e2-006b-4d56-a8fc-1cad88d1563d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Test">
-      <UniqueIdentifier>{e4b0bfbc-a610-412a-8c99-b18e92de62ab}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -318,9 +315,6 @@
     <ClInclude Include="Src\Shader\ShaderConstants.h">
       <Filter>Src\Shader</Filter>
     </ClInclude>
-    <ClInclude Include="Test\ComputeShaderTest.h">
-      <Filter>Test</Filter>
-    </ClInclude>
     <ClInclude Include="Src\RealtimeRender\GraphicsLib\ComputeShaderProgram.h">
       <Filter>Src\RealtimeRender\GraphicsLib</Filter>
     </ClInclude>
@@ -514,9 +508,6 @@
     </ClCompile>
     <ClCompile Include="Src\RayTracer\Integrator\PhotonMapper\OcTree.cpp">
       <Filter>Src\RayTracer\Integrator\PhotonMapper</Filter>
-    </ClCompile>
-    <ClCompile Include="Test\ComputeShaderTest.cpp">
-      <Filter>Test</Filter>
     </ClCompile>
     <ClCompile Include="Src\RealtimeRender\GraphicsLib\D3D11\D3D11ComputeBuffer.cpp">
       <Filter>Src\RealtimeRender\GraphicsLib\D3D11</Filter>

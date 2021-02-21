@@ -12,7 +12,7 @@ namespace RayTracerNet
 
         public abstract string GetObjectName();
 
-        internal abstract void Destroy();
+        public abstract void Destroy();
 
         public int objectID
         {

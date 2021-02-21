@@ -267,7 +267,7 @@ void SpherePrimitive::UpdateRayTracerPrimitive()
 PlanePrimitive::PlanePrimitive(GLContext* glContext) : PrimitiveBase(glContext)
 {
 	m_realTimeRenderMesh = GlobalResource::GetPlaneMesh();
-	//m_rayTracerPrimitive = new RayTracer::Cube();
+	m_rayTracerPrimitive = new RayTracer::PlanePrimitive();
 }
 
 PlanePrimitive::~PlanePrimitive()
@@ -276,7 +276,7 @@ PlanePrimitive::~PlanePrimitive()
 
 void PlanePrimitive::GetBounds(Bounds& OutBounds)
 {
-	Bounds bd = Bounds(position, Vector3(10,0,10));
+	Bounds bd = Bounds(Vector3(0,0,0), Vector3(10,0.001,10));
 
 	Matrix4x4 ltw;
 	GetRenderMatrix(ltw);
@@ -302,4 +302,51 @@ void PlanePrimitive::GetRenderMatrix(Matrix4x4& renderMatrix)
 
 void PlanePrimitive::UpdateRayTracerPrimitive()
 {
+	double cosx = cos(euler.x * 0.01745329252 * 0.5);
+	double cosy = cos(euler.y * 0.01745329252 * 0.5);
+	double cosz = cos(euler.z * 0.01745329252 * 0.5);
+
+	double sinx = sin(euler.x * 0.01745329252 * 0.5);
+	double siny = sin(euler.y * 0.01745329252 * 0.5);
+	double sinz = sin(euler.z * 0.01745329252 * 0.5);
+
+	double rx = cosy * sinx * cosz + siny * cosx * sinz;
+	double ry = siny * cosx * cosz - cosy * sinx * sinz;
+	double rz = cosy * cosx * sinz - siny * sinx * cosz;
+	double rw = cosy * cosx * cosz + siny * sinx * sinz;
+
+	double x2 = 2.0 * rx * rx;
+	double y2 = 2.0 * ry * ry;
+	double z2 = 2.0 * rz * rz;
+	double xy = 2.0 * rx * ry;
+	double xz = 2.0 * rx * rz;
+	double xw = 2.0 * rx * rw;
+	double yz = 2.0 * ry * rz;
+	double yw = 2.0 * ry * rw;
+	double zw = 2.0 * rz * rw;
+
+	double ra = 1.0 - y2 - z2;
+	double rb = xy + zw;
+	double rc = xz - yw;
+	double rd = xy - zw;
+	double re = 1.0 - x2 - z2;
+	double rf = yz + xw;
+	double rg = xz + yw;
+	double rh = yz - xw;
+	double ri = 1.0 - x2 - y2;
+
+	Vector3 right = Vector3(ra, rb, rc);
+	Vector3 up = Vector3(rd, re, rf);
+	Vector3 forward = Vector3(rg, rh, ri);
+
+	Vector3 size = scale * 10.0;
+
+	RayTracer::PlanePrimitive* plane = (RayTracer::PlanePrimitive*)m_rayTracerPrimitive;
+	plane->material = material ? (RayTracer::RTMaterialShader*)(material->GetRTShader()) : nullptr;
+	plane->position = position - right * size.x * 0.5 - forward * size.z * 0.5;
+	plane->right = right * size.x;
+	plane->up = forward * size.z;
+	plane->normal = up;
+	plane->heightSquared = plane->up.SqrMagnitude();
+	plane->widthSquared = plane->right.SqrMagnitude();
 }

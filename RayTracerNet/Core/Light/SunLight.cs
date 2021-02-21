@@ -126,7 +126,7 @@ namespace RayTracerNet
         {
         }
 
-        internal override void Destroy()
+        public override void Destroy()
         {
             if (objectID < 0)
                 return;
@@ -135,7 +135,7 @@ namespace RayTracerNet
             objectID = -1;
         }
 
-        internal static SunLight Create()
+        public static SunLight Create()
         {
             RayTracer instance = RayTracer.GetInstance();
             if (!instance.IsInitialized())
