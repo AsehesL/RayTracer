@@ -80,3 +80,6 @@ bld/
 *.pidb
 *.svclog
 *.scc
+
+!/DLLs/*.dll
+!/Libs/*.lib
