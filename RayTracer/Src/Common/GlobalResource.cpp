@@ -426,6 +426,7 @@ RenderTexture* GlobalResource::GetPreIntegratedBRDFTexture()
 		Mesh* screenQuadMesh = GetScreenQuadMesh();
 
 		RenderTexture* renderTexture = new RenderTexture(256,256,false,gResource->m_glContext);
+		renderTexture->SetWrapMode(WrapMode::Clamp);
 		gResource->m_preIntegratedBRDFTexture = renderTexture;
 
 

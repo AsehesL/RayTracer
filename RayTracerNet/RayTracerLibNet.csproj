@@ -55,7 +55,6 @@
   <ItemGroup>
     <Compile Include="Core\Camera\Camera.cs" />
     <Compile Include="Core\Light\SunLight.cs" />
-    <Compile Include="Core\Log\Log.cs" />
     <Compile Include="Core\Math\Color.cs" />
     <Compile Include="Core\Math\MathUtils.cs" />
     <Compile Include="Core\Math\Vector.cs" />
@@ -77,6 +76,7 @@
     <Compile Include="Core\Serialization\PrimitiveSerialization.cs" />
     <Compile Include="Core\Serialization\SceneSerialization.cs" />
     <Compile Include="Core\UIProperty\PropertyDisplayAttribute.cs" />
+    <Compile Include="Core\Utils\Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RayTracer.cs" />
   </ItemGroup>

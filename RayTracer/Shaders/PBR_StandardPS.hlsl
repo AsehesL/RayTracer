@@ -178,7 +178,8 @@ float3 GetAlbedo(float2 uv)
 
 float ComputeSkyLightMipLevel(float roughness, float maxMip)
 {
-	return (1.7*roughness-0.7*roughness*roughness)*maxMip;
+	return (2.0*roughness-1.0*roughness*roughness)*maxMip;
+	//return maxMip * roughness;
 }
 
 float3 GetSkyLight(float3 reflDir, float roughness)
@@ -211,7 +212,7 @@ float3 GetDiffuseSkyLight(float3 normal)
 
 float2 GetEnvBRDF(float ndv, float roughness)
 {
-	return _integrateBRDFTexture.Sample(_integrateBRDFTextureSampleType, float2(ndv, 1.0f - roughness)).rg;
+	return _integrateBRDFTexture.Sample(_integrateBRDFTextureSampleType, float2(ndv, roughness)).rg;
 }
 
 float4 PixelFunc(PixelInputType input) : SV_TARGET
